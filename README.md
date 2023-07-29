@@ -1,49 +1,25 @@
-<h1>IIUM Wildlife Report</h1>
+# studycase2
 
-<h2>Group Member</h2>
+A new Flutter project.
 
-1. Muhammad Amir Hamzah Bin Abd Aziz - 2011685 (Authentication, login page, registration page, camera module, delete function)
-2. Muhammad Firdaus bin Shahrum - 2013803 (Report Class, Form Page, My Reports Page, Edit Report Page, Update report function)
-3. Faishal Aqil bin Mohd Arief - 2014883 (Firebase Configuration, Report Creation, Retrieval Data, Phone Gallery Connection)
+# JGN KACAU ERROR KAT build,gradle (its is false positive error)
 
+# HOW TO SETUP FIREBASE SAMPAI JADI
+1. Download node js
+2. run in bash terminal : npm install -g firebase-tools
+3. npm install -g npm@9.7.1
+4. firebase login
+5. dart pub global activate flutterfire_cli
+6. run in powershell: flutterfire configure
+7. Settle setup ngan firebase(project, choice2 bla bla_)
+8.  flutter pub add firebase_core
+9. In main.dart : import 'package:firebase_core/firebase_core.dart';
+10. import 'firebase_options.dart'; (should be auto create in lib)
+11.  change void main into : Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-<h2>Introduction</h2>
-IIUM Wildlife Control is a mobile application designed exclusively for students of IIUM. With this app, students can easily report any wildlife-related problems they encounter within the IIUM campus. The app utilizes the device's camera to capture visual evidence and securely stores the reports in Firebase's cloud Firestore. 
-
-Students can conveniently access, update, and manage their submitted reports through the app's user-friendly interface. The app also assigns a respective officer in-charge to handle each complaint, ensuring swift resolution of wildlife animal issues around the campus. Simplifying the process of reporting and resolving wildlife issues, IIUM Wildlife Control aims to enhance the campus environment for everyone.
-
-<h2>Objectives</h2>
-Listed here is the main objectives of each of the project
-
-+ Help students to report wildlife animal around campus
-+ Students can provide evidence through the mobile application
-+ Students can create and update their report.
-+ Officers can check the reports through the application.
-+ They can approve each of the report and delete completed report.
-
-<h2>Features and Functionalities</h2>
-
-+ Wildlife Reporting: Students can use their device's camera to capture and submit reports of wildlife-related problems they encounter on the IIUM campus. This feature allows them to document and describe the issue in detail.
-+ Report Storage: The app securely stores the submitted wildlife reports in Firebase's cloud Firestore. This ensures that the data is safely stored and easily accessible for further processing.
-+ Officer Assignment: Each submitted report is automatically assigned to a respective officer in-charge responsible for handling the complaint. This feature ensures that the appropriate personnel are notified promptly to address the wildlife issue.
-
-<h2>Sequence Diagram</h2>
-
-![mobileapp drawio](https://github.com/amoiiir/IIUMWildlifeReport/assets/101052053/fed87221-4991-4913-a543-97072a697880)
-
-<h2>Screen implementation and widget Diagrams</h2>
-
-![routing](https://github.com/amoiiir/IIUMWildlifeReport/assets/101052053/43257768-1e17-4031-9d2b-f3f8a128871b)
-
-<h2>References</h2>
-
-1. Role based login for Firebase with Flutter : https://youtu.be/q5E8811Ut_8
-2. Flutter: Bottom Tab Bar Navigation with FAB Button : https://youtu.be/1y-gfskpMIM
-3. Camera plug-ins : https://pub.dev/packages/camera
-4. Authentication plug-ins : https://pub.dev/packages/firebase_auth
-5. Flutter - Swipeable Button | Swipe to Confirm Button in Flutter | Swipe to confirm animation [2022] : https://youtu.be/SMIrms0jV9w
-6. Flutter Firebase CRUD (Create, Read, Update, Delete) : https://youtu.be/ErP_xomHKTw
-7. User Authentication and CRUD Operation with Firebase Realtime Database in Android : https://www.geeksforgeeks.org/user-authentication-and-crud-operation-with-firebase-realtime-database-in-android/
-8. Flutter Firebase CLI Setup : https://www.youtube.com/watch?v=G-mbqiE87Lw&t=37s
-
-
+  runApp(const MyApp());
+}
+12. 
+9. Flutter run
