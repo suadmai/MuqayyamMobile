@@ -35,8 +35,7 @@ class _myReportsState extends State<MyReportsPage> {
 
   Future<void> initializeCamera() async {
     cameras = await availableCameras();
-    _cameraController =
-        CameraController(cameras[0], ResolutionPreset.medium);
+    _cameraController = CameraController(cameras[0], ResolutionPreset.medium);
     await _cameraController.initialize();
     if (!mounted) return;
     setState(() {
@@ -99,8 +98,7 @@ class _myReportsState extends State<MyReportsPage> {
                           builder: (context) => const Student(),
                         ),
                       );
-                    
-                  },
+                    },
                     child: const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -121,11 +119,12 @@ class _myReportsState extends State<MyReportsPage> {
                     minWidth: 150,
                     onPressed: () {
                       Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MyReportsPage(), // Navigate to MyReportsPage
-                      ),
-                    );
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              MyReportsPage(), // Navigate to MyReportsPage
+                        ),
+                      );
                     },
                     child: const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -145,11 +144,11 @@ class _myReportsState extends State<MyReportsPage> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: FirebaseFirestore.instance
-      .collection('AllReports')
-      .where('userId', isEqualTo: FirebaseAuth.instance.currentUser?.email)
-      .snapshots(),
-        
+        stream: FirebaseFirestore.instance
+            .collection('AllReports')
+            .where('userId',
+                isEqualTo: FirebaseAuth.instance.currentUser?.email)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final reports = snapshot.data!.docs;
@@ -305,11 +304,11 @@ class _ReportDetailsPageState extends State<ReportDetailsPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => EditReportPage(
-                        reportId : widget.reportID,
-                        originalTitle : widget.title,
-                        originalAnimalType : widget.animalType,
-                        originalLocation : widget.location,
-                        originalDescription : widget.description,
+                        reportId: widget.reportID,
+                        originalTitle: widget.title,
+                        originalAnimalType: widget.animalType,
+                        originalLocation: widget.location,
+                        originalDescription: widget.description,
                       ),
                     ),
                   );

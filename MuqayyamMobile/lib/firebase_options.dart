@@ -17,16 +17,16 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -49,20 +49,21 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBAiW6pBp3yT_pTPntK1LMKrveoIH3uJq0',
-    appId: '1:168504071841:web:e76e06103760ac93a4c2e0',
-    messagingSenderId: '168504071841',
-    projectId: 'wildlifegobase',
-    authDomain: 'wildlifegobase.firebaseapp.com',
-    storageBucket: 'wildlifegobase.appspot.com',
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyDBSD-eK84r7CIAHyAA5PgufZ188k6cDKs',
+    appId: '1:440669090614:android:df067caadc0955a86a7997',
+    messagingSenderId: '440669090614',
+    projectId: 'muqayyam-a6239',
+    storageBucket: 'muqayyam-a6239.appspot.com',
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAthAEXPHp79nkxHNFORe4Yo9iWulBKBHo',
-    appId: '1:168504071841:android:6de1d7707e60c6daa4c2e0',
-    messagingSenderId: '168504071841',
-    projectId: 'wildlifegobase',
-    storageBucket: 'wildlifegobase.appspot.com',
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyDgLd_fE4hg9bAfbvv7vm9qYA4fQMgyVV4',
+    appId: '1:440669090614:ios:c403b06f0fe52eee6a7997',
+    messagingSenderId: '440669090614',
+    projectId: 'muqayyam-a6239',
+    storageBucket: 'muqayyam-a6239.appspot.com',
+    iosClientId: '440669090614-kaihbma3f5g84vjp32dn5jru31mf2t9r.apps.googleusercontent.com',
+    iosBundleId: 'com.example.wildlifego',
   );
 }
