@@ -1,10 +1,9 @@
-<h1>IIUM Wildlife Report</h1>
+<h1>Muqayyam Mobilet</h1>
 
 <h2>Group Member</h2>
 
-1. Muhammad Amir Hamzah Bin Abd Aziz - 2011685 (Authentication, login page, registration page, camera module, delete function)
-2. Muhammad Firdaus bin Shahrum - 2013803 (Report Class, Form Page, My Reports Page, Edit Report Page, Update report function)
-3. Faishal Aqil bin Mohd Arief - 2014883 (Firebase Configuration, Report Creation, Retrieval Data, Phone Gallery Connection)
+1. Muhammad Firdaus bin Shahrum - 2013803 
+2. Faishal Aqil bin Mohd Arief - 2014883
 
 
 <h2>Introduction</h2>
