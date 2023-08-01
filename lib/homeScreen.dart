@@ -50,14 +50,17 @@ class _StudentState extends State<Student> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("WildLifeGO"),
+        backgroundColor: const Color(0xFF82618B),
+        toolbarHeight: 100,
+        title: const Text("Selamat Pagi, Kak Jun!"),
         actions: [
           IconButton(
             onPressed: () {
               //logout(context);
             },
             icon: const Icon(
-              Icons.logout,
+              Icons.account_circle,
+              size: 30,
             ),
           )
         ],
