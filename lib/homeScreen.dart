@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:wildlifego/login.dart';
 import 'package:camera/camera.dart';
-import 'Screen/camera.dart';
-import 'editReport.dart';
-import 'myReports.dart';
 
 class Student extends StatefulWidget {
   const Student({Key? key}) : super(key: key);
@@ -13,15 +9,15 @@ class Student extends StatefulWidget {
   State<Student> createState() => _StudentState();
 }
 
-Future<void> logout(BuildContext context) async {
-  await FirebaseAuth.instance.signOut();
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(
-      builder: (context) => const LoginPage(),
-    ),
-  );
-}
+// Future<void> logout(BuildContext context) async {
+//   await FirebaseAuth.instance.signOut();
+//   Navigator.pushReplacement(
+//     context,
+//     MaterialPageRoute(
+//       builder: (context) => const LoginPage(),
+//     ),
+//   );
+// }
 
 class _StudentState extends State<Student> {
   late List<CameraDescription> cameras;
@@ -58,7 +54,7 @@ class _StudentState extends State<Student> {
         actions: [
           IconButton(
             onPressed: () {
-              logout(context);
+              //logout(context);
             },
             icon: const Icon(
               Icons.logout,
@@ -69,77 +65,67 @@ class _StudentState extends State<Student> {
       //floating action button must be center
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  CameraPage(cameraController: _cameraController),
-            ),
-          );
+          //Navigator.push(
+            //context,
+            //MaterialPageRoute(
+              //builder: (context) =>
+                  //CameraPage(cameraController: _cameraController),
+            //),
+          //);
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.podcasts), 
+        backgroundColor: Color(0xFF82618B),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
+        color: Color(0xFF82618B),
         shape: const CircularNotchedRectangle(),
         notchMargin: 10.0,
         child: SizedBox(
           height: 60.0,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround, // Updated alignment
             children: <Widget>[
-              Row(
-                children: [
-                  MaterialButton(
-                    minWidth: 150,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Student(),
-                        ),
-                      );
-                    
-                  },
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.home,
-                          color: Colors.blueGrey,
-                        ),
-                        Text('Home')
-                      ],
+              // Home
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Student(),
                     ),
-                  )
-                ],
+                  );
+                },
+                icon: const Icon(Icons.home),
+                color: Colors.white,
               ),
-              //right tab bar icons
-              Row(
-                children: [
-                  MaterialButton(
-                    minWidth: 150,
-                    onPressed: () {
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MyReportsPage(), // Navigate to MyReportsPage
-                      ),
-                    );
-                    },
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.assignment,
-                          color: Colors.blueGrey,
-                        ),
-                        Text('My Reports')
-                      ],
-                    ),
-                  )
-                ],
-              )
+
+              // Search (You can replace this with your desired search functionality)
+              IconButton(
+                onPressed: () {
+                  // Add your search functionality here
+                },
+                icon: const Icon(Icons.search),
+                color: Colors.white,
+              ),
+
+              // Trophy (You can replace this with your desired trophy functionality)
+              IconButton(
+                onPressed: () {
+                  // Add your trophy functionality here
+                },
+                icon: const Icon(Icons.emoji_events),
+                color: Colors.white,
+              ),
+
+              // Settings (You can replace this with your desired settings functionality)
+              IconButton(
+                onPressed: () {
+                  // Add your settings functionality here
+                },
+                icon: const Icon(Icons.settings),
+                color: Colors.white,
+              ),
             ],
           ),
         ),
@@ -297,18 +283,18 @@ class _ReportDetailsPageState extends State<ReportDetailsPage> {
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditReportPage(
-                        reportId : widget.reportID,
-                        originalTitle : widget.title,
-                        originalAnimalType : widget.animalType,
-                        originalLocation : widget.location,
-                        originalDescription : widget.description,
-                      ),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => EditReportPage(
+                  //       reportId : widget.reportID,
+                  //       originalTitle : widget.title,
+                  //       originalAnimalType : widget.animalType,
+                  //       originalLocation : widget.location,
+                  //       originalDescription : widget.description,
+                  //     ),
+                  //   ),
+                  // );
                 },
                 child: const Text('Edit Report'),
               ),
