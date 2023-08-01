@@ -52,11 +52,11 @@ class _StudentState extends State<Student> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
         toolbarHeight: 100,
-        title: const Text("Selamat Pagi, Kak Jun!"),
+        title: const Text("Selamat pagi Kak Jun!"),
         actions: [
           IconButton(
             onPressed: () {
-              //logout(context);
+              //go to profile page
             },
             icon: const Icon(
               Icons.account_circle,
@@ -133,89 +133,136 @@ class _StudentState extends State<Student> {
           ),
         ),
       ),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('AllReports').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final reports = snapshot.data!.docs;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    'Latest Reports',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: reports.length,
-                    itemBuilder: (context, index) {
-                      final report = reports[index].data();
-                      final reportID = report['reportId'] as String?;
-                      final userID =
-                          report['userId'] as String?; // Handle null value
-                      final animalType =
-                          report['animalType'] as String?; // Handle null value
-                      final imageURL =
-                          report['imageURL'] as String?; // Handle null value
-                      final title =
-                          report['title'] as String?; // Handle null value
-                      final description =
-                          report['description'] as String?; // Handle null value
-                      final location =
-                          report['location'] as String?; // Handle null value
+      body: 
+      Center(
+        child: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
 
-                      return GestureDetector(
-                        onTap: () {
-                          // Navigate to details page and pass the report details
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ViewDetailsPage(
-                                reportID: reportID ?? '',
-                                userID: userID ?? '',
-                                animalType: animalType ?? '',
-                                imageURL: imageURL ?? '',
-                                title: title ?? '',
-                                description: description ?? '',
-                                location: location ?? '',
-                              ),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          child: ListTile(
-                            leading: imageURL != null
-                                ? Container(
-                                    width: 100,
-                                    height: 100,
-                                    child: Image.network(
-                                      imageURL,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  )
-                                : const SizedBox(),
-                            title: Text(title ?? 'No Title'),
-                            subtitle: Text(description ?? 'No Details'),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+          children: <Widget>[
+          Stack(
+            children: <Widget>[
+              Container(
+                height: 100,
+                width: 500,
+                decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white,
+                boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2), // Shadow color
+                  offset: Offset(0, 3), // Changes position of shadow
+                  blurRadius: 6, // Increases the blur of the shadow
+                  spreadRadius: 0, // Increases the size of the shadow
                 ),
               ],
-            );
-          } else if (snapshot.hasError) {
-            return const Text('Error retrieving data');
-          } else {
-            return const CircularProgressIndicator();
-          }
-        },
+                ),
+              ),
+              Center(
+                child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text("Jejak solat", style: TextStyle(fontSize: 11),),
+                    Text("Baca al-Quran", style: TextStyle(fontSize: 11),),
+                    Text("Pencapaian", style: TextStyle(fontSize: 11),),
+                    Text("Hubungi pakar", style: TextStyle(fontSize: 11),),
+                  ],
+                )
+                )
+                ,
+              )
+            ],
+          )
+      //   StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      //   stream: FirebaseFirestore.instance.collection('AllReports').snapshots(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.hasData) {
+      //       final reports = snapshot.data!.docs;
+      //       return Column(
+      //         crossAxisAlignment: CrossAxisAlignment.start,
+      //         children: [
+      //           const Padding(
+      //             padding: EdgeInsets.all(16.0),
+      //             child: Text(
+      //               'Latest Reports',
+      //               style: TextStyle(
+      //                 fontSize: 24,
+      //                 fontWeight: FontWeight.bold,
+      //               ),
+      //             ),
+      //           ),
+      //           Expanded(
+      //             child: ListView.builder(
+      //               itemCount: reports.length,
+      //               itemBuilder: (context, index) {
+      //                 final report = reports[index].data();
+      //                 final reportID = report['reportId'] as String?;
+      //                 final userID =
+      //                     report['userId'] as String?; // Handle null value
+      //                 final animalType =
+      //                     report['animalType'] as String?; // Handle null value
+      //                 final imageURL =
+      //                     report['imageURL'] as String?; // Handle null value
+      //                 final title =
+      //                     report['title'] as String?; // Handle null value
+      //                 final description =
+      //                     report['description'] as String?; // Handle null value
+      //                 final location =
+      //                     report['location'] as String?; // Handle null value
+
+      //                 return GestureDetector(
+      //                   onTap: () {
+      //                     // Navigate to details page and pass the report details
+      //                     Navigator.push(
+      //                       context,
+      //                       MaterialPageRoute(
+      //                         builder: (context) => ViewDetailsPage(
+      //                           reportID: reportID ?? '',
+      //                           userID: userID ?? '',
+      //                           animalType: animalType ?? '',
+      //                           imageURL: imageURL ?? '',
+      //                           title: title ?? '',
+      //                           description: description ?? '',
+      //                           location: location ?? '',
+      //                         ),
+      //                       ),
+      //                     );
+      //                   },
+      //                   child: Card(
+      //                     child: ListTile(
+      //                       leading: imageURL != null
+      //                           ? Container(
+      //                               width: 100,
+      //                               height: 100,
+      //                               child: Image.network(
+      //                                 imageURL,
+      //                                 fit: BoxFit.cover,
+      //                               ),
+      //                             )
+      //                           : const SizedBox(),
+      //                       title: Text(title ?? 'No Title'),
+      //                       subtitle: Text(description ?? 'No Details'),
+      //                     ),
+      //                   ),
+      //                 );
+      //               },
+      //             ),
+      //           ),
+      //         ],
+      //       );
+      //     } else if (snapshot.hasError) {
+      //       return const Text('Error retrieving data');
+      //     } else {
+      //       return const CircularProgressIndicator();
+      //     }
+      //   },
+      // ),
+          ],
+        ),
+        )
       ),
     );
   }
