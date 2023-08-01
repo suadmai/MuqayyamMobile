@@ -141,8 +141,6 @@ class _StudentState extends State<Student> {
           mainAxisAlignment: MainAxisAlignment.start,
 
           children: <Widget>[
-          Stack(
-            children: <Widget>[
               Container(
                 height: 100,
                 width: 500,
@@ -158,24 +156,44 @@ class _StudentState extends State<Student> {
                 ),
               ],
                 ),
-              ),
-              Center(
+                child: Center(
                 child: Padding(
                 padding: const EdgeInsets.all(20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text("Jejak solat", style: TextStyle(fontSize: 11),),
-                    Text("Baca al-Quran", style: TextStyle(fontSize: 11),),
-                    Text("Pencapaian", style: TextStyle(fontSize: 11),),
-                    Text("Hubungi pakar", style: TextStyle(fontSize: 11),),
+                    Column(
+                      children: [
+                        Icon(Icons.schedule_outlined, size: 25,),
+                        Text("Jejak solat", style: TextStyle(fontSize: 11),),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Icon(Icons.menu_book_outlined, size: 25,),
+                        Text("Baca al-Quran", style: TextStyle(fontSize: 11),),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Icon(Icons.badge_outlined, size: 25,),
+                        Text("Pencapaian", style: TextStyle(fontSize: 11),),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Icon(Icons.monitor_heart_outlined, size: 25,),
+                        Text("Hubungi pakar", style: TextStyle(fontSize: 11),),
+                      ],
+                    ),
                   ],
                 )
                 )
                 ,
               )
-            ],
-          )
+              ),
+            
+          Text("Maklumat terkini"),
       //   StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       //   stream: FirebaseFirestore.instance.collection('AllReports').snapshots(),
       //   builder: (context, snapshot) {
