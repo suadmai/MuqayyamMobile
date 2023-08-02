@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -153,43 +155,46 @@ class _StudentState extends State<Student> {
                   offset: Offset(0, 3), // Changes position of shadow
                   blurRadius: 6, // Increases the blur of the shadow
                   spreadRadius: 0, // Increases the size of the shadow
-                ),
-              ],
+                  ),
+                ],
                 ),
                 child: Center(
-                child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                  child: Row(
+                  child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                    child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
+                    children: [
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.schedule_outlined, size: 25,),
+                        IconButton(onPressed: (){}, icon: Icon(Icons.calendar_today_outlined, size: 25,)),
                         Text("Jejak solat", style: TextStyle(fontSize: 11),),
                       ],
                     ),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.menu_book_outlined, size: 25,),
-                        Text("Baca al-Quran", style: TextStyle(fontSize: 11),),
+                        IconButton(onPressed: (){}, icon: Icon(Icons.book_outlined, size: 25,)),
+                        Text("Baca al-Quran", style: TextStyle(fontSize: 10),),
                       ],
                     ),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.badge_outlined, size: 25,),
-                        Text("Pencapaian", style: TextStyle(fontSize: 11),),
+                        IconButton(onPressed: (){}, icon: Icon(Icons.star_border_outlined, size: 25,)),
+                        Text("Pencapaian", style: TextStyle(fontSize: 10),),
                       ],
                     ),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.monitor_heart_outlined, size: 25,),
-                        Text("Hubungi pakar", style: TextStyle(fontSize: 11),),
+                        IconButton(onPressed: (){}, icon: Icon(Icons.contact_emergency_outlined, size: 25,)),
+                        Text("Hubungi pakar", style: TextStyle(fontSize: 10),),
                       ],
                     ),
                   ],
                 )
-                )
-                ,
+                ),
               )
               ),
             
