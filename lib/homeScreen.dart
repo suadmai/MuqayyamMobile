@@ -53,8 +53,7 @@ class _StudentState extends State<Student> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        toolbarHeight: 100,
-        title: const Text("Selamat pagi Kak Jun!"),
+        title: const Text("Selamat pagi!"),
         actions: [
           IconButton(
             onPressed: () {
@@ -145,7 +144,6 @@ class _StudentState extends State<Student> {
           children: <Widget>[
               Container(
                 height: 100,
-                width: 500,
                 decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: Colors.white,
