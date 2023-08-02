@@ -51,6 +51,7 @@ class _StudentState extends State<Student> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Selamat pagi!"),
@@ -137,15 +138,17 @@ class _StudentState extends State<Student> {
       body: 
       Center(
         child: Padding(
-          padding: const EdgeInsets.all(25.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
 
           children: <Widget>[
-              Container(
+            Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Container(
                 height: 100,
                 decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(12),
                 color: Colors.white,
                 boxShadow: [
                 BoxShadow(
@@ -195,92 +198,128 @@ class _StudentState extends State<Student> {
                 ),
               )
               ),
+            ),
             
-          Text("Maklumat terkini"),
-      //   StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      //   stream: FirebaseFirestore.instance.collection('AllReports').snapshots(),
-      //   builder: (context, snapshot) {
-      //     if (snapshot.hasData) {
-      //       final reports = snapshot.data!.docs;
-      //       return Column(
-      //         crossAxisAlignment: CrossAxisAlignment.start,
-      //         children: [
-      //           const Padding(
-      //             padding: EdgeInsets.all(16.0),
-      //             child: Text(
-      //               'Latest Reports',
-      //               style: TextStyle(
-      //                 fontSize: 24,
-      //                 fontWeight: FontWeight.bold,
-      //               ),
-      //             ),
-      //           ),
-      //           Expanded(
-      //             child: ListView.builder(
-      //               itemCount: reports.length,
-      //               itemBuilder: (context, index) {
-      //                 final report = reports[index].data();
-      //                 final reportID = report['reportId'] as String?;
-      //                 final userID =
-      //                     report['userId'] as String?; // Handle null value
-      //                 final animalType =
-      //                     report['animalType'] as String?; // Handle null value
-      //                 final imageURL =
-      //                     report['imageURL'] as String?; // Handle null value
-      //                 final title =
-      //                     report['title'] as String?; // Handle null value
-      //                 final description =
-      //                     report['description'] as String?; // Handle null value
-      //                 final location =
-      //                     report['location'] as String?; // Handle null value
+        StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance.collection('AllPosts').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final posts = snapshot.data!.docs;
+            final postCount = posts.length;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Maklumat terkini',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 500,
+                  child: ListView.builder(
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) {
+                      final post = posts[index].data();
+                      final postID = post['postID'] as String?;
+                      final userID =
+                          post['userID'] as String?; // Handle null value
+                      // final imageURL =
+                      //     post['imageURL'] as String?;
+                      final title =
+                          post['title'] as String?; // Handle null value
+                      final description =
+                          post['description'] as String?; // Handle null value
 
-      //                 return GestureDetector(
-      //                   onTap: () {
-      //                     // Navigate to details page and pass the report details
-      //                     Navigator.push(
-      //                       context,
-      //                       MaterialPageRoute(
-      //                         builder: (context) => ViewDetailsPage(
-      //                           reportID: reportID ?? '',
-      //                           userID: userID ?? '',
-      //                           animalType: animalType ?? '',
-      //                           imageURL: imageURL ?? '',
-      //                           title: title ?? '',
-      //                           description: description ?? '',
-      //                           location: location ?? '',
-      //                         ),
-      //                       ),
-      //                     );
-      //                   },
-      //                   child: Card(
-      //                     child: ListTile(
-      //                       leading: imageURL != null
-      //                           ? Container(
-      //                               width: 100,
-      //                               height: 100,
-      //                               child: Image.network(
-      //                                 imageURL,
-      //                                 fit: BoxFit.cover,
-      //                               ),
-      //                             )
-      //                           : const SizedBox(),
-      //                       title: Text(title ?? 'No Title'),
-      //                       subtitle: Text(description ?? 'No Details'),
-      //                     ),
-      //                   ),
-      //                 );
-      //               },
-      //             ),
-      //           ),
-      //         ],
-      //       );
-      //     } else if (snapshot.hasError) {
-      //       return const Text('Error retrieving data');
-      //     } else {
-      //       return const CircularProgressIndicator();
-      //     }
-      //   },
-      // ),
+                      // return GestureDetector(
+                      //   onTap: () {
+                      //     // Navigate to details page and pass the report details
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         builder: (context) => ViewDetailsPage(
+                      //           reportID: reportID ?? '',
+                      //           userID: userID ?? '',
+                      //           animalType: animalType ?? '',
+                      //           imageURL: imageURL ?? '',
+                      //           title: title ?? '',
+                      //           description: description ?? '',
+                      //           location: location ?? '',
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                        //child: 
+                        return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        color: Colors.white,
+                        elevation: 3,
+                        child: ListTile(
+                          contentPadding: EdgeInsets.all(16),
+                          leading: 
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                            CircleAvatar(
+                            radius: 12,
+                            // You can use the user's profile image here
+                            backgroundColor: Colors.blue, // You can set the profile image's background color
+                            child: Icon(
+                              Icons.person,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child:Text("Dr Shamsul", style: TextStyle(fontSize: 12)),
+                            ),
+                           
+                          ],
+                          ),
+                          title: Text(
+                            title ?? 'No Title',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 4),
+                              Text(
+                                description ?? 'No Details',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'By: $userID',
+                                style: TextStyle(fontSize: 12, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                      //);
+                    },
+                  ),
+                ),
+              ],
+            );
+          } else if (snapshot.hasError) {
+            return ErrorWidget(snapshot.error!);
+          } else {
+            return const CircularProgressIndicator();
+          }
+        },
+      ),
           ],
         ),
         )
