@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:wildlifego/TrackPrayer.dart';
 
 List<CameraDescription> cameras = [];
 List<Widget> imageWidgets = [];
@@ -51,7 +52,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primaryColor: const Color.fromARGB(255, 51, 55, 85),
       ),
-      //home: const Register(),
+      home: const TrackPrayer(),
     );
   }
 }
