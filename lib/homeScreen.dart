@@ -122,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(25.0),
+              padding: const EdgeInsets.all(8.0),
               child: Container(
                 height: 100,
                 decoration: BoxDecoration(
@@ -146,29 +146,29 @@ class _HomeScreenState extends State<HomeScreen> {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        IconButton(onPressed: (){}, icon: Icon(Icons.calendar_today_outlined, size: 25,)),
-                        Text("Jejak solat", style: TextStyle(fontSize: 11),),
+                        IconButton(onPressed: (){}, icon: Icon(Icons.mosque_rounded, size: 32,)),
+                        Text("Jejak solat", style: TextStyle(fontSize: 12),),
                       ],
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        IconButton(onPressed: (){}, icon: Icon(Icons.book_outlined, size: 25,)),
-                        Text("Baca al-Quran", style: TextStyle(fontSize: 10),),
+                        IconButton(onPressed: (){}, icon: Icon(Icons.import_contacts_rounded, size: 32,)),
+                        Text("Baca al-Quran", style: TextStyle(fontSize: 12),),
                       ],
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        IconButton(onPressed: (){}, icon: Icon(Icons.star_border_outlined, size: 25,)),
-                        Text("Pencapaian", style: TextStyle(fontSize: 10),),
+                        IconButton(onPressed: (){}, icon: Icon(Icons.star_rounded, size: 32,)),
+                        Text("Pencapaian", style: TextStyle(fontSize: 12),),
                       ],
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        IconButton(onPressed: (){}, icon: Icon(Icons.contact_emergency_outlined, size: 25,)),
-                        Text("Hubungi pakar", style: TextStyle(fontSize: 10),),
+                        IconButton(onPressed: (){}, icon: Icon(Icons.contact_support_rounded, size: 32,)),
+                        Text("Hubungi pakar", style: TextStyle(fontSize: 12),),
                       ],
                     ),
                   ],
@@ -187,6 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 12),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(
@@ -289,6 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Text(
                           '$description',
                           style: TextStyle(fontSize: 14),
+                          maxLines: 10,
                         ),
                           ]
                         ),
