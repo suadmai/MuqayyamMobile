@@ -3,12 +3,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
 
-class Student extends StatefulWidget {
-  const Student({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
   @override
-  State<Student> createState() => _StudentState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 // Future<void> logout(BuildContext context) async {
@@ -21,31 +20,10 @@ class Student extends StatefulWidget {
 //   );
 // }
 
-class _StudentState extends State<Student> {
-  late List<CameraDescription> cameras;
-  late CameraController _cameraController;
-  bool _isCameraInitialized = false;
+class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    initializeCamera();
-  }
-
-  Future<void> initializeCamera() async {
-    cameras = await availableCameras();
-    _cameraController =
-        CameraController(cameras[0], ResolutionPreset.medium);
-    await _cameraController.initialize();
-    if (!mounted) return;
-    setState(() {
-      _isCameraInitialized = true;
-    });
-  }
-
-  @override
-  void dispose() {
-    _cameraController.dispose();
-    super.dispose();
   }
 
   @override
@@ -97,7 +75,7 @@ class _StudentState extends State<Student> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Student(),
+                      builder: (context) => const HomeScreen(),
                     ),
                   );
                 },
@@ -226,14 +204,12 @@ class _StudentState extends State<Student> {
                     itemBuilder: (context, index) {
                       final post = posts[index].data();
                       final postID = post['postID'] as String?;
-                      final userID =
-                          post['userID'] as String?; // Handle null value
+                      final userID = post['userID'] as String?; // Handle null value
                       // final imageURL =
                       //     post['imageURL'] as String?;
-                      final title =
-                          post['title'] as String?; // Handle null value
-                      final description =
-                          post['description'] as String?; // Handle null value
+                      final title = post['title'] as String?; // Handle null value
+                      final description = post['description'] as String?; // Handle null value
+                      final date = post["date"] as String?;
 
                       // return GestureDetector(
                       //   onTap: () {
@@ -260,51 +236,62 @@ class _StudentState extends State<Student> {
                         ),
                         color: Colors.white,
                         elevation: 3,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.all(16),
-                          leading: 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                            CircleAvatar(
-                            radius: 12,
-                            // You can use the user's profile image here
-                            backgroundColor: Colors.blue, // You can set the profile image's background color
-                            child: Icon(
-                              Icons.person,
-                              size: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child:Text("Dr Shamsul", style: TextStyle(fontSize: 12)),
-                            ),
-                           
-                          ],
-                          ),
-                          title: Text(
-                            title ?? 'No Title',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: Column(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children:[
+                            Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(height: 4),
-                              Text(
-                                description ?? 'No Details',
-                                style: TextStyle(fontSize: 14),
+                              CircleAvatar(
+                                radius: 12,
+                                backgroundColor: Colors.blue, // Set the profile image's background color
+                                child: Icon(
+                                  Icons.person,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
                               ),
-                              SizedBox(height: 8),
-                              Text(
-                                'By: $userID',
-                                style: TextStyle(fontSize: 12, color: Colors.grey),
+                              SizedBox(width: 8), // Add some space between the profile image and the name
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                    Text(
+                                      '$userID', // Replace with the user's name
+                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                      ),
+                                      //SizedBox(height: 8),
+                                      Text(
+                                      "$date", // Replace with the user's name
+                                      style: TextStyle(fontSize: 12),
+                                      ),
+                                      SizedBox(height: 12),
+                                    ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
+                          Text(
+                          '$title',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 4), // Add some space between the title and the description
+                        Text(
+                          '$description',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                          ]
+                        ),
                         ),
                       );
                       //);

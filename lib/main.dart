@@ -53,7 +53,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primaryColor: const Color.fromARGB(255, 51, 55, 85),
       ),
-      home: const Student(),
+      home: const HomeScreen(),
     );
   }
 }
