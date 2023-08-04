@@ -113,25 +113,95 @@ class _TrackPrayerState extends State<TrackPrayer> {
           ),
         ),
       ),
-      body:  Center(
-      child: Column(
+      body: Stack(
         children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0)
-          
+          Center(
+          child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+          Container(
+            width: 250,
+            height: 250,
+            child: Center(child: Text("Mula", style: TextStyle(fontSize: 25, color: Colors.white),)),
+            decoration: 
+                BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(0xFF82618B),
+                ),
+            ),
+            ],
           ),
-        Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.blue,
+        ),
+        Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Container(
+              height: 80,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    offset: Offset(0, 3),
+                    blurRadius: 6,
+                    spreadRadius: 0,
+                  ),
+                ],
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.check_circle, size: 32,),
+                          SizedBox(height: 3,),
+                          Text("Subuh", style: TextStyle(fontSize: 12),),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.check_circle, size: 32,),
+                          SizedBox(height: 3,),
+                          Text("Zohor", style: TextStyle(fontSize: 12),),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.check_circle, size: 32,),
+                          SizedBox(height: 3,),
+                          Text("Asar", style: TextStyle(fontSize: 12),),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.check_circle, size: 32,),
+                          SizedBox(height: 3,),
+                          Text("Maghrib", style: TextStyle(fontSize: 12),),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.check_circle, size: 32,),
+                          SizedBox(height: 3,),
+                          Text("Isyak", style: TextStyle(fontSize: 12),),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
-        ],
+      ],
       )
-),
-
     );
   }
 }
