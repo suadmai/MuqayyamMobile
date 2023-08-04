@@ -3,9 +3,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+
 
 class TrackPrayer extends StatefulWidget {
   const TrackPrayer({Key? key}) : super(key: key);
+  
   @override
   State<TrackPrayer> createState() => _TrackPrayerState();
 }
@@ -20,10 +23,42 @@ class TrackPrayer extends StatefulWidget {
 //   );
 // }
 
-class _TrackPrayerState extends State<TrackPrayer> {
-  @override
-  void initState() {
+class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin{
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  bool isTimerRunning = false;
+  Timer? _timer;
+  int _timerSeconds = 0;
+
+   @override
+    void initState() {
     super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(minutes: 1), // Adjust the duration as needed
+    );
+
+    _animation = Tween<double>(begin: 0, end: 60).animate(_animationController)
+      ..addListener(() {
+        setState(() {
+          _timerSeconds = _animation.value.toInt();
+        });
+      });
+  }
+
+  void _startTimer() {
+    _animationController.forward(from: 0);
+  }
+
+  void _stopTimer() {
+    _animationController.stop();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -119,16 +154,54 @@ class _TrackPrayerState extends State<TrackPrayer> {
           child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-          Container(
-            width: 250,
-            height: 250,
-            child: Center(child: Text("Mula", style: TextStyle(fontSize: 25, color: Colors.white),)),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                isTimerRunning = !isTimerRunning;
+                if (isTimerRunning) {
+                  _startTimer();
+                } else {
+                  _stopTimer();
+                }
+              });
+            },
+            child: Container(
+            width: 300,
+            height: 300,
             decoration: 
                 BoxDecoration(
                 shape: BoxShape.circle,
                 color: Color(0xFF82618B),
                 ),
+                child: Center(
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: Text(
+                        isTimerRunning ? "$_timerSeconds seconds" : "Mula",
+                        style: TextStyle(fontSize: 25, color: Colors.white),
+                        ),
+                      ),
+
+                      Center(
+                        child: 
+                        SizedBox(
+                          height: 270,
+                          width: 270,
+                          child: CircularProgressIndicator(
+                            value: _animation.value / 60,
+                            backgroundColor:Colors.white,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
+                            strokeWidth: 10,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
             ),
+          )
             ],
           ),
         ),
