@@ -3,7 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:adhan_dart/adhan_dart.dart';
 
 
 class TrackPrayer extends StatefulWidget {
@@ -23,12 +23,18 @@ class TrackPrayer extends StatefulWidget {
 //   );
 // }
 
-class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin{
+class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
   bool isTimerRunning = false;
-  Timer? _timer;
   int _timerSeconds = 0;
+  final Duration animationDuration = Duration(minutes: 5);
+
+  late PrayerTimes prayerTimes;
+  
+  var coordinates = new Coordinates(3.1390, 101.6869);
+  DateTime date = new DateTime.now();
+  CalculationParameters params = CalculationMethod.MuslimWorldLeague();
 
    @override
     void initState() {
@@ -36,23 +42,36 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(minutes: 1), // Adjust the duration as needed
+      duration: animationDuration, // Adjust the duration as needed
     );
 
-    _animation = Tween<double>(begin: 0, end: 60).animate(_animationController)
-      ..addListener(() {
-        setState(() {
-          _timerSeconds = _animation.value.toInt();
-        });
-      });
+    _animation = Tween<double>(begin: 0, end: animationDuration.inSeconds.toDouble())
+        .animate(_animationController)
+          ..addListener(() {
+            setState(() {
+              _timerSeconds = _animation.value.toInt();
+            });
+          });
   }
 
   void _startTimer() {
-    _animationController.forward(from: 0);
+    _animationController.reverse(from: animationDuration.inSeconds.toDouble());
   }
 
   void _stopTimer() {
     _animationController.stop();
+  }
+
+  String displayMinute(){
+    int minute = _timerSeconds ~/ 60;
+    int second = _timerSeconds % 60;
+    String minuteStr = minute.toString().padLeft(2, '0');
+    String secondStr = second.toString().padLeft(2, '0');
+    return '$minuteStr:$secondStr';
+  }
+
+  double calculateProgress() {
+    return 1 - (_animation.value / animationDuration.inSeconds.toDouble());
   }
 
   @override
@@ -90,9 +109,9 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                   //CameraPage(cameraController: _cameraController),
             //),
           //);
-        },
-        child: const Icon(Icons.podcasts), 
+        }, 
         backgroundColor: Color(0xFF82618B),
+        child: const Icon(Icons.podcasts),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
@@ -178,7 +197,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                     children: [
                       Center(
                         child: Text(
-                        isTimerRunning ? "$_timerSeconds seconds" : "Mula",
+                        isTimerRunning ? displayMinute() : "Mula",
                         style: TextStyle(fontSize: 25, color: Colors.white),
                         ),
                       ),
@@ -189,7 +208,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                           height: 270,
                           width: 270,
                           child: CircularProgressIndicator(
-                            value: _animation.value / 60,
+                            value: isTimerRunning ? calculateProgress() : 0.0,
                             backgroundColor:Colors.white,
                             valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
                             strokeWidth: 10,
