@@ -3,7 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:adhan_dart/adhan_dart.dart';
+import 'dart:async';
 
 
 class TrackPrayer extends StatefulWidget {
@@ -29,16 +29,14 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   bool isTimerRunning = false;
   int _timerSeconds = 0;
   final Duration animationDuration = Duration(minutes: 5);
-
-  late PrayerTimes prayerTimes;
-  
-  var coordinates = new Coordinates(3.1390, 101.6869);
-  DateTime date = new DateTime.now();
-  CalculationParameters params = CalculationMethod.MuslimWorldLeague();
+  var current;
+  var next;
+  var nextPrayerTime;
 
    @override
     void initState() {
     super.initState();
+
 
     _animationController = AnimationController(
       vsync: this,
