@@ -29,14 +29,22 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   bool isTimerRunning = false;
   int _timerSeconds = 0;
   final Duration animationDuration = Duration(minutes: 5);
-  var current;
-  var next;
-  var nextPrayerTime;
 
+  DateTime subuhTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 6, 0);
+  DateTime zuhurTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 19);
+  DateTime asarTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 16, 39);
+  DateTime maghribTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 24);
+  DateTime isyakTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 20, 36);
+
+  bool subuhPrayed = false;
+  bool zuhurPrayed = false;
+  bool asarPrayed = false;
+  bool maghribPrayed = false;
+  bool isyakPrayed = false;
+  
    @override
     void initState() {
     super.initState();
-
 
     _animationController = AnimationController(
       vsync: this,
@@ -48,6 +56,13 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
           ..addListener(() {
             setState(() {
               _timerSeconds = _animation.value.toInt();
+            
+          //   if (_animation.isCompleted) {
+          //   performPrayer();
+          // }
+          if(_animation.isDismissed){
+            performPrayer();
+          }
             });
           });
   }
@@ -58,6 +73,48 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
   void _stopTimer() {
     _animationController.stop();
+  }
+
+  String currentPrayer(){
+  DateTime now = DateTime.now();
+  if(now.isBefore(subuhTime)){
+    return "Subuh";
+  }
+  else if(now.isBefore(zuhurTime)){
+    return "Zuhur";
+  }
+  else if(now.isBefore(asarTime)){
+    return "Asar";
+  }
+  else if(now.isBefore(maghribTime)){
+    return "Maghrib";
+  }
+  else if(now.isBefore(isyakTime)){
+    return "Isyak";
+  }
+  else{
+    return "Subuh";
+  }
+}
+
+  void performPrayer(){
+    String currentPrayer = this.currentPrayer();
+    
+    if(currentPrayer == "Subuh"){
+      subuhPrayed = true;
+    }
+    else if(currentPrayer == "Zuhur"){
+      zuhurPrayed = true;
+    }
+    else if(currentPrayer == "Asar"){
+      asarPrayed = true;
+    }
+    else if(currentPrayer == "Maghrib"){
+      maghribPrayed = true;
+    }
+    else if(currentPrayer == "Isyak"){
+      isyakPrayed = true;
+    }
   }
 
   String displayMinute(){
@@ -195,7 +252,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                     children: [
                       Center(
                         child: Text(
-                        isTimerRunning ? displayMinute() : "Mula",
+                        isTimerRunning ? displayMinute() : "Mula solat ${currentPrayer()}",
                         style: TextStyle(fontSize: 25, color: Colors.white),
                         ),
                       ),
@@ -247,7 +304,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.check_circle, size: 32,),
+                          Icon(Icons.check_circle, size: 32, color: subuhPrayed ? Colors.green : Colors.grey,),
                           SizedBox(height: 3,),
                           Text("Subuh", style: TextStyle(fontSize: 12),),
                         ],
@@ -255,7 +312,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.check_circle, size: 32,),
+                          Icon(Icons.check_circle, size: 32, color: zuhurPrayed ? Colors.green : Colors.grey,),
                           SizedBox(height: 3,),
                           Text("Zohor", style: TextStyle(fontSize: 12),),
                         ],
@@ -263,7 +320,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.check_circle, size: 32,),
+                          Icon(Icons.check_circle, size: 32, color: asarPrayed ? Colors.green : Colors.grey,),
                           SizedBox(height: 3,),
                           Text("Asar", style: TextStyle(fontSize: 12),),
                         ],
@@ -271,7 +328,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.check_circle, size: 32,),
+                          Icon(Icons.check_circle, size: 32, color: maghribPrayed ? Colors.green : Colors.grey,),
                           SizedBox(height: 3,),
                           Text("Maghrib", style: TextStyle(fontSize: 12),),
                         ],
@@ -279,7 +336,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.check_circle, size: 32,),
+                          Icon(Icons.check_circle, size: 32, color: isyakPrayed ? Colors.green : Colors.grey,),
                           SizedBox(height: 3,),
                           Text("Isyak", style: TextStyle(fontSize: 12),),
                         ],
