@@ -5,6 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+class Prayer{
+  String prayerName = "";
+  DateTime prayerTime = DateTime.now();
+  String prayerStatus = "false";
+}
 
 class TrackPrayer extends StatefulWidget {
   const TrackPrayer({Key? key}) : super(key: key);
@@ -30,30 +35,30 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   int _timerSeconds = 0;
   final Duration animationDuration = Duration(seconds: 5);
 
-  DateTime subuhTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 6, 0);
-  DateTime syurukTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 7, 09);
-  DateTime zuhurTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 19);
-  DateTime asarTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 16, 39);
-  DateTime maghribTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 24);
-  DateTime isyakTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 20, 36);
+  Prayer subuh = Prayer()..prayerName = "Subuh"..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 6, 0,)..prayerStatus = "false";
+  Prayer syuruk = Prayer()..prayerName = "Syuruk"..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 7, 09)..prayerStatus = "false";
+  Prayer zuhur = Prayer()..prayerName = "Zuhur"..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 19)..prayerStatus = "false";
+  Prayer asar = Prayer()..prayerName = "Asar"..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 16, 39)..prayerStatus = "false";
+  Prayer maghrib = Prayer()..prayerName = "Maghrib"..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 24)..prayerStatus = "false";
+  Prayer isyak = Prayer()..prayerName = "Isyak"..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 20, 36)..prayerStatus = "false";
 
-  bool subuhPrayed = false;
-  bool zuhurPrayed = false;
-  bool asarPrayed = false;
-  bool maghribPrayed = false;
-  bool isyakPrayed = false;
+  // DateTime subuhTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 6, 0);
+  // DateTime syurukTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 7, 09);
+  // DateTime zuhurTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 19);
+  // DateTime asarTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 16, 39);
+  // DateTime maghribTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 24);
+  // DateTime isyakTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 20, 36);
 
-  String subuhStatus = "false"; //false = inactive, true = prayed, current = current prayer, missed = missed prayer
-  String zuhurStatus = "false";
-  String asarStatus = "false";
-  String maghribStatus = "false";
-  String isyakStatus = "false";
+  // String subuhStatus = "false"; //false = inactive, true = prayed, current = current prayer, missed = missed prayer
+  // String zuhurStatus = "false";
+  // String asarStatus = "false";
+  // String maghribStatus = "false";
+  // String isyakStatus = "false";
 
-  
    @override
     void initState() {
     super.initState();
-
+    checkForMissedPrayers();
     _animationController = AnimationController(
       vsync: this,
       duration: animationDuration, // Adjust the duration as needed
@@ -85,50 +90,75 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
   String currentPrayer(){
   DateTime now = DateTime.now();
-  if(now.isAfter(subuhTime) && now.isBefore(syurukTime)){
+  if(now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)){
+    subuh.prayerStatus = "current";
     return "Subuh";
   }
-  else if(now.isAfter(zuhurTime) && now.isBefore(asarTime)){
+  else if(now.isAfter(syuruk.prayerTime) && now.isBefore(zuhur.prayerTime)){
+    zuhur.prayerStatus = "current";
     return "Zuhur";
   }
-  else if(now.isAfter(asarTime) && now.isBefore(maghribTime)){
+  else if(now.isAfter(asar.prayerTime) && now.isBefore(maghrib.prayerTime)){
+    asar.prayerStatus = "current";
     return "Asar";
   }
-  else if(now.isAfter(maghribTime) && now.isBefore(isyakTime)){
+  else if(now.isAfter(maghrib.prayerTime) && now.isBefore(isyak.prayerTime)){
+    maghrib.prayerStatus = "current";
     return "Maghrib";
   }
-  else if(now.isAfter(isyakTime) || now.isBefore(subuhTime)){
+  else if(now.isAfter(isyak.prayerTime) || now.isBefore(subuh.prayerTime)){
+    isyak.prayerStatus = "current";
     return "Isyak";
   }
   else{
+    syuruk.prayerStatus = "current";
     return "Syuruk";
   }
 }
+
+  void checkForMissedPrayers(){
+    List prayers = [subuh, zuhur, asar, maghrib, isyak];
+
+    for(int i=0; i<3; i++){
+      if(prayers[i+1].prayerStatus == "current" && prayers[i].prayerStatus == "false"){
+        prayers[i].prayerStatus = "missed";
+      }
+      else if(prayers[i+1].prayerStatus == "false"){
+        break;
+      }
+    }
+  }
 
   void performPrayer(){
     String currentPrayer = this.currentPrayer();
     
     if(currentPrayer == "Subuh"){
-      subuhStatus = "true";
-      subuhPrayed = true;
+      subuh.prayerStatus = "true";
     }
     else if(currentPrayer == "Zuhur"){
-      zuhurStatus = "true";
-      zuhurPrayed = true;
+      zuhur.prayerStatus = "true";
     }
     else if(currentPrayer == "Asar"){
-      asarStatus = "true";
-      asarPrayed = true;
+      zuhur.prayerStatus = "true";
     }
     else if(currentPrayer == "Maghrib"){
-      maghribStatus = "true";
-      maghribPrayed = true;
+      maghrib.prayerStatus = "true";
     }
     else if(currentPrayer == "Isyak"){
-      isyakStatus = "true";
-      isyakPrayed = true;
+      isyak.prayerStatus = "true";
     }
   }
+
+  IconData getPrayerIcon(String status) {
+  switch (status) {
+    case "true":
+      return Icons.check_circle;
+    case "missed":
+      return Icons.cancel; // Missed (chosen icon for missed prayers)
+    default:
+      return Icons.check_circle; // Inactive (grey)
+  }
+}
 
   String displayMinute(){
     int minute = _timerSeconds ~/ 60;
@@ -318,11 +348,11 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.check_circle,
+                            getPrayerIcon(subuh.prayerStatus),
                             size: 32,
-                            color : (subuhStatus == "true") ? Colors.green // Prayed (green)
-                                  : (currentPrayer() == "Subuh") ? Colors.blue // Ongoing (blue)
-                                  : (subuhStatus == "missed") ? Colors.red // Missed (red)
+                            color : (subuh.prayerStatus == "true") ? Colors.green // Prayed (green)
+                                  : (subuh.prayerStatus == "current") ? Colors.blue // Ongoing (blue)
+                                  : (subuh.prayerStatus == "missed") ? Colors.red // Missed (red)
                                   : Colors.grey, // Inactive (grey)
                           ),
                           SizedBox(height: 3,),
@@ -332,11 +362,12 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.check_circle, 
+                          Icon(
+                          getPrayerIcon(zuhur.prayerStatus),
                           size: 32, 
-                          color : (zuhurStatus == "true")? Colors.green
-                                : (currentPrayer() == "Zuhur") ? Colors.blue
-                                : (zuhurStatus == "missed") ? Colors.red
+                          color : (zuhur.prayerStatus == "true")? Colors.green
+                                : (zuhur.prayerStatus == "current") ? Colors.blue
+                                : (zuhur.prayerStatus == "missed") ? Colors.red
                                 : Colors.grey,
                           ),
                           SizedBox(height: 3,),
@@ -346,11 +377,12 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.check_circle, 
+                          Icon(
+                          getPrayerIcon(asar.prayerStatus),
                           size: 32, 
-                          color : (asarStatus == "true")? Colors.green
-                                : (currentPrayer() == "Asar") ? Colors.blue
-                                : (asarStatus == "missed") ? Colors.red
+                          color : (asar.prayerStatus == "true")? Colors.green
+                                : (asar.prayerStatus == "current") ? Colors.blue
+                                : (asar.prayerStatus == "missed") ? Colors.red
                                 : Colors.grey,
                           ),
                           SizedBox(height: 3,),
@@ -360,11 +392,12 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.check_circle, 
+                          Icon(
+                          getPrayerIcon(maghrib.prayerStatus), 
                           size: 32, 
-                          color : (maghribStatus == "true")? Colors.green
-                                : (currentPrayer() == "Maghrib") ? Colors.blue
-                                : (maghribStatus == "missed") ? Colors.red
+                          color : (maghrib.prayerStatus == "true")? Colors.green
+                                : (maghrib.prayerStatus == "current") ? Colors.blue
+                                : (maghrib.prayerStatus == "missed") ? Colors.red
                                 : Colors.grey,
                           ),
                           SizedBox(height: 3,),
@@ -374,11 +407,12 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.check_circle, 
+                          Icon(
+                          getPrayerIcon(isyak.prayerStatus),
                           size: 32, 
-                          color : (isyakStatus == "true")? Colors.green
-                                : (currentPrayer() == "Isyak") ? Colors.blue
-                                : (isyakStatus == "missed") ? Colors.red
+                          color : (isyak.prayerStatus == "true")? Colors.green
+                                : (isyak.prayerStatus == "current") ? Colors.blue
+                                : (isyak.prayerStatus == "missed") ? Colors.red
                                 : Colors.grey,
                           ),
                           SizedBox(height: 3,),
