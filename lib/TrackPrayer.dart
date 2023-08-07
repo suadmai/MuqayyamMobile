@@ -119,13 +119,14 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   void checkForMissedPrayers(){
     List prayers = [subuh, zuhur, asar, maghrib, isyak];
 
-    for(int i=0; i<3; i++){
-      if(prayers[i+1].prayerStatus == "current" && prayers[i].prayerStatus == "false"){
-        prayers[i].prayerStatus = "missed";
-      }
-      else if(prayers[i+1].prayerStatus == "false"){
-        break;
-      }
+    for(int i=0; i<4; i++){
+      // if(prayers[i+1].prayerStatus == "current" && prayers[i].prayerStatus == "false"){
+      //   prayers[i].prayerStatus = "missed";
+      // }
+      // else if(prayers[i+1].prayerStatus == "false"){
+      //   break;
+      // }
+      prayers[i].prayerStatus = "current";//for testing purposes
     }
   }
 
