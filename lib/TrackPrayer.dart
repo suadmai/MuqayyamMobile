@@ -35,13 +35,37 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   int _timerSeconds = 0;
   final Duration animationDuration = Duration(seconds: 5);
 
-  Prayer subuh = Prayer()..prayerName = "Subuh"..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 6, 0,)..prayerStatus = "false";
-  Prayer syuruk = Prayer()..prayerName = "Syuruk"..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 7, 09)..prayerStatus = "false";
-  Prayer zuhur = Prayer()..prayerName = "Zuhur"..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 19)..prayerStatus = "false";
-  Prayer asar = Prayer()..prayerName = "Asar"..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 16, 39)..prayerStatus = "false";
-  Prayer maghrib = Prayer()..prayerName = "Maghrib"..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 24)..prayerStatus = "false";
-  Prayer isyak = Prayer()..prayerName = "Isyak"..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 20, 36)..prayerStatus = "false";
+  Prayer subuh = Prayer()
+                ..prayerName = "Subuh"
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 6, 0,)
+                ..prayerStatus = "false";
 
+  Prayer syuruk = Prayer()
+                ..prayerName = "Syuruk"
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 7, 09)
+                ..prayerStatus = "false";
+
+  Prayer zuhur = Prayer()
+                ..prayerName = "Zuhur"
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 19)
+                ..prayerStatus = "false";
+
+  Prayer asar = Prayer()
+                ..prayerName = "Asar"
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 16, 39)
+                ..prayerStatus = "false";
+
+  Prayer maghrib = Prayer()
+                ..prayerName = "Maghrib"
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 24)
+                ..prayerStatus = "false";
+
+  Prayer isyak = Prayer()
+                ..prayerName = "Isyak"
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 20, 36)
+                ..prayerStatus = "false";
+
+  //just in case we need to use later
   // DateTime subuhTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 6, 0);
   // DateTime syurukTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 7, 09);
   // DateTime zuhurTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 19);
@@ -95,6 +119,10 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     return "Subuh";
   }
   else if(now.isAfter(syuruk.prayerTime) && now.isBefore(zuhur.prayerTime)){
+    syuruk.prayerStatus = "current";
+    return "Syuruk";
+  }
+  else if(now.isAfter(zuhur.prayerTime) && now.isBefore(asar.prayerTime)){
     zuhur.prayerStatus = "current";
     return "Zuhur";
   }
@@ -110,23 +138,22 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     isyak.prayerStatus = "current";
     return "Isyak";
   }
-  else{
+  else {
     syuruk.prayerStatus = "current";
     return "Syuruk";
   }
 }
 
   void checkForMissedPrayers(){
-    List prayers = [subuh, zuhur, asar, maghrib, isyak];
+    List prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
 
-    for(int i=0; i<4; i++){
-      // if(prayers[i+1].prayerStatus == "current" && prayers[i].prayerStatus == "false"){
-      //   prayers[i].prayerStatus = "missed";
-      // }
-      // else if(prayers[i+1].prayerStatus == "false"){
-      //   break;
-      // }
-      prayers[i].prayerStatus = "current";//for testing purposes
+    for(int i=0; i<prayers.length; i++){
+      if(prayers[i].prayerName == currentPrayer()){//if current prayer, break
+      break;
+      }
+      if(prayers[i].prayerStatus != "current" && prayers[i].prayerStatus != "true"){
+        prayers[i].prayerStatus = "missed";
+      }
     }
   }
 
@@ -140,7 +167,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
       zuhur.prayerStatus = "true";
     }
     else if(currentPrayer == "Asar"){
-      zuhur.prayerStatus = "true";
+      asar.prayerStatus = "true";
     }
     else if(currentPrayer == "Maghrib"){
       maghrib.prayerStatus = "true";
