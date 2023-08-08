@@ -62,121 +62,142 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
   Prayer isyak = Prayer()
                 ..prayerName = "Isyak"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 20, 36)
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 20, 36,)
                 ..prayerStatus = "false";
-
-  //just in case we need to use later
-  // DateTime subuhTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 6, 0);
-  // DateTime syurukTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 7, 09);
-  // DateTime zuhurTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 19);
-  // DateTime asarTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 16, 39);
-  // DateTime maghribTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 24);
-  // DateTime isyakTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 20, 36);
-
-  // String subuhStatus = "false"; //false = inactive, true = prayed, current = current prayer, missed = missed prayer
-  // String zuhurStatus = "false";
-  // String asarStatus = "false";
-  // String maghribStatus = "false";
-  // String isyakStatus = "false";
 
    @override
     void initState() {
     super.initState();
+    setCurrentPrayer();
     checkForMissedPrayers();
     _animationController = AnimationController(
       vsync: this,
       duration: animationDuration, // Adjust the duration as needed
     );
 
-    _animation = Tween<double>(begin: 0, end: animationDuration.inSeconds.toDouble())
-        .animate(_animationController)
-          ..addListener(() {
-            setState(() {
-              _timerSeconds = _animation.value.toInt();
-            
-          //   if (_animation.isCompleted) {
-          //   performPrayer();
-          // }
-          if(_animation.isDismissed){
+      _animation = Tween<double>(begin: 0, end: animationDuration.inSeconds.toDouble())
+      .animate(_animationController)
+        ..addListener(() {
+          setState(() {
+            _timerSeconds = _animation.value.toInt();
+          });
+
+          if (_animation.isDismissed) {
+            isTimerRunning = false;
+            _stopTimer();
             performPrayer();
           }
-            });
-          });
-  }
+        });
+    }
 
   void _startTimer() {
+  setState(() {
     _animationController.reverse(from: animationDuration.inSeconds.toDouble());
-  }
+  });
+}
 
   void _stopTimer() {
-    _animationController.stop();
+    setState(() {
+      _animationController.stop();
+    });
+  }
+
+  void setCurrentPrayer(){
+    setState(() {
+      String currentPrayerName = currentPrayer();
+      List prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
+      prayers.firstWhere((prayer) => prayer.prayerName == currentPrayerName).prayerStatus = "current";
+    });
   }
 
   String currentPrayer(){
   DateTime now = DateTime.now();
   if(now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)){
-    subuh.prayerStatus = "current";
     return "Subuh";
   }
   else if(now.isAfter(syuruk.prayerTime) && now.isBefore(zuhur.prayerTime)){
-    syuruk.prayerStatus = "current";
     return "Syuruk";
   }
   else if(now.isAfter(zuhur.prayerTime) && now.isBefore(asar.prayerTime)){
-    zuhur.prayerStatus = "current";
     return "Zuhur";
   }
   else if(now.isAfter(asar.prayerTime) && now.isBefore(maghrib.prayerTime)){
-    asar.prayerStatus = "current";
     return "Asar";
   }
   else if(now.isAfter(maghrib.prayerTime) && now.isBefore(isyak.prayerTime)){
-    maghrib.prayerStatus = "current";
     return "Maghrib";
   }
   else if(now.isAfter(isyak.prayerTime) || now.isBefore(subuh.prayerTime)){
-    isyak.prayerStatus = "current";
     return "Isyak";
   }
   else {
-    syuruk.prayerStatus = "current";
     return "Syuruk";
   }
 }
 
-  void checkForMissedPrayers(){
-    List prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
+  String timeTillNextPrayer(String currentPrayer){
 
-    for(int i=0; i<prayers.length; i++){
-      if(prayers[i].prayerName == currentPrayer()){//if current prayer, break
-      break;
-      }
-      if(prayers[i].prayerStatus != "current" && prayers[i].prayerStatus != "true"){
-        prayers[i].prayerStatus = "missed";
-      }
-    }
-  }
-
-  void performPrayer(){
-    String currentPrayer = this.currentPrayer();
+  List<Prayer> prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
+  
+  int currentIndex = prayers.indexWhere((prayer) => prayer.prayerName == currentPrayer);
+  
+  if (currentIndex >= 0 && currentIndex < prayers.length - 1) {
+    Prayer nextPrayer = prayers[currentIndex + 1];
+    Duration timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
     
-    if(currentPrayer == "Subuh"){
-      subuh.prayerStatus = "true";
-    }
-    else if(currentPrayer == "Zuhur"){
-      zuhur.prayerStatus = "true";
-    }
-    else if(currentPrayer == "Asar"){
-      asar.prayerStatus = "true";
-    }
-    else if(currentPrayer == "Maghrib"){
-      maghrib.prayerStatus = "true";
-    }
-    else if(currentPrayer == "Isyak"){
-      isyak.prayerStatus = "true";
-    }
+    int hours = timeRemaining.inHours;
+    int minutes = timeRemaining.inMinutes.remainder(60);
+    int seconds = timeRemaining.inSeconds.remainder(60);
+    
+    return "$hours hours, $minutes minutes, $seconds seconds";
+  } else {
+    return "No more prayers for today.";
+  }
+}
+
+  void checkForMissedPrayers(){
+    setState(() {
+      List prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
+
+      for(int i=0; i<prayers.length; i++){
+        if(prayers[i].prayerName == currentPrayer()){//if current prayer, break
+        break;
+        }
+        if(prayers[i].prayerStatus != "current" && prayers[i].prayerStatus != "true"){
+          prayers[i].prayerStatus = "missed";
+        }
+      }
+      });
   }
 
+  void performPrayer() {
+    setState(() {
+      String currentPrayer = this.currentPrayer();
+    getCurrentPrayer(currentPrayer).prayerStatus = "true";
+    });
+  }
+
+  Prayer getCurrentPrayer(String currentPrayer){
+    List<Prayer> prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
+    Prayer currentPrayerObj = prayers.firstWhere((prayer) => prayer.prayerName == currentPrayer);
+    return currentPrayerObj;
+  }
+
+  String circleText() {
+    List prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
+    int currentPrayerIndex = prayers.indexWhere((prayer) => prayer.prayerName == currentPrayer());
+    
+    if(prayers[currentPrayerIndex].prayerStatus == "true"){
+      return "Completed";
+    }
+    else if(isTimerRunning)
+    {
+      return displayMinute();
+    }
+    else{
+      return "Mula solat ${currentPrayer()}";
+    }
+}
   IconData getPrayerIcon(String status) {
   switch (status) {
     case "true":
@@ -300,53 +321,56 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
           GestureDetector(
-            onTap: () {
-              setState(() {
-                isTimerRunning = !isTimerRunning;
-                if (isTimerRunning) {
-                  _startTimer();
-                } else {
-                  _stopTimer();
+          onTap: () {
+            setState(() {
+              isTimerRunning = !isTimerRunning;
+              if (isTimerRunning) {
+                _startTimer();
+              } else {
+                _stopTimer();
+                if (!isTimerRunning) {
+                  // Update the prayer status after finishing the current prayer
+                  // performPrayer();
                 }
-              });
-            },
-            child: Container(
+              }
+            });
+          },
+          child: Container(
             width: 300,
             height: 300,
-            decoration: 
-                BoxDecoration(
-                shape: BoxShape.circle,
-                color: Color(0xFF82618B),
-                ),
-                child: Center(
-                  child: Stack(
-                    children: [
-                      Center(
-                        child: Text(
-                        isTimerRunning ? displayMinute() : "Mula solat ${currentPrayer()}",
-                        style: TextStyle(fontSize: 25, color: Colors.white),
-                        ),
-                      ),
-
-                      Center(
-                        child: 
-                        SizedBox(
-                          height: 270,
-                          width: 270,
-                          child: CircularProgressIndicator(
-                            value: isTimerRunning ? calculateProgress() : 0.0,
-                            backgroundColor:Colors.white,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
-                            strokeWidth: 10,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color(0xFF82618B),
             ),
-          )
+            child: Center(
+              child: Stack(
+                children: [
+                  Center(
+                    child: Text(
+                      isTimerRunning
+                          ? displayMinute()
+                          : "Mula solat ${currentPrayer()}",
+                      style: TextStyle(fontSize: 25, color: Colors.white),
+                    ),
+                  ),
+                  Center(
+                    child: SizedBox(
+                      height: 270,
+                      width: 270,
+                      child: CircularProgressIndicator(
+                        value: isTimerRunning ? calculateProgress() : 0.0,
+                        backgroundColor: Colors.white,
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
+                        strokeWidth: 10,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
             ],
           ),
         ),
