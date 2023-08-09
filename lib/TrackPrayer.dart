@@ -4,6 +4,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+class PrayerTime {
+  final String name;
+  final String time;
+
+  PrayerTime({required this.name, required this.time});
+
+  factory PrayerTime.fromJson(Map<String, dynamic> json) {
+    return PrayerTime(
+      name: json['name'],
+      time: json['time'],
+    );
+  }
+}
 
 class Prayer{
   String prayerName = "";
@@ -29,51 +45,53 @@ class TrackPrayer extends StatefulWidget {
 // }
 
 class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin {
+
   late AnimationController _animationController;
   late Animation<double> _animation;
   bool isTimerRunning = false;
   int _timerSeconds = 0;
   final Duration animationDuration = Duration(seconds: 5);
+  late Timer _nextPrayerTimer;
 
   Prayer subuh = Prayer()
-                ..prayerName = "Subuh"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 6, 0,)
+                ..prayerName = "subuh"
                 ..prayerStatus = "false";
 
   Prayer syuruk = Prayer()
-                ..prayerName = "Syuruk"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 7, 09)
+                ..prayerName = "syuruk"
                 ..prayerStatus = "false";
 
-  Prayer zuhur = Prayer()
-                ..prayerName = "Zuhur"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 19)
+  Prayer zohor = Prayer()
+                ..prayerName = "zohor"
                 ..prayerStatus = "false";
 
   Prayer asar = Prayer()
-                ..prayerName = "Asar"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 16, 39)
+                ..prayerName = "asar"
                 ..prayerStatus = "false";
 
   Prayer maghrib = Prayer()
-                ..prayerName = "Maghrib"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 24)
+                ..prayerName = "maghrib"
                 ..prayerStatus = "false";
 
   Prayer isyak = Prayer()
-                ..prayerName = "Isyak"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 20, 36,)
+                ..prayerName = "isyak"
                 ..prayerStatus = "false";
 
    @override
     void initState() {
     super.initState();
+    fetchPrayerTimes();
     setCurrentPrayer();
     checkForMissedPrayers();
     _animationController = AnimationController(
       vsync: this,
       duration: animationDuration, // Adjust the duration as needed
     );
+    
+    _nextPrayerTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      // Call setState to trigger a UI update
+      setState(() {});
+    });
 
       _animation = Tween<double>(begin: 0, end: animationDuration.inSeconds.toDouble())
       .animate(_animationController)
@@ -90,6 +108,54 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
         });
     }
 
+  Future<void> fetchPrayerTimes() async {
+  final response = await http.get(Uri.parse('https://waktu-solat-api.herokuapp.com/api/v1/prayer_times.json?zon=melaka'));
+
+  if (response.statusCode == 200) {
+    final jsonData = json.decode(response.body);
+    List<dynamic> dataJson = jsonData['data'][0]['waktu_solat'];
+    List<Prayer> prayers = [subuh, syuruk, zohor, asar, maghrib, isyak]; // Use the Prayer objects directly
+    
+    DateTime now = DateTime.now();
+
+    for (var waktuSolatJson in dataJson) {
+      String prayerName = waktuSolatJson['name'];
+      String prayerTime = waktuSolatJson['time'];
+
+      // Parse the prayerTime string and create a new DateTime object
+      List<int> parsedTime = prayerTime.split(':').map(int.parse).toList();
+      DateTime updatedDateTime = DateTime(now.year, now.month, now.day, parsedTime[0], parsedTime[1]);
+
+      if (prayerName != "imsak") {
+        // Find the corresponding Prayer object and update its prayerTime
+        prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime = updatedDateTime;
+      }
+    }
+
+    // Update the UI or perform any necessary actions after updating prayer times
+    setState(() {
+      // ...
+    });
+  } else {
+    print('Failed to fetch data');
+  }
+}
+
+  void updatePrayerTimes(Map<String, dynamic> apiResponse) {
+  List<Map<String, dynamic>> waktuSolatList = apiResponse['data'][0]['waktu_solat'];
+  List prayers = [subuh, syuruk, zohor, asar, maghrib, isyak];
+
+  for (Map<String, dynamic> waktuSolat in waktuSolatList) {
+    String prayerName = waktuSolat['name'];
+    String prayerTimeStr = waktuSolat['time'];
+
+    // Find the corresponding Prayer object and update its prayerTime
+    Prayer prayerToUpdate = prayers.firstWhere((prayer) => prayer.prayerName == prayerName);
+    DateTime newPrayerTime = DateTime.parse(prayerTimeStr);
+    prayerToUpdate.prayerTime = newPrayerTime;
+  }
+}
+
   void _startTimer() {
   setState(() {
     _animationController.reverse(from: animationDuration.inSeconds.toDouble());
@@ -105,7 +171,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   void setCurrentPrayer(){
     setState(() {
       String currentPrayerName = currentPrayer();
-      List prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
+      List prayers = [subuh, syuruk, zohor, asar, maghrib, isyak];
       prayers.firstWhere((prayer) => prayer.prayerName == currentPrayerName).prayerStatus = "current";
     });
   }
@@ -113,51 +179,73 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   String currentPrayer(){
   DateTime now = DateTime.now();
   if(now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)){
-    return "Subuh";
+    print("the current prayer is subuh");
+    return "subuh";
   }
-  else if(now.isAfter(syuruk.prayerTime) && now.isBefore(zuhur.prayerTime)){
-    return "Syuruk";
+  else if(now.isAfter(syuruk.prayerTime) && now.isBefore(zohor.prayerTime)){
+    print("the current prayer is syuruk");
+    return "syuruk";
   }
-  else if(now.isAfter(zuhur.prayerTime) && now.isBefore(asar.prayerTime)){
-    return "Zuhur";
+  else if(now.isAfter(zohor.prayerTime) && now.isBefore(asar.prayerTime)){
+    print("the current prayer is zohor");
+    return "zohor";
   }
   else if(now.isAfter(asar.prayerTime) && now.isBefore(maghrib.prayerTime)){
-    return "Asar";
+    print("the current prayer is asar");
+    return "asar";
   }
   else if(now.isAfter(maghrib.prayerTime) && now.isBefore(isyak.prayerTime)){
-    return "Maghrib";
+    print("the current prayer is maghrib");
+    return "maghrib";
   }
-  else if(now.isAfter(isyak.prayerTime) || now.isBefore(subuh.prayerTime)){
-    return "Isyak";
+  else if(now.isAfter(isyak.prayerTime) && now.isBefore(subuh.prayerTime)){
+    print("the current prayer is isyak");
+    return "isyak";
   }
   else {
-    return "Syuruk";
+    print("the current prayer is syuruk");
+    return "syuruk";
   }
 }
 
-  String timeTillNextPrayer(String currentPrayer){
-
-  List<Prayer> prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
+  String timeTillNextPrayer(String currentPrayer) {
+  List<Prayer> prayers = [subuh, syuruk, zohor, asar, maghrib, isyak];
   
   int currentIndex = prayers.indexWhere((prayer) => prayer.prayerName == currentPrayer);
-  
+  Prayer nextPrayer = prayers[currentIndex];
+  Duration timeRemaining;
+
   if (currentIndex >= 0 && currentIndex < prayers.length - 1) {
-    Prayer nextPrayer = prayers[currentIndex + 1];
-    Duration timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
-    
-    int hours = timeRemaining.inHours;
-    int minutes = timeRemaining.inMinutes.remainder(60);
-    int seconds = timeRemaining.inSeconds.remainder(60);
-    
-    return "$hours hours, $minutes minutes, $seconds seconds";
-  } else {
-    return "No more prayers for today.";
+    nextPrayer = prayers[currentIndex + 1];
+    if(currentPrayer == "subuh"){
+      nextPrayer = zohor;
+    }
+  timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
+  } 
+  else {
+    if(currentPrayer == "isyak"){
+      nextPrayer = subuh;
+    }
+    if(DateTime.now().isBefore(DateTime(23, 59))){//if before 11.59pm
+      Duration midnightTillSubuh = nextPrayer.prayerTime.difference(DateTime(23, 59));
+      timeRemaining = DateTime(23, 59).difference(DateTime.now().add(midnightTillSubuh));
+    }
+    else{
+      timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
+    }
   }
+
+  
+  int hours = timeRemaining.inHours;
+  int minutes = timeRemaining.inMinutes.remainder(60);
+  int seconds = timeRemaining.inSeconds.remainder(60);
+
+   return hours>0 ? "Azan seterusnya dalam\n$hours jam, $minutes minit, $seconds saat" : "Azan seterusnya dalam\n$minutes minit, $seconds saat";
 }
 
   void checkForMissedPrayers(){
     setState(() {
-      List prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
+      List prayers = [subuh, syuruk, zohor, asar, maghrib, isyak];
 
       for(int i=0; i<prayers.length; i++){
         if(prayers[i].prayerName == currentPrayer()){//if current prayer, break
@@ -178,17 +266,17 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   }
 
   Prayer getCurrentPrayer(String currentPrayer){
-    List<Prayer> prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
+    List<Prayer> prayers = [subuh, syuruk, zohor, asar, maghrib, isyak];
     Prayer currentPrayerObj = prayers.firstWhere((prayer) => prayer.prayerName == currentPrayer);
     return currentPrayerObj;
   }
 
   String circleText() {
-    List prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
+    List prayers = [subuh, syuruk, zohor, asar, maghrib, isyak];
     int currentPrayerIndex = prayers.indexWhere((prayer) => prayer.prayerName == currentPrayer());
     
     if(prayers[currentPrayerIndex].prayerStatus == "true"){
-      return "Completed";
+      return timeTillNextPrayer(currentPrayer());
     }
     else if(isTimerRunning)
     {
@@ -223,6 +311,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
   @override
   void dispose() {
+    _nextPrayerTimer.cancel();
     _animationController.dispose();
     super.dispose();
   }
@@ -341,16 +430,41 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Color(0xFF82618B),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.15), // Shadow color
+                  spreadRadius: 5,
+                  blurRadius: 10,
+                  offset: Offset(0, 3),
+                ),
+              ],
             ),
             child: Center(
               child: Stack(
                 children: [
+                  // Center(
+                  //   child: Column(children: [
+                  //     Text("Subuh : ${subuh.prayerTime}"),
+                  //     Text("Syuruk : ${syuruk.prayerTime}"),
+                  //     Text("zohor : ${zohor.prayerTime}"),
+                  //     Text("Asar : ${asar.prayerTime}"),
+                  //     Text("Maghrib : ${maghrib.prayerTime}"),
+                  //     Text("Isyak : ${isyak.prayerTime}"),
+                  //   ]),
+                  // ),
                   Center(
-                    child: Text(
-                      isTimerRunning
-                          ? displayMinute()
-                          : "Mula solat ${currentPrayer()}",
-                      style: TextStyle(fontSize: 25, color: Colors.white),
+                    child: FittedBox(
+                      child: Padding(
+                        padding: const EdgeInsets.all(50.0),
+                        child: Text(
+                          circleText(),
+                          // isTimerRunning
+                          //     ? displayMinute()
+                          //     : "Mula solat ${currentPrayer()}",
+                          style: TextStyle(fontSize: 25, color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
                   ),
                   Center(
@@ -415,11 +529,11 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                          getPrayerIcon(zuhur.prayerStatus),
+                          getPrayerIcon(zohor.prayerStatus),
                           size: 32, 
-                          color : (zuhur.prayerStatus == "true")? Colors.green
-                                : (zuhur.prayerStatus == "current") ? Colors.blue
-                                : (zuhur.prayerStatus == "missed") ? Colors.red
+                          color : (zohor.prayerStatus == "true")? Colors.green
+                                : (zohor.prayerStatus == "current") ? Colors.blue
+                                : (zohor.prayerStatus == "missed") ? Colors.red
                                 : Colors.grey,
                           ),
                           SizedBox(height: 3,),
