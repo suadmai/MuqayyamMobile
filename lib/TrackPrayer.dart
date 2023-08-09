@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Prayer{
   String prayerName = "";
@@ -29,11 +31,13 @@ class TrackPrayer extends StatefulWidget {
 // }
 
 class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin {
+
   late AnimationController _animationController;
   late Animation<double> _animation;
   bool isTimerRunning = false;
   int _timerSeconds = 0;
   final Duration animationDuration = Duration(seconds: 5);
+  late Timer _nextPrayerTimer;
 
   Prayer subuh = Prayer()
                 ..prayerName = "Subuh"
@@ -74,6 +78,11 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
       vsync: this,
       duration: animationDuration, // Adjust the duration as needed
     );
+    
+    _nextPrayerTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      // Call setState to trigger a UI update
+      setState(() {});
+    });
 
       _animation = Tween<double>(begin: 0, end: animationDuration.inSeconds.toDouble())
       .animate(_animationController)
@@ -135,24 +144,40 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   }
 }
 
-  String timeTillNextPrayer(String currentPrayer){
-
+  String timeTillNextPrayer(String currentPrayer) {
   List<Prayer> prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
+  String displayText;
   
   int currentIndex = prayers.indexWhere((prayer) => prayer.prayerName == currentPrayer);
-  
+  Prayer nextPrayer = prayers[currentIndex];
+  Duration timeRemaining;
+
   if (currentIndex >= 0 && currentIndex < prayers.length - 1) {
-    Prayer nextPrayer = prayers[currentIndex + 1];
-    Duration timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
-    
-    int hours = timeRemaining.inHours;
-    int minutes = timeRemaining.inMinutes.remainder(60);
-    int seconds = timeRemaining.inSeconds.remainder(60);
-    
-    return "$hours hours, $minutes minutes, $seconds seconds";
-  } else {
-    return "No more prayers for today.";
+    nextPrayer = prayers[currentIndex + 1];
+    if(currentPrayer == "Subuh"){
+      nextPrayer = zuhur;
+    }
+  timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
+  } 
+  else {
+    if(currentPrayer == "Isyak"){
+      nextPrayer = subuh;
+    }
+    if(DateTime.now().isBefore(DateTime(23, 59))){//if before 11.59pm
+      Duration midnightTillSubuh = nextPrayer.prayerTime.difference(DateTime(23, 59));
+      timeRemaining = DateTime(23, 59).difference(DateTime.now().add(midnightTillSubuh));
+    }
+    else{
+      timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
+    }
   }
+
+  
+  int hours = timeRemaining.inHours;
+  int minutes = timeRemaining.inMinutes.remainder(60);
+  int seconds = timeRemaining.inSeconds.remainder(60);
+
+   return hours>0 ? "Azan seterusnya dalam\n$hours jam, $minutes minit, $seconds saat" : "Azan seterusnya dalam\n$minutes minit, $seconds saat";
 }
 
   void checkForMissedPrayers(){
@@ -188,7 +213,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     int currentPrayerIndex = prayers.indexWhere((prayer) => prayer.prayerName == currentPrayer());
     
     if(prayers[currentPrayerIndex].prayerStatus == "true"){
-      return "Completed";
+      return timeTillNextPrayer(currentPrayer());
     }
     else if(isTimerRunning)
     {
@@ -223,6 +248,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
   @override
   void dispose() {
+    _nextPrayerTimer.cancel();
     _animationController.dispose();
     super.dispose();
   }
@@ -341,16 +367,31 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Color(0xFF82618B),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.15), // Shadow color
+                  spreadRadius: 5,
+                  blurRadius: 10,
+                  offset: Offset(0, 3),
+                ),
+              ],
             ),
             child: Center(
               child: Stack(
                 children: [
                   Center(
-                    child: Text(
-                      isTimerRunning
-                          ? displayMinute()
-                          : "Mula solat ${currentPrayer()}",
-                      style: TextStyle(fontSize: 25, color: Colors.white),
+                    child: FittedBox(
+                      child: Padding(
+                        padding: const EdgeInsets.all(50.0),
+                        child: Text(
+                          circleText(),
+                          // isTimerRunning
+                          //     ? displayMinute()
+                          //     : "Mula solat ${currentPrayer()}",
+                          style: TextStyle(fontSize: 25, color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
                   ),
                   Center(
