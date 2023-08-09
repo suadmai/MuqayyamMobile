@@ -163,11 +163,16 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     if(currentPrayer == "Isyak"){
       nextPrayer = subuh;
     }
-    if(DateTime.now().isBefore(DateTime(23, 59))){//if before 11.59pm
-      Duration midnightTillSubuh = nextPrayer.prayerTime.difference(DateTime(23, 59));
-      timeRemaining = DateTime(23, 59).difference(DateTime.now().add(midnightTillSubuh));
+    if(DateTime.now().isBefore(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59,))){//if before 11.59pm
+    print("before 11.59pm");
+      Duration midnightTillSubuh = nextPrayer.prayerTime.difference(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 00, 00,));
+      Duration nowTillMidnight = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59,).difference(DateTime.now());
+      timeRemaining = midnightTillSubuh + nowTillMidnight;
+      print('${DateTime.now()} \n${timeRemaining}');
+      //print(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59,).difference(DateTime.now()));
     }
     else{
+      print("after 11.59pm");
       timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
     }
   }
