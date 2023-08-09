@@ -172,13 +172,13 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     }
   }
 
-  
   int hours = timeRemaining.inHours;
   int minutes = timeRemaining.inMinutes.remainder(60);
   int seconds = timeRemaining.inSeconds.remainder(60);
 
    return hours>0 ? "Azan seterusnya dalam\n$hours jam, $minutes minit, $seconds saat" : "Azan seterusnya dalam\n$minutes minit, $seconds saat";
 }
+
 
   void checkForMissedPrayers(){
     setState(() {
