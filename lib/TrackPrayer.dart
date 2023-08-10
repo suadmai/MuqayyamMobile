@@ -204,10 +204,13 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     setState(() {
       String currentPrayer = this.currentPrayer();
     getCurrentPrayer(currentPrayer).prayerStatus = "true";
+    checkForMissedPrayers();
     });
   }
 
   Prayer getCurrentPrayer(String currentPrayer){
+    setState(() {
+    });
     List<Prayer> prayers = [subuh, syuruk, zuhur, asar, maghrib, isyak];
     Prayer currentPrayerObj = prayers.firstWhere((prayer) => prayer.prayerName == currentPrayer);
     return currentPrayerObj;
