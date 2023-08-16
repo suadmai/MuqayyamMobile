@@ -6,6 +6,14 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart';
+
+extension StringExtensions on String {
+  String capitalizeFirst() {
+    if (isEmpty) return this;
+    return this[0].toUpperCase() + substring(1);
+  }
+}
 
 class PrayerTime {
   final String name;
@@ -57,37 +65,37 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
   Prayer subuh = Prayer()
                 ..prayerName = "subuh"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 6, 0,)
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
                 ..missed = false;
 
   Prayer syuruk = Prayer()
                 ..prayerName = "syuruk"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 7, 09)
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
                 ..missed = false;
 
   Prayer zohor = Prayer()
                 ..prayerName = "zohor"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 19)
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
                 ..missed = false;
 
   Prayer asar = Prayer()
                 ..prayerName = "asar"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 16, 39)
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
                 ..missed = false;
 
   Prayer maghrib = Prayer()
                 ..prayerName = "maghrib"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 24)
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
                 ..missed = false;
 
   Prayer isyak = Prayer()
                 ..prayerName = "isyak"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 20, 36,)
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
                 ..missed = false;
 
@@ -125,7 +133,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     }
 
   Future<void> fetchPrayerTimes() async {
-  final response = await http.get(Uri.parse('https://waktu-solat-api.herokuapp.com/api/v1/prayer_times.json?zon=melaka'));
+  final response = await http.get(Uri.parse('https://waktu-solat-api.herokuapp.com/api/v1/prayer_times.json?zon=gombak'));
 
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.body);
@@ -233,27 +241,28 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   Prayer nextPrayer = prayers[currentIndex];
   Duration timeRemaining;
 
-  if (currentIndex >= 0 && currentIndex < prayers.length - 1) {
+  if (currentIndex >= 0 && currentIndex < prayers.length-1) {
     nextPrayer = prayers[currentIndex + 1];
     if(currentPrayer == subuh){
       nextPrayer = zohor;
     }
+    
   timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
   } 
-  else {
-    if(currentPrayer == isyak){
-      nextPrayer = subuh;
-    }
-    if(DateTime.now().isBefore(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59,))){//if before 11.59pm
-    print("before 11.59pm");
-      Duration midnightTillSubuh = nextPrayer.prayerTime.difference(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 00, 00,));
-      Duration nowTillMidnight = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59,).difference(DateTime.now());
-      timeRemaining = midnightTillSubuh + nowTillMidnight;
-      print('${DateTime.now()} \n${timeRemaining}');
-      //print(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59,).difference(DateTime.now()));
-    }
+  else { // If the current prayer is the last prayer of the day (isyak)
+    nextPrayer = subuh;
+    if(DateTime.now().isAfter(isyak.prayerTime) && DateTime.now().isBefore(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59))){
+      
+      DateTime nextSubuh = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day+1, subuh.prayerTime.hour, subuh.prayerTime.minute);
+      timeRemaining = nextSubuh.difference(DateTime.now().add(Duration(days: 1)));
+      timeRemaining = Duration(hours: 24) + timeRemaining;
+
+      // print('current time: ${DateTime.now()}');
+      // print('next azan: ${nextSubuh}');
+      //timeRemaining = Duration.zero;
+      }
     else{
-      print("after 11.59pm");
+      
       timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
     }
   }
@@ -262,9 +271,10 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   int minutes = timeRemaining.inMinutes.remainder(60);
   int seconds = timeRemaining.inSeconds.remainder(60);
 
-   return hours>0 ? "Azan seterusnya dalam\n$hours jam, $minutes minit, $seconds saat" : "Azan seterusnya dalam\n$minutes minit, $seconds saat";
+   return hours > 0 ?
+    "${nextPrayer.prayerName.capitalizeFirst()} dalam\n$hours jam, $minutes minit, $seconds saat"
+    : "${nextPrayer.prayerName.capitalizeFirst()} dalam\n$minutes minit, $seconds saat"; 
 }
-
 
   void checkForMissedPrayers(){
     setState(() {
@@ -272,11 +282,11 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
       for(int i=0; i<prayers.length; i++){
         if(prayers[i] == currentPrayer){//if current prayer, break
-        print('${currentPrayer.prayerName}\n${prayers[i].prayerName}\nis current prayer: ${currentPrayer == prayers[i]}');
+        //print('${currentPrayer.prayerName}\n${prayers[i].prayerName}\nis current prayer: ${currentPrayer == prayers[i]}');
         break;
         }
         else if(prayers[i]!= currentPrayer && prayers[i].prayed == false){
-          print("missed prayer: ${prayers[i].prayerName}");
+          //print("missed prayer: ${prayers[i].prayerName}");
           prayers[i].missed = true;
         }
       }
@@ -286,7 +296,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   void performPrayer() {
     setState(() {
     currentPrayer.prayed = true;
-    print("${currentPrayer.prayerName} prayed}");
+    //print("${currentPrayer.prayerName} prayed}");
     //checkForMissedPrayers();
     });
   }
@@ -300,7 +310,6 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   }
 
   String circleText() {
-    List prayers = [subuh, syuruk, zohor, asar, maghrib, isyak];
     
     if(currentPrayer.prayed == true){
       return timeTillNextPrayer();
@@ -554,6 +563,11 @@ Color getPrayerIconColor(Prayer prayer) {
                           ),
                           SizedBox(height: 3,),
                           Text("Subuh", style: TextStyle(fontSize: 12),),
+                          //display prayer time in 24 hour format
+                          Text(
+                          DateFormat('HH:mm').format(subuh.prayerTime),
+                          style: TextStyle(fontSize: 12),
+                          ),
                         ],
                       ),
                       Column(
@@ -566,6 +580,10 @@ Color getPrayerIconColor(Prayer prayer) {
                           ),
                           SizedBox(height: 3,),
                           Text("Zohor", style: TextStyle(fontSize: 12),),
+                          Text(
+                          DateFormat('HH:mm').format(zohor.prayerTime),
+                          style: TextStyle(fontSize: 12),
+                          ),
                         ],
                       ),
                       Column(
@@ -577,7 +595,11 @@ Color getPrayerIconColor(Prayer prayer) {
                           color : getPrayerIconColor(asar),
                           ),
                           SizedBox(height: 3,),
-                          Text("asar", style: TextStyle(fontSize: 12),),
+                          Text("Asar", style: TextStyle(fontSize: 12),),
+                          Text(
+                          DateFormat('HH:mm').format(asar.prayerTime),
+                          style: TextStyle(fontSize: 12),
+                          ),
                         ],
                       ),
                       Column(
@@ -589,7 +611,11 @@ Color getPrayerIconColor(Prayer prayer) {
                           color : getPrayerIconColor(maghrib),
                           ),
                           SizedBox(height: 3,),
-                          Text("maghrib", style: TextStyle(fontSize: 12),),
+                          Text("Maghrib", style: TextStyle(fontSize: 12),),
+                          Text(
+                          DateFormat('HH:mm').format(maghrib.prayerTime),
+                          style: TextStyle(fontSize: 12),
+                          ),
                         ],
                       ),
                       Column(
@@ -601,7 +627,11 @@ Color getPrayerIconColor(Prayer prayer) {
                           color : getPrayerIconColor(isyak),
                           ),
                           SizedBox(height: 3,),
-                          Text("isyak", style: TextStyle(fontSize: 12),),
+                          Text("Isyak", style: TextStyle(fontSize: 12),),
+                          Text(
+                          DateFormat('HH:mm').format(isyak.prayerTime),
+                          style: TextStyle(fontSize: 12),
+                          ),
                         ],
                       ),
                     ],
