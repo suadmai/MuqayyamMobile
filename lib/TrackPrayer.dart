@@ -562,7 +562,7 @@ Color getPrayerIconColor(Prayer prayer) {
                             size: 32,
                           ),
                           SizedBox(height: 3,),
-                          Text("Subuh", style: TextStyle(fontSize: 12),),
+                          Text("Subuh", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
                           //display prayer time in 24 hour format
                           Text(
                           DateFormat('HH:mm').format(subuh.prayerTime),
@@ -579,7 +579,7 @@ Color getPrayerIconColor(Prayer prayer) {
                           color : getPrayerIconColor(zohor),
                           ),
                           SizedBox(height: 3,),
-                          Text("Zohor", style: TextStyle(fontSize: 12),),
+                          Text("Zohor", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
                           Text(
                           DateFormat('HH:mm').format(zohor.prayerTime),
                           style: TextStyle(fontSize: 12),
@@ -595,7 +595,7 @@ Color getPrayerIconColor(Prayer prayer) {
                           color : getPrayerIconColor(asar),
                           ),
                           SizedBox(height: 3,),
-                          Text("Asar", style: TextStyle(fontSize: 12),),
+                          Text("Asar", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
                           Text(
                           DateFormat('HH:mm').format(asar.prayerTime),
                           style: TextStyle(fontSize: 12),
@@ -611,7 +611,7 @@ Color getPrayerIconColor(Prayer prayer) {
                           color : getPrayerIconColor(maghrib),
                           ),
                           SizedBox(height: 3,),
-                          Text("Maghrib", style: TextStyle(fontSize: 12),),
+                          Text("Maghrib", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
                           Text(
                           DateFormat('HH:mm').format(maghrib.prayerTime),
                           style: TextStyle(fontSize: 12),
@@ -627,7 +627,7 @@ Color getPrayerIconColor(Prayer prayer) {
                           color : getPrayerIconColor(isyak),
                           ),
                           SizedBox(height: 3,),
-                          Text("Isyak", style: TextStyle(fontSize: 12),),
+                          Text("Isyak", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
                           Text(
                           DateFormat('HH:mm').format(isyak.prayerTime),
                           style: TextStyle(fontSize: 12),
