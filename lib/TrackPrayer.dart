@@ -150,7 +150,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
       List<int> parsedTime = prayerTime.split(':').map(int.parse).toList();
       DateTime updatedDateTime = DateTime(now.year, now.month, now.day, parsedTime[0], parsedTime[1]);
       print('$prayerName : $updatedDateTime');
-      if (prayerName != "imsak" && prayerName != "syuruk") {
+      if (prayerName != "imsak") {
         // Find the corresponding Prayer object and update its prayerTime
         prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime = updatedDateTime;
         print('updated ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerName} to ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime}');
@@ -180,30 +180,37 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
   void setCurrentPrayer(){
     setState(() {
-      List prayers = [subuh, syuruk, zohor, asar, maghrib, isyak];
-      currentPrayer = prayers[0];//for testing purposes, set to subuh
+      //List prayers = [subuh, syuruk, zohor, asar, maghrib, isyak];
+      //currentPrayer = prayers[0];//for testing purposes, set to subuh
       DateTime now = DateTime.now();
 
       if(now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)){
         currentPrayer = subuh;
+        print('current prayer: ${currentPrayer.prayerName}');
       }
       else if(now.isAfter(syuruk.prayerTime) && now.isBefore(zohor.prayerTime)){
         currentPrayer = syuruk;
+        print('current prayer: ${currentPrayer.prayerName} because the time is $now and syuruk is ${syuruk.prayerTime}');
       }
       else if(now.isAfter(zohor.prayerTime) && now.isBefore(asar.prayerTime)){
         currentPrayer = zohor;
+        print('current prayer: ${currentPrayer.prayerName}');
       }
       else if(now.isAfter(asar.prayerTime) && now.isBefore(maghrib.prayerTime)){
         currentPrayer = asar;
+        print('current prayer: ${currentPrayer.prayerName}');
       }
       else if(now.isAfter(maghrib.prayerTime) && now.isBefore(isyak.prayerTime)){
         currentPrayer = maghrib;
+        print('current prayer: ${currentPrayer.prayerName}');
       }
       else if(now.isAfter(isyak.prayerTime) || now.isBefore(subuh.prayerTime)){
         currentPrayer = isyak;
+        print('current prayer: ${currentPrayer.prayerName} because the time is $now and isyak is ${isyak.prayerTime}');
       }
       else {
-        currentPrayer = syuruk;
+        currentPrayer = isyak;
+        print('else territory: ${currentPrayer.prayerName}');
       }
     });
   }
