@@ -61,6 +61,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   int _timerSeconds = 0;
   final Duration animationDuration = Duration(seconds: 5);
   late Timer _nextPrayerTimer;
+  bool prayerTimesUpdated = false;
   Prayer currentPrayer = Prayer();
 
   Prayer subuh = Prayer()
@@ -102,8 +103,8 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
    @override
     void initState() {
     super.initState();
-    setCurrentPrayer();
     fetchPrayerTimes();
+    //setCurrentPrayer();
     //checkForMissedPrayers();
     _animationController = AnimationController(
       vsync: this,
@@ -113,8 +114,10 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     _nextPrayerTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       // Call setState to trigger a UI update
       setState(() {});
-      setCurrentPrayer();//check for current prayer every second
-      checkForMissedPrayers();//check for missed prayers every second
+      if(prayerTimesUpdated){
+        setCurrentPrayer();
+        checkForMissedPrayers();
+      }
     });
 
       _animation = Tween<double>(begin: 0, end: animationDuration.inSeconds.toDouble())
@@ -164,6 +167,8 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   } else {
     print('Failed to fetch data');
   }
+
+  prayerTimesUpdated = true;
 }
 
   void _startTimer() {
