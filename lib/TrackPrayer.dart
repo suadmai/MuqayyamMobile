@@ -135,6 +135,20 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
         });
     }
 
+  Future<void> storePrayerData() async {
+    Map<String,bool>prayerData = {
+      'subuh': subuh.prayed,
+      'syuruk': syuruk.prayed,
+      'zohor': zohor.prayed,
+      'asar': asar.prayed,
+      'maghrib': maghrib.prayed,
+      'isyak': isyak.prayed,
+    };
+     String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    await FirebaseFirestore.instance.collection('daily_prayers').doc(currentDate).set(prayerData);
+  }
+
   Future<void> fetchPrayerTimes() async {
   final response = await http.get(Uri.parse('https://waktu-solat-api.herokuapp.com/api/v1/prayer_times.json?zon=gombak'));
 
@@ -308,6 +322,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   void performPrayer() {
     setState(() {
     currentPrayer.prayed = true;
+    storePrayerData();
     //print("${currentPrayer.prayerName} prayed}");
     //checkForMissedPrayers();
     });
