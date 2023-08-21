@@ -104,7 +104,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     void initState() {
     super.initState();
     fetchPrayerTimes();
-    //setCurrentPrayer();
+    syncPrayerData();
     //checkForMissedPrayers();
     _animationController = AnimationController(
       vsync: this,
@@ -144,9 +144,56 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
       'maghrib': maghrib.prayed,
       'isyak': isyak.prayed,
     };
-     String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    String currentDate;
+
+    if(DateTime.now().hour < (subuh.prayerTime.hour) || DateTime.now().minute < (subuh.prayerTime.minute)){
+      //if the current time is before subuh, set the date to yesterday
+      print('current time is before subuh');
+      currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 1)));
+    }
+    else{
+      print('current time is after subuh');
+      currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    }
 
     await FirebaseFirestore.instance.collection('daily_prayers').doc(currentDate).set(prayerData);
+  }
+
+  Future <void> syncPrayerData() async{
+    String currentDate;
+    try{
+      if(DateTime.now().hour < (subuh.prayerTime.hour) || DateTime.now().minute < (subuh.prayerTime.minute)){
+        //if the current time is before subuh, set the date to yesterday
+        print('current time is before subuh');
+        currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 1)));
+      }
+      else{
+        print('current time is after subuh');
+        currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      }
+
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('daily_prayers').doc(currentDate).get();
+
+      if(snapshot.exists){
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        print(data);
+        setState(() {
+          subuh.prayed = data['subuh'];
+          syuruk.prayed = data['syuruk'];
+          zohor.prayed = data['zohor'];
+          asar.prayed = data['asar'];
+          maghrib.prayed = data['maghrib'];
+          isyak.prayed = data['isyak'];
+        });
+      }
+      else{
+        print('snapshot does not exist');
+        //storePrayerData();
+      }
+    }
+    catch(e){
+      print(e);
+    }
   }
 
   Future<void> fetchPrayerTimes() async {
@@ -205,6 +252,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
       if(now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)){
         currentPrayer = subuh;
+        storePrayerData();
         print('current prayer: ${currentPrayer.prayerName}');
       }
       else if(now.isAfter(syuruk.prayerTime) && now.isBefore(zohor.prayerTime)){
