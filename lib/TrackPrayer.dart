@@ -103,8 +103,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
    @override
     void initState() {
     super.initState();
-    fetchPrayerTimes();
-    syncPrayerData();
+    initializePage();
     //checkForMissedPrayers();
     _animationController = AnimationController(
       vsync: this,
@@ -134,6 +133,11 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
           }
         });
     }
+  
+  Future<void> initializePage() async {
+    await fetchPrayerTimes();
+    syncPrayerData();
+  }
 
   Future<void> storePrayerData() async {
     Map<String,bool>prayerData = {
@@ -146,7 +150,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     };
     String currentDate;
 
-    if(DateTime.now().hour < (subuh.prayerTime.hour) || DateTime.now().minute < (subuh.prayerTime.minute)){
+    if(DateTime.now().isBefore(subuh.prayerTime)){
       //if the current time is before subuh, set the date to yesterday
       print('current time is before subuh');
       currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 1)));
@@ -162,14 +166,16 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   Future <void> syncPrayerData() async{
     String currentDate;
     try{
-      if(DateTime.now().hour < (subuh.prayerTime.hour) || DateTime.now().minute < (subuh.prayerTime.minute)){
+      if(DateTime.now().isBefore(subuh.prayerTime)){
         //if the current time is before subuh, set the date to yesterday
-        print('current time is before subuh');
+        print('current time is before subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
         currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 1)));
+        print('the date is $currentDate');
       }
       else{
-        print('current time is after subuh');
+        print('current time is after subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
         currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+        print('the date is $currentDate');
       }
 
       DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('daily_prayers').doc(currentDate).get();
