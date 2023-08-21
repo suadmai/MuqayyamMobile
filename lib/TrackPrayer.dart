@@ -394,7 +394,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
       return displayMinute();
     }
     else{
-      return "Mula solat ${currentPrayer.prayerName}";
+      return "Mula solat ${currentPrayer.prayerName.capitalizeFirst()}";
     }
 }
   IconData getPrayerIcon(Prayer prayer) {
