@@ -546,15 +546,17 @@ Color getPrayerIconColor(Prayer prayer) {
           GestureDetector(
           onTap: () {
             setState(() {
-              isTimerRunning = !isTimerRunning;
-              if (isTimerRunning) {
-                _startTimer();
-              } else {
-                _stopTimer();
-                if (!isTimerRunning) {
-                  // Update the prayer status after finishing the current prayer
-                  // performPrayer();
-                }
+              if(!currentPrayer.prayed){
+                isTimerRunning = !isTimerRunning;
+                if (isTimerRunning) {
+                  _startTimer();
+                } else {
+                  _stopTimer();
+                  if (!isTimerRunning) {
+                    // Update the prayer status after finishing the current prayer
+                    // performPrayer();
+                  }
+                } 
               }
             });
           },
@@ -563,7 +565,7 @@ Color getPrayerIconColor(Prayer prayer) {
             height: 300,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFF82618B),
+              color: currentPrayer.prayed? Color(0xFF82618B).withOpacity(0.3): Color(0xFF82618B),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.15), // Shadow color
