@@ -73,7 +73,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   Prayer syuruk = Prayer()
                 ..prayerName = "syuruk"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-                ..prayed = false
+                ..prayed = true
                 ..missed = false;
 
   Prayer zohor = Prayer()
@@ -194,7 +194,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
       }
       else{
         print('snapshot does not exist');
-        //storePrayerData();
+        storePrayerData();
       }
     }
     catch(e){
@@ -288,32 +288,6 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     });
   }
 
-//   String currentPrayer(){
-//   DateTime now = DateTime.now();
-//   if(now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)){
-//     return "Subuh";
-//   }
-//   else if(now.isAfter(syuruk.prayerTime) && now.isBefore(zohor.prayerTime)){
-//     return "Syuruk";
-//   }
-//   else if(now.isAfter(zohor.prayerTime) && now.isBefore(asar.prayerTime)){
-//     return "zohor";
-//   }
-//   else if(now.isAfter(asar.prayerTime) && now.isBefore(maghrib.prayerTime)){
-//     return "asar";
-//   }
-//   else if(now.isAfter(maghrib.prayerTime) && now.isBefore(isyak.prayerTime)){
-//     return "maghrib";
-//   }
-//   else if(now.isAfter(isyak.prayerTime) || now.isBefore(subuh.prayerTime)){
-//     return "isyak";
-//   }
-//   else {
-//     return "Syuruk";
-//   }
-// }
-
-//tutup dulu 
   String timeTillNextPrayer() {
   List<Prayer> prayers = [subuh, syuruk, zohor, asar, maghrib, isyak];
   
@@ -392,7 +366,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
   String circleText() {
     
-    if(currentPrayer.prayed == true){
+    if(currentPrayer.prayed == true || currentPrayer.prayerName == "syuruk"){
       return timeTillNextPrayer();
     }
     else if(isTimerRunning)
@@ -637,14 +611,14 @@ Color getPrayerIconColor(Prayer prayer) {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Icon(
                             getPrayerIcon(subuh),
                             color: getPrayerIconColor(subuh),
                             size: 32,
                           ),
-                          SizedBox(height: 3,),
+                          //SizedBox(height: 3,),
                           Text("Subuh", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
                           //display prayer time in 24 hour format
                           Text(
@@ -654,14 +628,14 @@ Color getPrayerIconColor(Prayer prayer) {
                         ],
                       ),
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Icon(
                           getPrayerIcon(zohor),
                           size: 32, 
                           color : getPrayerIconColor(zohor),
                           ),
-                          SizedBox(height: 3,),
+                          //SizedBox(height: 3,),
                           Text("Zohor", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
                           Text(
                           DateFormat('HH:mm').format(zohor.prayerTime),
@@ -670,14 +644,14 @@ Color getPrayerIconColor(Prayer prayer) {
                         ],
                       ),
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Icon(
                           getPrayerIcon(asar),
                           size: 32, 
                           color : getPrayerIconColor(asar),
                           ),
-                          SizedBox(height: 3,),
+                          //SizedBox(height: 3,),
                           Text("Asar", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
                           Text(
                           DateFormat('HH:mm').format(asar.prayerTime),
@@ -686,14 +660,14 @@ Color getPrayerIconColor(Prayer prayer) {
                         ],
                       ),
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Icon(
                           getPrayerIcon(maghrib), 
                           size: 32, 
                           color : getPrayerIconColor(maghrib),
                           ),
-                          SizedBox(height: 3,),
+                          //SizedBox(height: 3,),
                           Text("Maghrib", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
                           Text(
                           DateFormat('HH:mm').format(maghrib.prayerTime),
@@ -702,14 +676,14 @@ Color getPrayerIconColor(Prayer prayer) {
                         ],
                       ),
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Icon(
                           getPrayerIcon(isyak),
                           size: 32, 
                           color : getPrayerIconColor(isyak),
                           ),
-                          SizedBox(height: 3,),
+                          //SizedBox(height: 3,),
                           Text("Isyak", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
                           Text(
                           DateFormat('HH:mm').format(isyak.prayerTime),
