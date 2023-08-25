@@ -153,15 +153,16 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
     if(DateTime.now().isBefore(subuh.prayerTime)){
       //if the current time is before subuh, set the date to yesterday
-      print('current time is before subuh');
+      //print('current time is before subuh');
       currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 1)));
     }
     else{
-      print('current time is after subuh');
+      //print('current time is after subuh');
       currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     }
 
     await FirebaseFirestore.instance.collection('daily_prayers').doc(currentDate).set(prayerData);
+    print('firebase write from storePrayerData');
   }
 
   Future <void> syncPrayerData() async{
@@ -169,21 +170,21 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     try{
       if(DateTime.now().isBefore(subuh.prayerTime)){
         //if the current time is before subuh, set the date to yesterday
-        print('current time is before subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
+        //print('current time is before subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
         currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 1)));
-        print('the date is $currentDate');
+        //print('the date is $currentDate');
       }
       else{
-        print('current time is after subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
+        //print('current time is after subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
         currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-        print('the date is $currentDate');
+        //print('the date is $currentDate');
       }
 
       DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('daily_prayers').doc(currentDate).get();
-
+      print('firebase read from syncPrayerData');
       if(snapshot.exists){
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-        print(data);
+        //print(data);
         setState(() {
           subuh.prayed = data['subuh'];
           syuruk.prayed = data['syuruk'];
@@ -220,11 +221,11 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
       // Parse the prayerTime string and create a new DateTime object
       List<int> parsedTime = prayerTime.split(':').map(int.parse).toList();
       DateTime updatedDateTime = DateTime(now.year, now.month, now.day, parsedTime[0], parsedTime[1]);
-      print('$prayerName : $updatedDateTime');
+      //print('$prayerName : $updatedDateTime');
       if (prayerName != "imsak") {
         // Find the corresponding Prayer object and update its prayerTime
         prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime = updatedDateTime;
-        print('updated ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerName} to ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime}');
+        //print('updated ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerName} to ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime}');
       }
     }
 
@@ -261,7 +262,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
         isyak..prayed = false..missed = false;
         prayersReset = true;
     }
-    print('reset prayers called'); 
+    //print('reset prayers called'); 
   }
 
   void setCurrentPrayer(){
@@ -274,31 +275,31 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
         currentPrayer = subuh;
         resetPrayers();
         storePrayerData();
-        print('current prayer: ${currentPrayer.prayerName}');
+        //print('current prayer: ${currentPrayer.prayerName}');
       }
       else if(now.isAfter(syuruk.prayerTime) && now.isBefore(zohor.prayerTime)){
         currentPrayer = syuruk;
-        print('current prayer: ${currentPrayer.prayerName} because the time is $now and syuruk is ${syuruk.prayerTime}');
+        //print('current prayer: ${currentPrayer.prayerName} because the time is $now and syuruk is ${syuruk.prayerTime}');
       }
       else if(now.isAfter(zohor.prayerTime) && now.isBefore(asar.prayerTime)){
         currentPrayer = zohor;
-        print('current prayer: ${currentPrayer.prayerName}');
+        //print('current prayer: ${currentPrayer.prayerName}');
       }
       else if(now.isAfter(asar.prayerTime) && now.isBefore(maghrib.prayerTime)){
         currentPrayer = asar;
-        print('current prayer: ${currentPrayer.prayerName}');
+        //print('current prayer: ${currentPrayer.prayerName}');
       }
       else if(now.isAfter(maghrib.prayerTime) && now.isBefore(isyak.prayerTime)){
         currentPrayer = maghrib;
-        print('current prayer: ${currentPrayer.prayerName}');
+        //print('current prayer: ${currentPrayer.prayerName}');
       }
       else if(now.isAfter(isyak.prayerTime) || now.isBefore(subuh.prayerTime)){
         currentPrayer = isyak;
-        print('current prayer: ${currentPrayer.prayerName} because the time is $now and isyak is ${isyak.prayerTime}');
+        //print('current prayer: ${currentPrayer.prayerName} because the time is $now and isyak is ${isyak.prayerTime}');
       }
       else {
         currentPrayer = isyak;
-        print('else territory: ${currentPrayer.prayerName}');
+        //print('else territory: ${currentPrayer.prayerName}');
       }
     });
   }
