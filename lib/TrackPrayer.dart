@@ -61,6 +61,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   int _timerSeconds = 0;
   final Duration animationDuration = Duration(seconds: 5);
   late Timer _nextPrayerTimer;
+  bool prayersReset = false;
   bool prayerTimesUpdated = false;
   Prayer currentPrayer = Prayer();
 
@@ -250,23 +251,28 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     });
   }
 
-  void setCurrentPrayer(){
-    setState(() {
-      //List prayers = [subuh, syuruk, zohor, asar, maghrib, isyak];
-      //currentPrayer = prayers[0];//for testing purposes, set to subuh
-      DateTime now = DateTime.now();
-
-      if (now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)) {
+  void resetPrayers(){
+    if(!subuh.prayed){
         subuh..prayed = false..missed = false;
         syuruk..prayed = true..missed = false;
         zohor..prayed = false..missed = false;
         asar..prayed = false..missed = false;
         maghrib..prayed = false..missed = false;
         isyak..prayed = false..missed = false;
-      }
+        prayersReset = true;
+    }
+    print('reset prayers called'); 
+  }
+
+  void setCurrentPrayer(){
+    setState(() {
+      //List prayers = [subuh, syuruk, zohor, asar, maghrib, isyak];
+      //currentPrayer = prayers[0];//for testing purposes, set to subuh
+      DateTime now = DateTime.now();
 
       if(now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)){
         currentPrayer = subuh;
+        resetPrayers();
         storePrayerData();
         print('current prayer: ${currentPrayer.prayerName}');
       }
