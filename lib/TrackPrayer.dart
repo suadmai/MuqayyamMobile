@@ -257,12 +257,12 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
       DateTime now = DateTime.now();
 
       if (now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)) {
-        subuh.prayed = false;
-        syuruk.prayed = false;
-        zohor.prayed = false;
-        asar.prayed = false;
-        maghrib.prayed = false;
-        isyak.prayed = false;
+        subuh..prayed = false..missed = false;
+        syuruk..prayed = true..missed = false;
+        zohor..prayed = false..missed = false;
+        asar..prayed = false..missed = false;
+        maghrib..prayed = false..missed = false;
+        isyak..prayed = false..missed = false;
       }
 
       if(now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)){
