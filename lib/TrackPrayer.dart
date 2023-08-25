@@ -321,7 +321,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   } 
   else { // If the current prayer is the last prayer of the day (isyak)
     nextPrayer = subuh;
-    if(DateTime.now().isAfter(isyak.prayerTime) && DateTime.now().isBefore(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 59, 59))){
+    if(DateTime.now().isAfter(isyak.prayerTime) && DateTime.now().isBefore(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day+1, 0, 0, 0))){
       
       DateTime nextSubuh = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day+1, subuh.prayerTime.hour, subuh.prayerTime.minute);
       timeRemaining = nextSubuh.difference(DateTime.now().add(Duration(days: 1)));
@@ -332,7 +332,8 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
       //timeRemaining = Duration.zero;
       }
     else{
-      
+      print('time now is ${DateTime.now()}');
+      print('next azan is ${nextPrayer.prayerTime}');
       timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
     }
   }
