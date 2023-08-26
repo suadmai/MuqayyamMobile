@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class ContactExpert extends StatefulWidget {
+  const ContactExpert({Key? key}) : super(key: key);
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ContactExpert> createState() => _ContactExpertState();
 }
 
 // Future<void> logout(BuildContext context) async {
@@ -20,7 +20,7 @@ class HomeScreen extends StatefulWidget {
 //   );
 // }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ContactExpertState extends State<ContactExpert> {
   @override
   void initState() {
     super.initState();
@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Selamat pagi!"),
+        title: const Text("Hubungi pakar"),
         actions: [
           IconButton(
             onPressed: () {
@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
+                      builder: (context) => const ContactExpert(),
                     ),
                   );
                 },
@@ -121,69 +121,12 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
 
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 100,
-                decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.white,
-                boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2), // Shadow color
-                  offset: Offset(0, 3), // Changes position of shadow
-                  blurRadius: 6, // Increases the blur of the shadow
-                  spreadRadius: 0, // Increases the size of the shadow
-                  ),
-                ],
-                ),
-                child: Center(
-                  child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(onPressed: (){}, icon: Icon(Icons.mosque_rounded, size: 32,)),
-                        Text("Jejak solat", style: TextStyle(fontSize: 12),),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(onPressed: (){}, icon: Icon(Icons.import_contacts_rounded, size: 32,)),
-                        Text("Baca al-Quran", style: TextStyle(fontSize: 12),),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(onPressed: (){}, icon: Icon(Icons.star_rounded, size: 32,)),
-                        Text("Pencapaian", style: TextStyle(fontSize: 12),),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(onPressed: (){}, icon: Icon(Icons.contact_support_rounded, size: 32,)),
-                        Text("Hubungi pakar", style: TextStyle(fontSize: 12),),
-                      ],
-                    ),
-                  ],
-                )
-                ),
-              )
-              ),
-            ),
             
         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('AllPosts').snapshots(),
+        stream: FirebaseFirestore.instance.collection('users').where('role', isEqualTo: 'doctor').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final posts = snapshot.data!.docs;
-            final postCount = posts.length;
+            final doctors = snapshot.data!.docs;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -191,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(
-                    'Maklumat terkini',
+                    'Senarai pakar',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -201,16 +144,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   height: 500,
                   child: ListView.builder(
-                    itemCount: posts.length,
+                    itemCount: doctors.length,
                     itemBuilder: (context, index) {
-                      final post = posts[index].data();
-                      final postID = post['postID'] as String?;
-                      final userID = post['userID'] as String?; // Handle null value
+                      final doctor = doctors[index].data();
+                      final userID = doctor['userID'] as String?; // Handle null value
                       // final imageURL =
                       //     post['imageURL'] as String?;
-                      final title = post['title'] as String?; // Handle null value
-                      final description = post['description'] as String?; // Handle null value
-                      final date = post["date"] as String?;
+                      final username = doctor['username'] as String?; // Handle null value
 
                       // return GestureDetector(
                       //   onTap: () {
@@ -246,11 +186,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               CircleAvatar(
-                                radius: 12,
+                                radius: 24,
                                 backgroundColor: Colors.blue, // Set the profile image's background color
                                 child: Icon(
                                   Icons.person,
-                                  size: 16,
+                                  size: 24,
                                   color: Colors.white,
                                 ),
                               ),
@@ -262,16 +202,37 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                    Text(
-                                      '$userID', // Replace with the user's name
+                                      SizedBox(height: 12),
+                                      Text(
+                                      '$username', // Replace with the user's name
                                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                                       ),
-                                      //SizedBox(height: 8),
-                                      Text(
-                                      "$date", // Replace with the user's name
-                                      style: TextStyle(fontSize: 12),
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          SizedBox(height: 12),
+                                          CircleAvatar(
+                                          radius: 18,
+                                          backgroundColor: Colors.green, // Set the profile image's background color
+                                          child: Icon(
+                                            Icons.chat,
+                                            size: 18,
+                                            color: Colors.white,
+                                            ),
+                                          ),
+                                          CircleAvatar(
+                                          radius: 18,
+                                          backgroundColor: Colors.orange, // Set the profile image's background color
+                                          child: Icon(
+                                            Icons.calendar_month,
+                                            size: 18,
+                                            color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(height: 12),
+                                      
                                     ],
                                     ),
                                   ],
@@ -279,19 +240,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ],
                           ),
-                          Text(
-                          '$title',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 4), // Add some space between the title and the description
-                        Text(
-                          '$description',
-                          style: TextStyle(fontSize: 14),
-                          maxLines: 10,
-                        ),
                           ]
                         ),
                         ),
