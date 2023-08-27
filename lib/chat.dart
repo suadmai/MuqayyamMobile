@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'firebase/firebase_config.dart';
 
 class Chat extends StatefulWidget {
   final String userID;
@@ -8,13 +10,19 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
+
+  FirebaseFirestore firestore = FirebaseConfig.firestore;
+
   @override
   Widget build(BuildContext context) {
+    
+  //QuerySnapshot <Map <String, dynamic>> userDoc = firestore.collection("users").where('userID',isEqualTo:widget.userID).get() as QuerySnapshot<Map<String,dynamic>>;  
+  //String userName = userDoc.get('name').toString();
     return Scaffold(
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Hubungi pakar"),
+        title: Text("Bual dengan ${widget.userID}"),
         actions: [
           IconButton(
             onPressed: () {

@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'firebase/firebase_config.dart';
 import 'package:flutter/material.dart';
 
 import 'ContactExpert.dart';

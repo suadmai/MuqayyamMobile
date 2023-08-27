@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase/firebase_config.dart';
 import 'package:flutter/material.dart';
 
 import 'chat.dart';
@@ -30,6 +31,7 @@ class _ContactExpertState extends State<ContactExpert> {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseFirestore firestore = FirebaseConfig.firestore;
     return Scaffold(
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
@@ -125,7 +127,7 @@ class _ContactExpertState extends State<ContactExpert> {
           children: <Widget>[
             
         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('users').where('role', isEqualTo: 'doctor').snapshots(),
+        stream: firestore.collection('users').where('role', isEqualTo: 'doctor').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final doctors = snapshot.data!.docs;
