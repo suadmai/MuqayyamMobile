@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'chat.dart';
+
 class ContactExpert extends StatefulWidget {
   const ContactExpert({Key? key}) : super(key: key);
   @override
@@ -144,109 +146,77 @@ class _ContactExpertState extends State<ContactExpert> {
                 SizedBox(
                   height: 500,
                   child: ListView.builder(
-                    itemCount: doctors.length,
-                    itemBuilder: (context, index) {
-                      final doctor = doctors[index].data();
-                      final userID = doctor['userID'] as String?; // Handle null value
-                      // final imageURL =
-                      //     post['imageURL'] as String?;
-                      final username = doctor['username'] as String?; // Handle null value
+                  itemCount: doctors.length,
+                  itemBuilder: (context, index) {
+                    final doctor = doctors[index].data();
+                    final userID = doctor['userID'] as String?;
+                    final username = doctor['username'] as String?;
 
-                      // return GestureDetector(
-                      //   onTap: () {
-                      //     // Navigate to details page and pass the report details
-                      //     Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //         builder: (context) => ViewDetailsPage(
-                      //           reportID: reportID ?? '',
-                      //           userID: userID ?? '',
-                      //           animalType: animalType ?? '',
-                      //           imageURL: imageURL ?? '',
-                      //           title: title ?? '',
-                      //           description: description ?? '',
-                      //           location: location ?? '',
-                      //         ),
-                      //       ),
-                      //     );
-                      //   },
-                        //child: 
-                        return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        color: Colors.white,
-                        elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children:[
-                            Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                radius: 24,
-                                backgroundColor: Colors.blue, // Set the profile image's background color
-                                child: Icon(
-                                  Icons.person,
-                                  size: 24,
-                                  color: Colors.white,
-                                ),
+                    return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      color: Colors.white,
+                      elevation: 3,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 32,
+                              backgroundColor: Colors.blue,
+                              child: Icon(
+                                Icons.person,
+                                size: 32,
+                                color: Colors.white,
                               ),
-                              SizedBox(width: 8), // Add some space between the profile image and the name
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                            ),
+                            SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '$username',
+                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
-                                      SizedBox(height: 12),
-                                      Text(
-                                      '$username', // Replace with the user's name
-                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                      ElevatedButton.icon(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => Chat(userID: userID!), // Pass the userID to the ChatPage
+                                              ),
+                                            );
+                                        },
+                                        icon: Icon(Icons.chat),
+                                        label: Text('Bual'),
+                                        style: ElevatedButton.styleFrom(primary: Colors.green),
                                       ),
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          SizedBox(height: 12),
-                                          CircleAvatar(
-                                          radius: 18,
-                                          backgroundColor: Colors.green, // Set the profile image's background color
-                                          child: Icon(
-                                            Icons.chat,
-                                            size: 18,
-                                            color: Colors.white,
-                                            ),
-                                          ),
-                                          CircleAvatar(
-                                          radius: 18,
-                                          backgroundColor: Colors.orange, // Set the profile image's background color
-                                          child: Icon(
-                                            Icons.calendar_month,
-                                            size: 18,
-                                            color: Colors.white,
-                                            ),
-                                          ),
-                                        ],
+                                      ElevatedButton.icon(
+                                        onPressed: () {
+                          
+                                        },
+                                        icon: Icon(Icons.calendar_today),
+                                        label: Text('Buat Temu Janji'),
+                                        style: ElevatedButton.styleFrom(primary: Colors.orange),
                                       ),
-                                      
                                     ],
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          ]
+                            ),
+                          ],
                         ),
-                        ),
-                      );
-                      //);
-                    },
-                  ),
+                      ),
+                    );
+                  },
+                ),
                 ),
               ],
             );
@@ -260,170 +230,6 @@ class _ContactExpertState extends State<ContactExpert> {
           ],
         ),
         )
-      ),
-    );
-  }
-}
-
-class ReportDetailsPage extends StatefulWidget {
-  final String reportID;
-  final String userID;
-  final String animalType;
-  final String imageURL;
-  final String title;
-  final String description;
-  final String location;
-
-  const ReportDetailsPage({
-    Key? key,
-    required this.reportID,
-    required this.userID,
-    required this.animalType,
-    required this.title,
-    required this.description,
-    required this.imageURL,
-    required this.location,
-  }) : super(key: key);
-  @override
-  _ReportDetailsPageState createState() => _ReportDetailsPageState();
-}
-
-class _ReportDetailsPageState extends State<ReportDetailsPage> {
-  bool isFinished = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Report Details'),
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemCount: 1, // Only one item in the list
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget.imageURL.isNotEmpty)
-                SizedBox(
-                  width: 450,
-                  height: 450,
-                  child: Image.network(
-                    widget.imageURL,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              const SizedBox(height: 16),
-              Text(
-                'Title: ${widget.title}',
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-              const SizedBox(height: 10),
-              Text('Animal Type: ${widget.animalType}'),
-              const SizedBox(height: 10),
-              Text('By: ${widget.userID}'),
-              const SizedBox(height: 10),
-              Text('Details: ${widget.description}'),
-              const SizedBox(height: 10),
-              Text('Location: ${widget.location}'),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => EditReportPage(
-                  //       reportId : widget.reportID,
-                  //       originalTitle : widget.title,
-                  //       originalAnimalType : widget.animalType,
-                  //       originalLocation : widget.location,
-                  //       originalDescription : widget.description,
-                  //     ),
-                  //   ),
-                  // );
-                },
-                child: const Text('Edit Report'),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-//VIEW ONLY
-
-class ViewDetailsPage extends StatefulWidget {
-  final String reportID;
-  final String userID;
-  final String animalType;
-  final String imageURL;
-  final String title;
-  final String description;
-  final String location;
-
-  const ViewDetailsPage({
-    Key? key,
-    required this.reportID,
-    required this.userID,
-    required this.animalType,
-    required this.title,
-    required this.description,
-    required this.imageURL,
-    required this.location,
-  }) : super(key: key);
-  @override
-  _ViewDetailsPage createState() => _ViewDetailsPage();
-}
-
-
-
-class _ViewDetailsPage extends State<ViewDetailsPage> {
-  bool isFinished = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Report Details'),
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemCount: 1, // Only one item in the list
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget.imageURL.isNotEmpty)
-                SizedBox(
-                  width: 450,
-                  height: 450,
-                  child: Image.network(
-                    widget.imageURL,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              const SizedBox(height: 16),
-              Text(
-                'Title: ${widget.title}',
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-              const SizedBox(height: 10),
-              Text('Animal Type: ${widget.animalType}'),
-              const SizedBox(height: 10),
-              Text('By: ${widget.userID}'),
-              const SizedBox(height: 10),
-              Text('Details: ${widget.description}'),
-              const SizedBox(height: 10),
-              Text('Location: ${widget.location}'),
-              const SizedBox(height: 10),
-              
-            ],
-          );
-        },
       ),
     );
   }
