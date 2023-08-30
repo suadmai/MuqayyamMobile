@@ -367,6 +367,7 @@ class _ViewDetailsPage extends State<ViewDetailsPage> {
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
+              
               const SizedBox(height: 10),
               Text('Animal Type: ${widget.animalType}'),
               const SizedBox(height: 10),

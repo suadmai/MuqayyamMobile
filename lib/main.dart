@@ -1,20 +1,39 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:wildlifego/services/auth_gate.dart';
+import 'package:wildlifego/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(MyApp());
+import 'firebase_options.dart';
+
+Future<void> main() async {
+
+
+  WidgetsFlutterBinding.ensureInitialized();
+await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AuthService(),
+      child: const MyApp(),
+      
+      ),
+  );
+
+
+
 }
 
+
+//BAWAH NI LAMA PUNYA CODE
+
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Login and Register',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      initialRoute: '/login',
-      routes: {
-        '/login': (context) => LoginPage(),
-        '/register': (context) => RegisterPage(),
-      },
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: AuthGate(),
     );
   }
 }
