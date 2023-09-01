@@ -1,12 +1,13 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
 
-class Student extends StatefulWidget {
-  const Student({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
   @override
-  State<Student> createState() => _StudentState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 // Future<void> logout(BuildContext context) async {
@@ -19,44 +20,23 @@ class Student extends StatefulWidget {
 //   );
 // }
 
-class _StudentState extends State<Student> {
-  late List<CameraDescription> cameras;
-  late CameraController _cameraController;
-  bool _isCameraInitialized = false;
+class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    initializeCamera();
-  }
-
-  Future<void> initializeCamera() async {
-    cameras = await availableCameras();
-    _cameraController =
-        CameraController(cameras[0], ResolutionPreset.medium);
-    await _cameraController.initialize();
-    if (!mounted) return;
-    setState(() {
-      _isCameraInitialized = true;
-    });
-  }
-
-  @override
-  void dispose() {
-    _cameraController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        toolbarHeight: 100,
-        title: const Text("Selamat Pagi, Kak Jun!"),
+        title: const Text("Selamat pagi!"),
         actions: [
           IconButton(
             onPressed: () {
-              //logout(context);
+              //go to profile page
             },
             icon: const Icon(
               Icons.account_circle,
@@ -95,7 +75,7 @@ class _StudentState extends State<Student> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Student(),
+                      builder: (context) => const HomeScreen(),
                     ),
                   );
                 },
@@ -133,255 +113,213 @@ class _StudentState extends State<Student> {
           ),
         ),
       ),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('AllReports').snapshots(),
+      body: 
+      Center(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                height: 100,
+                decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+                boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2), // Shadow color
+                  offset: Offset(0, 3), // Changes position of shadow
+                  blurRadius: 6, // Increases the blur of the shadow
+                  spreadRadius: 0, // Increases the size of the shadow
+                  ),
+                ],
+                ),
+                child: Center(
+                  child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(onPressed: (){}, icon: Icon(Icons.mosque_rounded, size: 32,)),
+                        Text("Jejak solat", style: TextStyle(fontSize: 12),),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(onPressed: (){}, icon: Icon(Icons.import_contacts_rounded, size: 32,)),
+                        Text("Baca al-Quran", style: TextStyle(fontSize: 12),),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(onPressed: (){}, icon: Icon(Icons.star_rounded, size: 32,)),
+                        Text("Pencapaian", style: TextStyle(fontSize: 12),),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(onPressed: (){}, icon: Icon(Icons.contact_support_rounded, size: 32,)),
+                        Text("Hubungi pakar", style: TextStyle(fontSize: 12),),
+                      ],
+                    ),
+                  ],
+                )
+                ),
+              )
+              ),
+            ),
+            
+        StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance.collection('AllPosts').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final reports = snapshot.data!.docs;
+            final posts = snapshot.data!.docs;
+            final postCount = posts.length;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
+                SizedBox(height: 12),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: Text(
-                    'Latest Reports',
+                    'Maklumat terkini',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                Expanded(
+                SizedBox(
+                  height: 500,
                   child: ListView.builder(
-                    itemCount: reports.length,
+                    itemCount: posts.length,
                     itemBuilder: (context, index) {
-                      final report = reports[index].data();
-                      final reportID = report['reportId'] as String?;
-                      final userID =
-                          report['userId'] as String?; // Handle null value
-                      final animalType =
-                          report['animalType'] as String?; // Handle null value
-                      final imageURL =
-                          report['imageURL'] as String?; // Handle null value
-                      final title =
-                          report['title'] as String?; // Handle null value
-                      final description =
-                          report['description'] as String?; // Handle null value
-                      final location =
-                          report['location'] as String?; // Handle null value
+                      final post = posts[index].data();
+                      final postID = post['postID'] as String?;
+                      final userID = post['userID'] as String?; // Handle null value
+                      // final imageURL =
+                      //     post['imageURL'] as String?;
+                      final title = post['title'] as String?; // Handle null value
+                      final description = post['description'] as String?; // Handle null value
+                      final date = post["date"] as String?;
 
-                      return GestureDetector(
-                        onTap: () {
-                          // Navigate to details page and pass the report details
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ViewDetailsPage(
-                                reportID: reportID ?? '',
-                                userID: userID ?? '',
-                                animalType: animalType ?? '',
-                                imageURL: imageURL ?? '',
-                                title: title ?? '',
-                                description: description ?? '',
-                                location: location ?? '',
+                      // return GestureDetector(
+                      //   onTap: () {
+                      //     // Navigate to details page and pass the report details
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         builder: (context) => ViewDetailsPage(
+                      //           reportID: reportID ?? '',
+                      //           userID: userID ?? '',
+                      //           animalType: animalType ?? '',
+                      //           imageURL: imageURL ?? '',
+                      //           title: title ?? '',
+                      //           description: description ?? '',
+                      //           location: location ?? '',
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                        //child: 
+                        return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        color: Colors.white,
+                        elevation: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children:[
+                            Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                radius: 12,
+                                backgroundColor: Colors.blue, // Set the profile image's background color
+                                child: Icon(
+                                  Icons.person,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          child: ListTile(
-                            leading: imageURL != null
-                                ? Container(
-                                    width: 100,
-                                    height: 100,
-                                    child: Image.network(
-                                      imageURL,
-                                      fit: BoxFit.cover,
+                              SizedBox(width: 8), // Add some space between the profile image and the name
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                    Text(
+                                      '$userID', // Replace with the user's name
+                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                      ),
+                                      //SizedBox(height: 8),
+                                      Text(
+                                      "$date", // Replace with the user's name
+                                      style: TextStyle(fontSize: 12),
+                                      ),
+                                      SizedBox(height: 12),
+                                    ],
                                     ),
-                                  )
-                                : const SizedBox(),
-                            title: Text(title ?? 'No Title'),
-                            subtitle: Text(description ?? 'No Details'),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                          '$title',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
+                        SizedBox(height: 4), // Add some space between the title and the description
+                        Text(
+                          '$description',
+                          style: TextStyle(fontSize: 14),
+                          maxLines: 10,
+                        ),
+                          ]
+                        ),
+                        ),
                       );
+                      //);
                     },
                   ),
                 ),
               ],
             );
           } else if (snapshot.hasError) {
-            return const Text('Error retrieving data');
+            return ErrorWidget(snapshot.error!);
           } else {
             return const CircularProgressIndicator();
           }
         },
       ),
-    );
-  }
-}
-
-class ReportDetailsPage extends StatefulWidget {
-  final String reportID;
-  final String userID;
-  final String animalType;
-  final String imageURL;
-  final String title;
-  final String description;
-  final String location;
-
-  const ReportDetailsPage({
-    Key? key,
-    required this.reportID,
-    required this.userID,
-    required this.animalType,
-    required this.title,
-    required this.description,
-    required this.imageURL,
-    required this.location,
-  }) : super(key: key);
-  @override
-  _ReportDetailsPageState createState() => _ReportDetailsPageState();
-}
-
-class _ReportDetailsPageState extends State<ReportDetailsPage> {
-  bool isFinished = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Report Details'),
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemCount: 1, // Only one item in the list
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget.imageURL.isNotEmpty)
-                SizedBox(
-                  width: 450,
-                  height: 450,
-                  child: Image.network(
-                    widget.imageURL,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              const SizedBox(height: 16),
-              Text(
-                'Title: ${widget.title}',
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-              const SizedBox(height: 10),
-              Text('Animal Type: ${widget.animalType}'),
-              const SizedBox(height: 10),
-              Text('By: ${widget.userID}'),
-              const SizedBox(height: 10),
-              Text('Details: ${widget.description}'),
-              const SizedBox(height: 10),
-              Text('Location: ${widget.location}'),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => EditReportPage(
-                  //       reportId : widget.reportID,
-                  //       originalTitle : widget.title,
-                  //       originalAnimalType : widget.animalType,
-                  //       originalLocation : widget.location,
-                  //       originalDescription : widget.description,
-                  //     ),
-                  //   ),
-                  // );
-                },
-                child: const Text('Edit Report'),
-              ),
-            ],
-          );
-        },
+          ],
+        ),
+        )
       ),
     );
   }
 }
+
 
 //VIEW ONLY
 
-class ViewDetailsPage extends StatefulWidget {
-  final String reportID;
-  final String userID;
-  final String animalType;
-  final String imageURL;
-  final String title;
-  final String description;
-  final String location;
-
-  const ViewDetailsPage({
-    Key? key,
-    required this.reportID,
-    required this.userID,
-    required this.animalType,
-    required this.title,
-    required this.description,
-    required this.imageURL,
-    required this.location,
-  }) : super(key: key);
-  @override
-  _ViewDetailsPage createState() => _ViewDetailsPage();
-}
 
 
 
-class _ViewDetailsPage extends State<ViewDetailsPage> {
-  bool isFinished = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Report Details'),
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemCount: 1, // Only one item in the list
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget.imageURL.isNotEmpty)
-                SizedBox(
-                  width: 450,
-                  height: 450,
-                  child: Image.network(
-                    widget.imageURL,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              const SizedBox(height: 16),
-              Text(
-                'Title: ${widget.title}',
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-              
-              const SizedBox(height: 10),
-              Text('Animal Type: ${widget.animalType}'),
-              const SizedBox(height: 10),
-              Text('By: ${widget.userID}'),
-              const SizedBox(height: 10),
-              Text('Details: ${widget.description}'),
-              const SizedBox(height: 10),
-              Text('Location: ${widget.location}'),
-              const SizedBox(height: 10),
-              
-            ],
-          );
-        },
-      ),
-    );
-  }
-}

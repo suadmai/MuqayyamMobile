@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:wildlifego/services/auth_gate.dart';
@@ -5,6 +7,10 @@ import 'package:wildlifego/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
+import 'homeScreen.dart';
+
+List<Widget> imageWidgets = [];
+
 
 Future<void> main() async {
 
