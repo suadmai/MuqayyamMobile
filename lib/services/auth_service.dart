@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class AuthService extends ChangeNotifier {
-  //insance of auth
+  //instance of auth
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  // instance of firestore
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   //sign user in
   Future<UserCredential> signInWithEmailandPassword(
@@ -15,6 +19,13 @@ class AuthService extends ChangeNotifier {
         email: email,
         password: password,
       );
+
+      //create new documentfor user in collection in case doesent exist yet
+      _firebaseFirestore.collection("users").doc(userCredential.user?.uid).set({
+        "uid" : userCredential.user?.uid,
+        "email" : email,
+      });
+
 
       return userCredential;
     }
@@ -29,6 +40,7 @@ class AuthService extends ChangeNotifier {
   Future<UserCredential> signUpWithEmailandPassword(
       String email, String password) async {
     try {
+
       //create new user
       UserCredential userCredential =
           await _firebaseAuth.createUserWithEmailAndPassword(
@@ -36,9 +48,16 @@ class AuthService extends ChangeNotifier {
         password: password,
       );
 
+      //create new documentfor user in collection after create user
+
+      _firebaseFirestore.collection("users").doc(userCredential.user?.uid).set({
+        "uid" : userCredential.user?.uid,
+        "email" : email,
+      });
+
+
       return userCredential;
     }
-
     // catch any register errors
     on FirebaseAuthException catch (e) {
       throw Exception("You failed at being gehh!!! Try again lahh");

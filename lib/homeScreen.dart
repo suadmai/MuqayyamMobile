@@ -118,7 +118,7 @@ class _StudentState extends State<Student> {
                   // Add your trophy functionality here
                 },
                 icon: const Icon(Icons.emoji_events),
-                color: Colors.white,
+                color: Colors.white,  
               ),
 
               // Settings (You can replace this with your desired settings functionality)
