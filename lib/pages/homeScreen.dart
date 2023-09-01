@@ -3,6 +3,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../services/auth_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -26,6 +29,37 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
+  void signOut() async {
+  bool confirm = await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Sign Out'),
+        content: Text('Are you sure you want to sign out?'),
+        actions: <Widget>[
+          ElevatedButton(
+            child: Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+          ElevatedButton(
+            child: Text('Sign Out'),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+        ],
+      );
+    },
+  );
+
+  if (confirm) {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    authService.signOut();
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +68,10 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Selamat pagi!"),
         actions: [
+          IconButton(
+            onPressed: signOut,
+            icon: const Icon(Icons.logout),
+          ),
           IconButton(
             onPressed: () {
               //go to profile page

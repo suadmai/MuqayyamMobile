@@ -68,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   //welcome back
                   Text(
-                    'Welcome Back! Slayy!!!',
+                    'Welcome Back!',
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
