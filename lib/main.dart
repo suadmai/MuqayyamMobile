@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Only basic UI!"),
+        title: const Text("Baca Al-Quran"),
         actions: [
           IconButton(
             onPressed: () {
