@@ -1,50 +1,22 @@
 import 'package:flutter/material.dart';
 
-class TrackPrayer extends StatefulWidget {
-  const TrackPrayer({Key? key}) : super(key: key);
 
-  @override
-  State<TrackPrayer> createState() => _TrackPrayerState();
+
+void main() {
+  runApp(MyApp());
 }
 
-class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _animation;
-  bool isTimerRunning = false;
-  int _timerSeconds = 0;
-  final Duration animationDuration = Duration(seconds: 5);
-
-
-  Prayer subuh = Prayer()
-    ..prayerName = "subuh"
-    ..prayerStatus = "false";
-
-  // ... (similarly define other Prayer objects)
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize controllers and timers
-    // ...
-
-    // Set up animations and listeners
-    // ...
-  }
-
-  @override
-  void dispose() {
-    // Cancel timers and dispose of controllers
-    // ...
-    super.dispose();
-  }
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+      home:  Scaffold(
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Selamat pagi!"),
+        title: const Text("Only basic UI!"),
         actions: [
           IconButton(
             onPressed: () {
@@ -57,21 +29,19 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
           )
         ],
       ),
-      //floating action button must be center
+      
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          //Navigator.push(
-            //context,
-            //MaterialPageRoute(
-              //builder: (context) =>
-                  //CameraPage(cameraController: _cameraController),
-            //),
-          //);
+          
         }, 
         backgroundColor: Color(0xFF82618B),
         child: const Icon(Icons.podcasts),
       ),
+
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+      //BOTTOM APP BAR
+
       bottomNavigationBar: BottomAppBar(
         color: Color(0xFF82618B),
         shape: const CircularNotchedRectangle(),
@@ -84,12 +54,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
               // Home
               IconButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const TrackPrayer(),
-                    ),
-                  );
+                  
                 },
                 icon: const Icon(Icons.home),
                 color: Colors.white,
@@ -151,73 +116,12 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                   ),
                 ],
               ),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                         
-                          SizedBox(height: 3,),
-                          Text("Subuh", style: TextStyle(fontSize: 12),),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                         
-                          SizedBox(height: 3,),
-                          Text("Zohor", style: TextStyle(fontSize: 12),),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          
-                          SizedBox(height: 3,),
-                          Text("Asar", style: TextStyle(fontSize: 12),),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          
-                          SizedBox(height: 3,),
-                          Text("Maghrib", style: TextStyle(fontSize: 12),),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          
-                          SizedBox(height: 3,),
-                          Text("Isyak", style: TextStyle(fontSize: 12),),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              
             ),
           ),
       ],
       )
+    ),
     );
   }
-  }
-
-
-class Prayer {
-  String prayerName = "";
-  DateTime prayerTime = DateTime.now();
-  String prayerStatus = "false";
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: TrackPrayer(),
-  ));
 }
