@@ -6,7 +6,7 @@ import 'package:wildlifego/services/auth_gate.dart';
 import 'package:wildlifego/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
-import 'firebase_options.dart';
+import 'firebase/firebase_options.dart';
 import 'pages/homeScreen.dart';
 
 List<Widget> imageWidgets = [];
