@@ -260,7 +260,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final posts = snapshot.data!.docs;
-                    final postCount = posts.length;
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

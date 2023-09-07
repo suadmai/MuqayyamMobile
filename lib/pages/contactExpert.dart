@@ -152,6 +152,7 @@ class _ContactExpertState extends State<ContactExpert> {
                   itemBuilder: (context, index) {
                     final doctor = doctors[index].data();
                     final userID = doctor['userID'] as String?;
+                    final userEmail = doctor['email'] as String?;
                     final username = doctor['username'] as String?;
 
                     return Card(
@@ -192,7 +193,10 @@ class _ContactExpertState extends State<ContactExpert> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => Chat(userID: userID!), // Pass the userID to the ChatPage
+                                                builder: (context) => Chat(
+                                                receiverUserID: userID!,
+                                                receiverUserName: username!,
+                                                receiverUserEmail: userEmail!,), // Pass the userID to the ChatPage
                                               ),
                                             );
                                         },

@@ -20,11 +20,12 @@ class AuthService extends ChangeNotifier {
         password: password,
       );
 
+      //comment dulu for testing purpose
       //create new documentfor user in collection in case doesent exist yet
-      _firebaseFirestore.collection("users").doc(userCredential.user?.uid).set({
-        "uid" : userCredential.user?.uid,
-        "email" : email,
-      });
+      // _firebaseFirestore.collection("users").doc(userCredential.user?.uid).set({
+      //   "uid" : userCredential.user?.uid,
+      //   "email" : email,
+      // });
 
 
       return userCredential;
@@ -53,8 +54,9 @@ class AuthService extends ChangeNotifier {
       _firebaseFirestore.collection("users").doc(userCredential.user?.uid).set({
         "username" : username,
         "role" : role,
-        "uid" : userCredential.user?.uid,
+        "userID" : userCredential.user?.uid,
         "email" : email,
+        "score" : 0,
       });
 
 
