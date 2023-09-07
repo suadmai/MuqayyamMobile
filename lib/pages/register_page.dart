@@ -14,6 +14,8 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final usernameController = TextEditingController();
+  final roleController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
@@ -34,6 +36,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
     try{
       await authService.signUpWithEmailandPassword(
+        usernameController.text,
+        roleController.text,
         emailController.text,
         passwordController.text,
       );
@@ -87,6 +91,19 @@ class _RegisterPageState extends State<RegisterPage> {
                   const SizedBox(
                     height: 20,
                   ),
+
+                  MyTextField(
+                    controller: usernameController,
+                    hintText: "usename",
+                    obscureText: false,
+                  ),
+
+                  MyTextField(
+                    controller: roleController,
+                    hintText: "role",
+                    obscureText: false,
+                  ),
+
 
                   //email textfield
                   MyTextField(

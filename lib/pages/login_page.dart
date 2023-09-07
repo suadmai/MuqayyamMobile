@@ -16,6 +16,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   //text controllers
+  
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -79,7 +80,6 @@ class _LoginPageState extends State<LoginPage> {
                     height: 20,
                   ),
 
-                  //email textfield
                   MyTextField(
                     controller: emailController,
                     hintText: "Email",
