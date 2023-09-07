@@ -52,31 +52,11 @@ class _ChatState extends State<Chat> {
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Handle FAB tap
-        },
-        backgroundColor: Color(0xFF82618B),
-        child: const Icon(Icons.podcasts),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: const BottomAppBar(
-        color: Color(0xFF82618B),
-        shape: CircularNotchedRectangle(),
-        notchMargin: 10.0,
-        child: SizedBox(
-          height: 60.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              // Navigation buttons here
-            ],
-          ),
-        ),
-      ),
+      
       // Rest of your content here
       body: Column(
         children: [
+          SizedBox(height: 20,),
           Expanded(
             child: _buildMessageList(),
             ),
@@ -115,7 +95,7 @@ Widget _buildMessageList(){
   return Container(
     alignment: alignment,
     child: Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
       child: Column(
         crossAxisAlignment: (data['senderId'] == _firebaseAuth.currentUser?.uid)
             ? CrossAxisAlignment.end
@@ -124,8 +104,16 @@ Widget _buildMessageList(){
             ? MainAxisAlignment.end
             : MainAxisAlignment.start,
         children: [
-          Text(data['senderEmail']),
-          Text(data['message']),
+          //Text(data['senderEmail']),
+          Container(
+            decoration: BoxDecoration(
+              color: (data['senderId'] == _firebaseAuth.currentUser?.uid)
+                  ? Colors.blue
+                  : Colors.grey[500],
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.all(10),
+            child: Text(data['message'], style: const TextStyle(color: Colors.white),)),
         ],
       ),
     ),
@@ -145,10 +133,10 @@ Widget _buildMessageList(){
             ),
 
             CircleAvatar(
-              radius: 28,
+              radius: 24,
               backgroundColor: Colors.blue,
               child: IconButton(onPressed: sendMessage, 
-            icon: const Icon(Icons.arrow_upward, size: 24,)),
+            icon: const Icon(Icons.arrow_upward, size: 16, color: Colors.white,)),
             )
             
         ],
