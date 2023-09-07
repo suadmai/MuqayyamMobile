@@ -6,17 +6,17 @@ void main() {
   runApp(MyApp());
 }
 
-class EnrolledClassWidget extends StatelessWidget {
-  final String className;
-  final String teacherName;
+class LevelofSurahWidget extends StatelessWidget {
+  final String level;
+  final String leveldesc;
   final Color backgroundColor;
-  final List<String> fruits;
+  final List<String> surahs;
 
-  EnrolledClassWidget({
-    required this.className,
-    required this.teacherName,
+  LevelofSurahWidget({
+    required this.level,
+    required this.leveldesc,
     required this.backgroundColor,
-    required this.fruits,
+    required this.surahs,
   });
 
   @override
@@ -27,10 +27,11 @@ class EnrolledClassWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,  //items to the right
         children: [
           Container(
+            width: double.infinity,
             decoration: BoxDecoration(
               color: backgroundColor,
               borderRadius: BorderRadius.only(
@@ -43,7 +44,7 @@ class EnrolledClassWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  className,
+                  level,
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
@@ -52,7 +53,7 @@ class EnrolledClassWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 8.0),
                 Text(
-                  'Teacher: $teacherName',
+                  'Teacher: $leveldesc',
                   style: TextStyle(
                     fontSize: 16.0,
                     color: Colors.white, // Text color for teacher name
@@ -66,9 +67,9 @@ class EnrolledClassWidget extends StatelessWidget {
             padding: EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: fruits
-                  .map((fruit) => Text(
-                        fruit,
+              children: surahs
+                  .map((surah) => Text(
+                        surah,
                         style: TextStyle(
                           fontSize: 14.0,
                           color: Colors.black, // Text color for fruits
@@ -130,20 +131,20 @@ class MyApp extends StatelessWidget {
 
 
 
-             EnrolledClassWidget(
-                  className: 'Mathematics',
-                  teacherName: 'Mr. Smith',
+             LevelofSurahWidget(
+                  level: 'Level 1',
+                  leveldesc: 'Mr. Smith',
                   backgroundColor: Colors.blue, // Set your desired background color
-                  fruits: ['Apple', 'Banana', 'Orange'],
+                  surahs: ['Apple', 'Banana', 'Orange'],
                 ),
       
                 SizedBox(height: 16.0), // Added SizedBox
       
-                EnrolledClassWidget(
-                  className: 'Mathematics',
-                  teacherName: 'Mr. Smith',
+                LevelofSurahWidget(
+                  level: 'Mathematics',
+                  leveldesc: 'Mr. Smith',
                   backgroundColor: Color.fromARGB(255, 210, 21, 21), // Set your desired background color
-                  fruits: ['Apple', 'Banana', 'Orange'],
+                  surahs: ['Apple', 'Banana', 'Orange'],
                 ),
             
           
