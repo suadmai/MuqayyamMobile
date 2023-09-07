@@ -6,6 +6,83 @@ void main() {
   runApp(MyApp());
 }
 
+class EnrolledClassWidget extends StatelessWidget {
+  final String className;
+  final String teacherName;
+  final Color backgroundColor;
+  final List<String> fruits;
+
+  EnrolledClassWidget({
+    required this.className,
+    required this.teacherName,
+    required this.backgroundColor,
+    required this.fruits,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+        crossAxisAlignment: CrossAxisAlignment.start,  //items to the right
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12.0),
+                topRight: Radius.circular(12.0),
+              ),
+            ),
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  className,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white, // Text color for class name
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                Text(
+                  'Teacher: $teacherName',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.white, // Text color for teacher name
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            color: Colors.white, // Background color for the list of fruits
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: fruits
+                  .map((fruit) => Text(
+                        fruit,
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: Colors.black, // Text color for fruits
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -29,6 +106,8 @@ class MyApp extends StatelessWidget {
           )
         ],
       ),
+
+
       
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -40,7 +119,37 @@ class MyApp extends StatelessWidget {
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      //BOTTOM APP BAR
+      
+      
+      body: Center(
+        child: Column(
+          
+          children: [
+
+            SizedBox(height: 16.0), // Added SizedBox
+
+
+
+             EnrolledClassWidget(
+                  className: 'Mathematics',
+                  teacherName: 'Mr. Smith',
+                  backgroundColor: Colors.blue, // Set your desired background color
+                  fruits: ['Apple', 'Banana', 'Orange'],
+                ),
+      
+                SizedBox(height: 16.0), // Added SizedBox
+      
+                EnrolledClassWidget(
+                  className: 'Mathematics',
+                  teacherName: 'Mr. Smith',
+                  backgroundColor: Color.fromARGB(255, 210, 21, 21), // Set your desired background color
+                  fruits: ['Apple', 'Banana', 'Orange'],
+                ),
+            
+          
+        ],
+        ),
+      ),
 
       bottomNavigationBar: BottomAppBar(
         color: Color(0xFF82618B),
@@ -90,37 +199,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          Center(
-          child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-          
-            ],
-          ),
-        ),
-        Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: Container(
-              height: 80,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    offset: Offset(0, 3),
-                    blurRadius: 6,
-                    spreadRadius: 0,
-                  ),
-                ],
-              ),
-              
-            ),
-          ),
-      ],
-      )
+
     ),
     );
   }
