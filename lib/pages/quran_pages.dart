@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class LevelofSurahWidget extends StatefulWidget {
+class LevelofSurahWidget extends StatelessWidget {
   final String level;
   final String leveldesc;
   final List<String> surahs;
@@ -13,11 +13,6 @@ class LevelofSurahWidget extends StatefulWidget {
     required this.backgroundImageAsset,
   });
 
-  @override
-  State<LevelofSurahWidget> createState() => _LevelofSurahWidgetState();
-}
-
-class _LevelofSurahWidgetState extends State<LevelofSurahWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -37,7 +32,7 @@ class _LevelofSurahWidgetState extends State<LevelofSurahWidget> {
                 topRight: Radius.circular(12.0),
               ),
               image: DecorationImage(
-                image: AssetImage(widget.backgroundImageAsset),
+                image: AssetImage(backgroundImageAsset),
                 fit: BoxFit.cover,
               ),
             ),
@@ -45,10 +40,8 @@ class _LevelofSurahWidgetState extends State<LevelofSurahWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                //For background image specification
-
                 Text(
-                  widget.level,
+                  level,
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
@@ -57,7 +50,7 @@ class _LevelofSurahWidgetState extends State<LevelofSurahWidget> {
                 ),
                 SizedBox(height: 8.0),
                 Text(
-                  'Teacher: ${widget.leveldesc}',
+                  'Teacher: $leveldesc',
                   style: TextStyle(
                     fontSize: 16.0,
                     color: Colors.white,
@@ -71,24 +64,24 @@ class _LevelofSurahWidgetState extends State<LevelofSurahWidget> {
             padding: EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: widget.surahs
+              children: surahs
                   .map((surah) => GestureDetector(
                         onTap: () {
-                          //navigate to surah page
+                          // Navigate to the placeholder page when tapped.
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Placeholder()),
+                            MaterialPageRoute(
+                              builder: (context) => Placeholder(), // Replace with your actual page
+                            ),
                           );
                         },
-                        
                         child: Text(
                           surah,
                           style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.black,
+                            fontSize: 14.0,
+                            color: Colors.black,
                           ),
                         ),
-                        
                       ))
                   .toList(),
             ),
@@ -200,3 +193,4 @@ class _QuranPageState extends State<QuranPage> {
     );
   }
 }
+
