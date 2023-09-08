@@ -32,7 +32,7 @@ class AuthService extends ChangeNotifier {
     }
     // catch any login errors
     on FirebaseAuthException catch (e) {
-      throw Exception("You are not Gehh yet!!! You cannot enter lahh");
+      throw Exception("You are not a User yet. Become one now.");
     }
   }
 
@@ -64,7 +64,7 @@ class AuthService extends ChangeNotifier {
     }
     // catch any register errors
     on FirebaseAuthException catch (e) {
-      throw Exception("You failed at being gehh!!! Try again lahh");
+      throw Exception("You failed at register.Try again.");
     }
   }
 

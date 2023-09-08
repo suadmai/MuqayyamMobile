@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
+import 'package:wildlifego/pages/quran_pages.dart';
 
 import '../services/auth_service.dart';
 
@@ -200,7 +201,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   IconButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const QuranPage(),
+                                          ),
+                                        );
+                                      },
                                       icon: Icon(
                                         Icons.import_contacts_rounded,
                                         size: 32,
@@ -215,7 +224,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   IconButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const ContactExpert(), // Pass the userID to the ChatPage
+                                          ),
+                                        );
+                                      },
                                       icon: Icon(
                                         Icons.star_rounded,
                                         size: 32,

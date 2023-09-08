@@ -81,7 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   //welcome back
                   Text(
-                    " Let's Go Bitchesss!",
+                    " Register Here!",
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -149,7 +149,7 @@ class _RegisterPageState extends State<RegisterPage> {
                    Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Already Gay?"),
+                      Text("Already a user?"),
                       SizedBox(width: 4),
                       GestureDetector(
                         onTap: widget.onTap,

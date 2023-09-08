@@ -112,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Not gay yet?"),
+                      Text("Not a user yet?"),
                       SizedBox(width: 4),
                       GestureDetector(
                         onTap: widget.onTap,
