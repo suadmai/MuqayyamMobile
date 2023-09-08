@@ -39,20 +39,12 @@ class _ChatState extends State<Chat> {
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: Text("Bual dengan ${widget.receiverUserName}"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              // Go to profile page
-            },
-            icon: const Icon(
-              Icons.account_circle,
-              size: 30,
-            ),
-          )
-        ],
-      ),
-      
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: 
+              Text(widget.receiverUserName),
+          ),
+        ),
       // Rest of your content here
       body: Column(
         children: [
