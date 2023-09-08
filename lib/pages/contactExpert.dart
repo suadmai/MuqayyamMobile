@@ -24,6 +24,7 @@ class ContactExpert extends StatefulWidget {
 // }
 
 class _ContactExpertState extends State<ContactExpert> {
+
   @override
   void initState() {
     super.initState();
@@ -127,7 +128,10 @@ class _ContactExpertState extends State<ContactExpert> {
           children: <Widget>[
             
         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: firestore.collection('users').where('role', isEqualTo: 'doctor').snapshots(),
+        stream: firestore.collection('users')
+        .where('role', isEqualTo: 'doctor')
+        .where('userID', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)//taknak tunjuk diri sendiri
+        .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final doctors = snapshot.data!.docs;
