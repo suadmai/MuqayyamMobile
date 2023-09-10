@@ -4,8 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wildlifego/pages/TrackPrayer.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
-import 'package:wildlifego/pages/quran_pages.dart';
+import 'package:wildlifego/pages/new_quran_page.dart';
 
 import '../services/auth_service.dart';
 
@@ -186,7 +187,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   IconButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const TrackPrayer(),
+                                          ),
+                                        );
+                                      },
                                       icon: Icon(
                                         Icons.mosque_rounded,
                                         size: 32,

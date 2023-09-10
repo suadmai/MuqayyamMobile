@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'dart:async';
 
 class LevelofSurahWidget extends StatelessWidget {
   final String level;
@@ -71,7 +74,8 @@ class LevelofSurahWidget extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Placeholder(), // Replace with your actual page
+                              builder: (context) =>
+                                  Placeholder(), // Replace with your actual page
                             ),
                           );
                         },
@@ -131,6 +135,9 @@ class _QuranPageState extends State<QuranPage> {
         body: Center(
           child: Column(
             children: [
+
+
+              // 
               SizedBox(height: 16.0),
               LevelofSurahWidget(
                 level: 'Level 1',
@@ -148,6 +155,8 @@ class _QuranPageState extends State<QuranPage> {
             ],
           ),
         ),
+
+        //Bottom App Bar
         bottomNavigationBar: BottomAppBar(
           color: Color(0xFF82618B),
           shape: const CircularNotchedRectangle(),
@@ -193,4 +202,3 @@ class _QuranPageState extends State<QuranPage> {
     );
   }
 }
-
