@@ -17,6 +17,7 @@ class _QuranPageState extends State<QuranPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color(0xFF82618B),
         title: const Text('Quran'),
         actions: [],
       ),

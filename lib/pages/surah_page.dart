@@ -11,6 +11,7 @@ class SurahPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(surahName),
+        backgroundColor: const Color(0xFF82618B),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -48,40 +49,23 @@ class SurahPage extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Ayat $ayatNumber:',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    Text(
-                      'Arabic:',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
+                    
+                    
                     Text(
                       arabic,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 32,
                       ),
                     ),
                     SizedBox(height: 8),
-                    Text(
-                      'Meaning:',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
+                    
                     Text(
                       meaning,
                       style: TextStyle(
                         fontSize: 16,
                       ),
                     ),
+                    SizedBox(height: 8),
                     Divider(), // Add a divider between ayats
                   ],
                 );
