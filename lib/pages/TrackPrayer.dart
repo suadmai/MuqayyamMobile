@@ -34,6 +34,7 @@ class Prayer{
   DateTime prayerTime = DateTime.now();
   bool prayed = false;
   bool missed = false;
+  int prayerMark = 0;
 }
 
 class TrackPrayer extends StatefulWidget {
@@ -69,7 +70,8 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                 ..prayerName = "subuh"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false;
+                ..missed = false
+                ..prayerMark = 6;//sebab kena bangun subuh
 
   Prayer syuruk = Prayer()
                 ..prayerName = "syuruk"
@@ -81,25 +83,29 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                 ..prayerName = "zohor"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false;
+                ..missed = false
+                ..prayerMark = 4;//because zohor has 4 rakaat
 
   Prayer asar = Prayer()
                 ..prayerName = "asar"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false;
+                ..missed = false
+                ..prayerMark = 4;//because asar has 4 rakaat
 
   Prayer maghrib = Prayer()
                 ..prayerName = "maghrib"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false;
+                ..missed = false
+                ..prayerMark = 3;//because maghrib has 3 rakaat
 
   Prayer isyak = Prayer()
                 ..prayerName = "isyak"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false;
+                ..missed = false
+                ..prayerMark = 5;
 
    @override
     void initState() {
@@ -161,7 +167,9 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
       currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     }
 
-    await FirebaseFirestore.instance.collection('daily_prayers').doc(currentDate).set(prayerData);
+    //create a daily_prayers collection in firebase for each user
+    await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('daily_prayers').doc(currentDate).set(prayerData);
+    //await FirebaseFirestore.instance.collection('daily_prayers').doc(currentDate).set(prayerData);
     print('firebase write from storePrayerData');
   }
 
@@ -180,7 +188,8 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
         //print('the date is $currentDate');
       }
 
-      DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('daily_prayers').doc(currentDate).get();
+      //DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('daily_prayers').doc(currentDate).get();
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('daily_prayers').doc(currentDate).get();
       print('firebase read from syncPrayerData');
       if(snapshot.exists){
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
@@ -365,8 +374,12 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   }
 
   void performPrayer() {
-    setState(() {
+    setState(() async {
     currentPrayer.prayed = true;
+    //add to user score
+    await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).update({
+      'score': FieldValue.increment(currentPrayer.prayerMark),
+    });
     storePrayerData();
     //print("${currentPrayer.prayerName} prayed}");
     //checkForMissedPrayers();
