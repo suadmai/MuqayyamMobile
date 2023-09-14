@@ -2,9 +2,9 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase/firebase_config.dart';
 import 'package:flutter/material.dart';
 
-import '../firebase/firebase_config.dart';
 import 'chat.dart';
 
 class ContactExpert extends StatefulWidget {
@@ -24,7 +24,6 @@ class ContactExpert extends StatefulWidget {
 // }
 
 class _ContactExpertState extends State<ContactExpert> {
-
   @override
   void initState() {
     super.initState();
@@ -128,10 +127,7 @@ class _ContactExpertState extends State<ContactExpert> {
           children: <Widget>[
             
         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: firestore.collection('users')
-        .where('role', isEqualTo: 'doctor')
-        .where('userID', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)//taknak tunjuk diri sendiri
-        .snapshots(),
+        stream: firestore.collection('users').where('role', isEqualTo: 'doctor').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final doctors = snapshot.data!.docs;
@@ -156,7 +152,6 @@ class _ContactExpertState extends State<ContactExpert> {
                   itemBuilder: (context, index) {
                     final doctor = doctors[index].data();
                     final userID = doctor['userID'] as String?;
-                    final userEmail = doctor['email'] as String?;
                     final username = doctor['username'] as String?;
 
                     return Card(
@@ -197,10 +192,7 @@ class _ContactExpertState extends State<ContactExpert> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => Chat(
-                                                receiverUserID: userID!,
-                                                receiverUserName: username!,
-                                                receiverUserEmail: userEmail!,), // Pass the userID to the ChatPage
+                                                builder: (context) => Chat(userID: userID!), // Pass the userID to the ChatPage
                                               ),
                                             );
                                         },
