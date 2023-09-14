@@ -34,7 +34,6 @@ class Prayer{
   DateTime prayerTime = DateTime.now();
   bool prayed = false;
   bool missed = false;
-  int prayerMark = 0;
 }
 
 class TrackPrayer extends StatefulWidget {
@@ -64,14 +63,14 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   late Timer _nextPrayerTimer;
   bool prayersReset = false;
   bool prayerTimesUpdated = false;
+  DateTime lastResetDate = DateTime.now().subtract(Duration(days: 1));
   Prayer currentPrayer = Prayer();
 
   Prayer subuh = Prayer()
                 ..prayerName = "subuh"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false
-                ..prayerMark = 6;//sebab kena bangun subuh
+                ..missed = false;
 
   Prayer syuruk = Prayer()
                 ..prayerName = "syuruk"
@@ -83,29 +82,25 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                 ..prayerName = "zohor"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false
-                ..prayerMark = 4;//because zohor has 4 rakaat
+                ..missed = false;
 
   Prayer asar = Prayer()
                 ..prayerName = "asar"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false
-                ..prayerMark = 4;//because asar has 4 rakaat
+                ..missed = false;
 
   Prayer maghrib = Prayer()
                 ..prayerName = "maghrib"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false
-                ..prayerMark = 3;//because maghrib has 3 rakaat
+                ..missed = false;
 
   Prayer isyak = Prayer()
                 ..prayerName = "isyak"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false
-                ..prayerMark = 5;
+                ..missed = false;
 
    @override
     void initState() {
@@ -167,7 +162,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
       currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     }
 
-    //create a daily_prayers collection in firebase for each user
+    //store prayer data for each user
     await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('daily_prayers').doc(currentDate).set(prayerData);
     //await FirebaseFirestore.instance.collection('daily_prayers').doc(currentDate).set(prayerData);
     print('firebase write from storePrayerData');
@@ -188,7 +183,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
         //print('the date is $currentDate');
       }
 
-      //DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('daily_prayers').doc(currentDate).get();
+      //read prayer data from firebase of each user
       DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('daily_prayers').doc(currentDate).get();
       print('firebase read from syncPrayerData');
       if(snapshot.exists){
@@ -262,16 +257,22 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   }
 
   void resetPrayers(){
-    if(!subuh.prayed){
+    print('resetPrayers() called');
+    DateTime now = DateTime.now();
+
+    if(now.day != lastResetDate.day){
+        print('last reset was on $lastResetDate\nresetting prayers');
         subuh..prayed = false..missed = false;
         syuruk..prayed = true..missed = false;
         zohor..prayed = false..missed = false;
         asar..prayed = false..missed = false;
         maghrib..prayed = false..missed = false;
         isyak..prayed = false..missed = false;
-        prayersReset = true;
+        lastResetDate = DateTime.now();
     }
-    //print('reset prayers called'); 
+    else{
+      print('prayers already reset');
+    }
   }
 
   void setCurrentPrayer(){
@@ -282,6 +283,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
       if(now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)){
         currentPrayer = subuh;
+        //fetchPrayerTimes();
         resetPrayers();
         storePrayerData();
         //print('current prayer: ${currentPrayer.prayerName}');
@@ -330,21 +332,19 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   } 
   else { // If the current prayer is the last prayer of the day (isyak)
     nextPrayer = subuh;
-    if(DateTime.now().isAfter(isyak.prayerTime) && DateTime.now().isBefore(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day+1, 0, 0, 0))){
-      
-      DateTime nextSubuh = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day+1, subuh.prayerTime.hour, subuh.prayerTime.minute);
-      timeRemaining = nextSubuh.difference(DateTime.now().add(Duration(days: 1)));
-      timeRemaining = Duration(hours: 24) + timeRemaining;
-
-      // print('current time: ${DateTime.now()}');
-      // print('next azan: ${nextSubuh}');
-      //timeRemaining = Duration.zero;
-      }
-    else{
-      print('time now is ${DateTime.now()}');
-      print('next azan is ${nextPrayer.prayerTime}');
-      timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
+    if (DateTime.now().isAfter(isyak.prayerTime)) {
+    // Calculate time remaining until the next "subuh" prayer after midnight
+    DateTime nextSubuh = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, subuh.prayerTime.hour, subuh.prayerTime.minute);
+    timeRemaining = nextSubuh.difference(DateTime.now());
+    if (timeRemaining.isNegative) {
+      // If the current time is after "subuh," it means the next "subuh" is tomorrow
+      nextSubuh = nextSubuh.add(Duration(days: 1));
+      timeRemaining = nextSubuh.difference(DateTime.now());
     }
+  } else {
+    // Calculate time remaining for other prayers
+    timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
+}
   }
 
   int hours = timeRemaining.inHours;
@@ -374,12 +374,8 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   }
 
   void performPrayer() {
-    setState(() async {
+    setState(() {
     currentPrayer.prayed = true;
-    //add to user score
-    await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).update({
-      'score': FieldValue.increment(currentPrayer.prayerMark),
-    });
     storePrayerData();
     //print("${currentPrayer.prayerName} prayed}");
     //checkForMissedPrayers();
