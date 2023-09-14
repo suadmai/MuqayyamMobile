@@ -290,134 +290,119 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 12),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'Maklumat terkini',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Text(
+                                'Maklumat terkini',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                        //listview builder here
                         SizedBox(
-                          height: 500,
+                          height: 425,
                           child: ListView.builder(
-                            itemCount: posts.length,
-                            itemBuilder: (context, index) {
-                              final post = posts[index].data();
-                              final postID = post['postID'] as String?;
-                              final userID = post['userID']
-                                  as String?; // Handle null value
-                              // final imageURL =
-                              //     post['imageURL'] as String?;
-                              final title =
-                                  post['title'] as String?; // Handle null value
-                              final description = post['description']
-                                  as String?; // Handle null value
-                              final date = post["date"] as String?;
-
-                              // return GestureDetector(
-                              //   onTap: () {
-                              //     // Navigate to details page and pass the report details
-                              //     Navigator.push(
-                              //       context,
-                              //       MaterialPageRoute(
-                              //         builder: (context) => ViewDetailsPage(
-                              //           reportID: reportID ?? '',
-                              //           userID: userID ?? '',
-                              //           animalType: animalType ?? '',
-                              //           imageURL: imageURL ?? '',
-                              //           title: title ?? '',
-                              //           description: description ?? '',
-                              //           location: location ?? '',
-                              //         ),
-                              //       ),
-                              //     );
-                              //   },
-                              //child:
-                              return Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                color: Colors.white,
-                                elevation: 3,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            CircleAvatar(
-                                              radius: 12,
-                                              backgroundColor: Colors
-                                                  .blue, // Set the profile image's background color
-                                              child: Icon(
-                                                Icons.person,
-                                                size: 16,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                                width:
-                                                    8), // Add some space between the profile image and the name
-                                            Expanded(
-                                              child: Column(
+                                  itemCount: posts.length,
+                                  itemBuilder: (context, index) {
+                                    final post = posts[index].data();
+                                    final postID = post['postID'] as String?;
+                                    final userID = post['userID']
+                                        as String?; // Handle null value
+                                    // final imageURL =
+                                    //     post['imageURL'] as String?;
+                                    final title =
+                                        post['title'] as String?; // Handle null value
+                                    final description = post['description']
+                                        as String?; // Handle null value
+                                    final date = post["date"] as String?;
+                                    
+                                    return Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      color: Colors.white,
+                                      elevation: 3,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        '$userID', // Replace with the user's name
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      //SizedBox(height: 8),
-                                                      Text(
-                                                        "$date", // Replace with the user's name
-                                                        style: TextStyle(
-                                                            fontSize: 12),
-                                                      ),
-                                                      SizedBox(height: 12),
-                                                    ],
+                                                  CircleAvatar(
+                                                    radius: 12,
+                                                    backgroundColor: Colors
+                                                        .blue, // Set the profile image's background color
+                                                    child: Icon(
+                                                      Icons.person,
+                                                      size: 16,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                      width:
+                                                          8), // Add some space between the profile image and the name
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment.start,
+                                                      children: [
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              '$userID', // Replace with the user's name
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                            //SizedBox(height: 8),
+                                                            Text(
+                                                              "$date", // Replace with the user's name
+                                                              style: TextStyle(
+                                                                  fontSize: 12),
+                                                            ),
+                                                            SizedBox(height: 12),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          '$title',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                            height:
-                                                4), // Add some space between the title and the description
-                                        Text(
-                                          '$description',
-                                          style: TextStyle(fontSize: 14),
-                                          maxLines: 10,
-                                        ),
-                                      ]),
+                                              Text(
+                                                '$title',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                  height:
+                                                      4), // Add some space between the title and the description
+                                              Text(
+                                                '$description',
+                                                style: TextStyle(fontSize: 14),
+                                                maxLines: 10,
+                                              ),
+                                            ]),
+                                      ),
+                                    );
+                                    //);
+                                  },
                                 ),
-                              );
-                              //);
-                            },
-                          ),
                         ),
                       ],
                     );
