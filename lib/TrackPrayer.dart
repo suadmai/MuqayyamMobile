@@ -63,6 +63,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   late Timer _nextPrayerTimer;
   bool prayersReset = false;
   bool prayerTimesUpdated = false;
+  DateTime lastResetDate = DateTime.now().subtract(Duration(days: 1));
   Prayer currentPrayer = Prayer();
 
   Prayer subuh = Prayer()
@@ -253,16 +254,22 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   }
 
   void resetPrayers(){
-    if(!subuh.prayed){
+    print('resetPrayers() called');
+    DateTime now = DateTime.now();
+
+    if(now.day != lastResetDate.day){
+        print('last reset was on $lastResetDate\nresetting prayers');
         subuh..prayed = false..missed = false;
         syuruk..prayed = true..missed = false;
         zohor..prayed = false..missed = false;
         asar..prayed = false..missed = false;
         maghrib..prayed = false..missed = false;
         isyak..prayed = false..missed = false;
-        prayersReset = true;
+        lastResetDate = DateTime.now();
     }
-    //print('reset prayers called'); 
+    else{
+      print('prayers already reset');
+    }
   }
 
   void setCurrentPrayer(){
@@ -273,6 +280,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
       if(now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)){
         currentPrayer = subuh;
+        //fetchPrayerTimes();
         resetPrayers();
         storePrayerData();
         //print('current prayer: ${currentPrayer.prayerName}');
@@ -321,21 +329,19 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   } 
   else { // If the current prayer is the last prayer of the day (isyak)
     nextPrayer = subuh;
-    if(DateTime.now().isAfter(isyak.prayerTime) && DateTime.now().isBefore(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day+1, 0, 0, 0))){
-      
-      DateTime nextSubuh = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day+1, subuh.prayerTime.hour, subuh.prayerTime.minute);
-      timeRemaining = nextSubuh.difference(DateTime.now().add(Duration(days: 1)));
-      timeRemaining = Duration(hours: 24) + timeRemaining;
-
-      // print('current time: ${DateTime.now()}');
-      // print('next azan: ${nextSubuh}');
-      //timeRemaining = Duration.zero;
-      }
-    else{
-      print('time now is ${DateTime.now()}');
-      print('next azan is ${nextPrayer.prayerTime}');
-      timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
+    if (DateTime.now().isAfter(isyak.prayerTime)) {
+    // Calculate time remaining until the next "subuh" prayer after midnight
+    DateTime nextSubuh = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, subuh.prayerTime.hour, subuh.prayerTime.minute);
+    timeRemaining = nextSubuh.difference(DateTime.now());
+    if (timeRemaining.isNegative) {
+      // If the current time is after "subuh," it means the next "subuh" is tomorrow
+      nextSubuh = nextSubuh.add(Duration(days: 1));
+      timeRemaining = nextSubuh.difference(DateTime.now());
     }
+  } else {
+    // Calculate time remaining for other prayers
+    timeRemaining = nextPrayer.prayerTime.difference(DateTime.now());
+}
   }
 
   int hours = timeRemaining.inHours;
