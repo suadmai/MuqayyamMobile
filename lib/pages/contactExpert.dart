@@ -2,9 +2,9 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../firebase/firebase_config.dart';
 import 'package:flutter/material.dart';
 
+import '../firebase/firebase_config.dart';
 import 'chat.dart';
 
 class ContactExpert extends StatefulWidget {
@@ -24,6 +24,7 @@ class ContactExpert extends StatefulWidget {
 // }
 
 class _ContactExpertState extends State<ContactExpert> {
+
   @override
   void initState() {
     super.initState();
@@ -127,7 +128,10 @@ class _ContactExpertState extends State<ContactExpert> {
           children: <Widget>[
             
         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: firestore.collection('users').where('role', isEqualTo: 'doctor').snapshots(),
+        stream: firestore.collection('users')
+        .where('role', isEqualTo: 'doctor')
+        .where('userID', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)//taknak tunjuk diri sendiri
+        .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final doctors = snapshot.data!.docs;
@@ -136,7 +140,7 @@ class _ContactExpertState extends State<ContactExpert> {
               children: [
                 SizedBox(height: 12),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(3.0),
                   child: Text(
                     'Senarai pakar',
                     style: TextStyle(
@@ -152,71 +156,48 @@ class _ContactExpertState extends State<ContactExpert> {
                   itemBuilder: (context, index) {
                     final doctor = doctors[index].data();
                     final userID = doctor['userID'] as String?;
+                    final userEmail = doctor['email'] as String?;
                     final username = doctor['username'] as String?;
 
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      color: Colors.white,
-                      elevation: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              radius: 32,
-                              backgroundColor: Colors.blue,
-                              child: Icon(
-                                Icons.person,
-                                size: 32,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    return InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Chat(
+                                    receiverUserID: userID!,
+                                    receiverUserName: username!,
+                                    receiverUserEmail: userEmail!,), // Pass the userID to the ChatPage
+                                ),
+                              );
+                            },
+                            child: Column(
                                 children: [
-                                  Text(
-                                    '$username',
-                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ListTile(
+                                    leading: CircleAvatar(
+                                      radius: 32,
+                                      backgroundColor: Colors.blue,
+                                      child: Icon(
+                                        Icons.person,
+                                        size: 32,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      '$username',
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text(
+                                      'latest message here',
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
                                   ),
-                                  SizedBox(height: 8),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: [
-                                      ElevatedButton.icon(
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => Chat(userID: userID!), // Pass the userID to the ChatPage
-                                              ),
-                                            );
-                                        },
-                                        icon: Icon(Icons.chat),
-                                        label: Text('Bual'),
-                                        style: ElevatedButton.styleFrom(primary: Colors.green),
-                                      ),
-                                      ElevatedButton.icon(
-                                        onPressed: () {
-                          
-                                        },
-                                        icon: Icon(Icons.calendar_today),
-                                        label: Text('Buat Temu Janji'),
-                                        style: ElevatedButton.styleFrom(primary: Colors.orange),
-                                      ),
-                                    ],
+                                  Divider(
+                                    thickness: 1.0,
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
+                            );
                   },
                 ),
                 ),
