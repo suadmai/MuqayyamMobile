@@ -28,6 +28,13 @@ class ChatService extends ChangeNotifier{
 
     await _firestore.collection("chat_rooms")
     .doc(chatRoomId)
+    .set({
+      "members" : ids, //list of members in the chat room
+      "last_message" : message,
+    });SetOptions(merge: true);
+
+    await _firestore.collection("chat_rooms")
+    .doc(chatRoomId)
     .collection("messages")
     .add(newMessage.toMap());
   } 

@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import '../firebase/firebase_config.dart';
@@ -23,16 +24,17 @@ class ContactExpert extends StatefulWidget {
 //   );
 // }
 
-class _ContactExpertState extends State<ContactExpert> {
+class _ContactExpertState extends State<ContactExpert> with SingleTickerProviderStateMixin{
+  late final TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
   Widget build(BuildContext context) {
-    FirebaseFirestore firestore = FirebaseConfig.firestore;
     return Scaffold(
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
@@ -49,6 +51,13 @@ class _ContactExpertState extends State<ContactExpert> {
             ),
           )
         ],
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(child: Text('Senarai Pakar', style: TextStyle(fontSize: 18),)),
+            Tab(child: Text('Perbualan', style: TextStyle(fontSize: 18),)),
+          ],
+        ),
       ),
       //floating action button must be center
       floatingActionButton: FloatingActionButton(
@@ -118,8 +127,25 @@ class _ContactExpertState extends State<ContactExpert> {
           ),
         ),
       ),
-      body: 
-      Center(
+      body:
+      TabBarView(
+        controller: _tabController,
+        children: [
+          // First Tab: Senarai Pakar
+          _buildSenaraiPakarTab(),
+
+          // Second Tab: Perbualan
+          _buildPerbualanTab(),
+        ],
+      ),
+    );
+  }
+}
+
+  Widget _buildSenaraiPakarTab() {
+
+    FirebaseFirestore firestore = FirebaseConfig.firestore;
+    return Center(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
@@ -149,6 +175,7 @@ class _ContactExpertState extends State<ContactExpert> {
                     ),
                   ),
                 ),
+                SizedBox(height: 12),
                 SizedBox(
                   height: 500,
                   child: ListView.builder(
@@ -175,20 +202,16 @@ class _ContactExpertState extends State<ContactExpert> {
                                 children: [
                                   ListTile(
                                     leading: CircleAvatar(
-                                      radius: 32,
+                                      radius: 24,
                                       backgroundColor: Colors.blue,
                                       child: Icon(
                                         Icons.person,
-                                        size: 32,
+                                        size: 24,
                                         color: Colors.white,
                                       ),
                                     ),
                                     title: Text(
                                       '$username',
-                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                    ),
-                                    subtitle: Text(
-                                      'latest message here',
                                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -213,7 +236,122 @@ class _ContactExpertState extends State<ContactExpert> {
           ],
         ),
         )
-      ),
-    );
+      );
   }
-}
+
+  Widget _buildPerbualanTab() {
+    FirebaseFirestore firestore = FirebaseConfig.firestore;
+    FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+    return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+
+          children: <Widget>[
+        StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: firestore.collection('chat_rooms')
+        .where('members', arrayContains: _firebaseAuth.currentUser!.uid)
+        .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final chats = snapshot.data!.docs;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 12),
+                Padding(
+                  padding: EdgeInsets.all(3.0),
+                  child: Text(
+                    'Senarai perbualan',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12),
+                SizedBox(
+                  height: 500,
+                  child: ListView.builder(
+                  itemCount: chats.length,
+                  itemBuilder: (context, index) {
+                    final chat = chats[index].data();
+                    final members = chat['members'] as dynamic;
+                    final lastMessage = chat['last_message'] as String?;
+                    final receiverID = members.firstWhere((element) => element != _firebaseAuth.currentUser!.uid);
+                    
+                    return FutureBuilder<DocumentSnapshot>(
+                    future: FirebaseFirestore.instance.collection('users').doc(receiverID).get(),
+                    builder: (context, userSnapshot) {
+                      if (userSnapshot.connectionState == ConnectionState.waiting) {
+                        return Text('Sebentar...');
+                      }
+                      if (!userSnapshot.hasData) {
+                        return Text('Receiver not found');
+                      }
+
+                    final receiverUsername = userSnapshot.data!['username'];
+                    final userEmail = userSnapshot.data!['email'];
+
+                    return InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => 
+                                  Chat(
+                                    receiverUserID: receiverID,
+                                    receiverUserName: receiverUsername,
+                                    receiverUserEmail: userEmail,
+                                  ), // Pass the userID to the ChatPage
+                                ),
+                              );
+                            },
+                            child: Column(
+                                children: [
+                                  ListTile(
+                                    leading: CircleAvatar(
+                                      radius: 24,
+                                      backgroundColor: Colors.blue,
+                                      child: Icon(
+                                        Icons.person,
+                                        size: 24,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      '$receiverUsername',
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text(
+                                      '$lastMessage',
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                  Divider(
+                                    thickness: 1.0,
+                                  ),
+                                ],
+                              ),
+                            );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          } else if (snapshot.hasError) {
+            return ErrorWidget(snapshot.error!);
+          } else {
+            return const Text('loading...');
+          }
+        },
+      ),
+          ],
+        ),
+        )
+      );
+  }
