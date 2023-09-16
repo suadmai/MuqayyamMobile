@@ -84,7 +84,7 @@ class _QuranPageState extends State<QuranPage> {
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) => Placeholder(),
+                                                    builder: (context) => const Placeholder(),
                                                   ),
                                                 );
                                               },
@@ -118,7 +118,7 @@ class _QuranPageState extends State<QuranPage> {
                                                   .get(),
                                               builder: (context, surahSnapshot) {
                                                 if (surahSnapshot.connectionState == ConnectionState.waiting) {
-                                                  return CircularProgressIndicator();
+                                                  return const CircularProgressIndicator();
                                                 }
                                                 if (surahSnapshot.hasError) {
                                                   return ErrorWidget(surahSnapshot.error!);
@@ -128,13 +128,13 @@ class _QuranPageState extends State<QuranPage> {
                                                 return Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
+                                                    const Text(
                                                       'Surah Names:',
-                                                      style: const TextStyle(
+                                                      style: TextStyle(
                                                         fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
-                                                    SizedBox(
+                                                    const SizedBox(
                                                       height: 4,
                                                     ),
                                                     Column(
@@ -150,13 +150,15 @@ class _QuranPageState extends State<QuranPage> {
                                                               MaterialPageRoute(
                                                                 builder: (context) => SurahPage(
                                                                   surahName: surahName,
+                                                                  levelName: levels[index].id,
+
                                                                 ),
                                                               ),
                                                             );
                                                           },
                                                           child: Text(
                                                             surahName,
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                               fontSize: 16,
                                                               color: Colors.blue,
                                                               decoration: TextDecoration.underline,

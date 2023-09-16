@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SurahPage extends StatelessWidget {
+  final String levelName;
   final String surahName;
 
-  SurahPage({required this.surahName});
+  SurahPage({required this.levelName, required this.surahName});
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +19,10 @@ class SurahPage extends StatelessWidget {
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('quran')
-              .doc('level_1') // Update with the appropriate document ID
+              .doc(levelName) // Use the levelName parameter
               .collection('surahs')
-              .doc('level1_surah1') // Update with the appropriate surah document ID
-              .collection('Ayats') // Reference the "Ayats" subcollection
-              .orderBy('ayat_number') // Optionally, order by a field if needed
+              .where('surah_name', isEqualTo: surahName) // Filter by surah_name
+              .limit(1) // Limit the result to 1 document
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -32,42 +32,69 @@ class SurahPage extends StatelessWidget {
               return Text('Error: ${snapshot.error}');
             }
 
-            final ayats = snapshot.data!.docs;
+            final surahDocs = snapshot.data!.docs;
 
-            if (ayats.isEmpty) {
-              return Text('No Ayats found for this surah.');
+            if (surahDocs.isEmpty) {
+              return Text('Surah not found.');
             }
 
-            return ListView.builder(
-              itemCount: ayats.length,
-              itemBuilder: (context, index) {
-                final ayatData = ayats[index].data() as Map<String, dynamic>;
-                final arabic = ayatData['arabic'] as String;
-                final meaning = ayatData['meaning'] as String;
-                final ayatNumber = ayatData['ayat_number'] as int;
+            // Assuming there's only one matching surah document
+            final surahDoc = surahDocs[0];
+            final surahId = surahDoc.id;
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    
-                    
-                    Text(
-                      arabic,
-                      style: TextStyle(
-                        fontSize: 32,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    
-                    Text(
-                      meaning,
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Divider(), // Add a divider between ayats
-                  ],
+            // Now, retrieve the Ayats for this surah
+            return StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('quran')
+                  .doc(levelName) // Use the levelName parameter
+                  .collection('surahs')
+                  .doc(surahId) // Use the retrieved surah document ID
+                  .collection('Ayats') // Reference the "Ayats" subcollection
+                  .orderBy('ayat_number') // Optionally, order by a field if needed
+                  .snapshots(),
+              builder: (context, ayatSnapshot) {
+                if (ayatSnapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
+                if (ayatSnapshot.hasError) {
+                  return Text('Error: ${ayatSnapshot.error}');
+                }
+
+                final ayats = ayatSnapshot.data!.docs;
+
+                if (ayats.isEmpty) {
+                  return Text('No Ayats found for this surah.');
+                }
+
+                return ListView.builder(
+                  itemCount: ayats.length,
+                  itemBuilder: (context, index) {
+                    final ayatData = ayats[index].data() as Map<String, dynamic>;
+                    final arabic = ayatData['arabic'] as String;
+                    final meaning = ayatData['meaning'] as String;
+                    final ayatNumber = int.tryParse(ayatData['ayat_number'] as String) ?? 0;
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          arabic,
+                          style: TextStyle(
+                            fontSize: 32,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          meaning,
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Divider(), // Add a divider between ayats
+                      ],
+                    );
+                  },
                 );
               },
             );
