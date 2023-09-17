@@ -5,10 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wildlifego/pages/TrackPrayer.dart';
+import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
 import 'package:wildlifego/pages/new_quran_page.dart';
 
 import '../services/auth_service.dart';
+import 'leaderboards.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -69,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Selamat pagi!"),
+        title: const Text("Muqayyam Mobile"),
         actions: [
           IconButton(
             onPressed: signOut,
@@ -238,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                const ContactExpert(), // Pass the userID to the ChatPage
+                                                const LeaderboardPage(), // Pass the userID to the ChatPage
                                           ),
                                         );
                                       },
