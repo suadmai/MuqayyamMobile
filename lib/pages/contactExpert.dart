@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import '../services/chat_service.dart';
 
 import '../firebase/firebase_config.dart';
 import 'chat.dart';
@@ -242,6 +243,7 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
   Widget _buildPerbualanTab() {
     FirebaseFirestore firestore = FirebaseConfig.firestore;
     FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+    ChatService chatService = ChatService();
 
     return Center(
         child: Padding(
@@ -251,6 +253,7 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
 
           children: <Widget>[
         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          key: ValueKey<String>('chat_rooms_stream'),
         stream: firestore.collection('chat_rooms')
         .where('members', arrayContains: _firebaseAuth.currentUser!.uid)
         .snapshots(),
@@ -280,6 +283,10 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                     final chat = chats[index].data();
                     final members = chat['members'] as dynamic;
                     final lastMessage = chat['last_message'] as String?;
+                    final chatRoomId = chat['chat_room_id'] as String?;
+                    //final read = chatService.getUnreadMessagesCount(chatRoomId!);
+                    //final unreadCount = chatService.getUnreadMessagesCount(chatRoomId!);
+                    
                     final receiverID = members.firstWhere((element) => element != _firebaseAuth.currentUser!.uid);
                     
                     return FutureBuilder<DocumentSnapshot>(
@@ -291,7 +298,7 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                       if (!userSnapshot.hasData) {
                         return Text('Receiver not found');
                       }
-
+                    
                     final receiverUsername = userSnapshot.data!['username'];
                     final userEmail = userSnapshot.data!['email'];
 
@@ -309,6 +316,11 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                                 ),
                               );
                             },
+
+                            onLongPress: () {
+                              
+                            },
+
                             child: Column(
                                 children: [
                                   ListTile(
@@ -325,10 +337,48 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                                       '$receiverUsername',
                                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                     ),
-                                    subtitle: Text(
+                                    subtitle: 
+                                    Text(
                                       '$lastMessage',
-                                      style: TextStyle(fontSize: 14),
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                      ),
                                     ),
+                                    trailing: 
+                                    FutureBuilder<int>(
+                                      future: chatService.getUnreadMessagesCount(chatRoomId!), // Replace chatService with your actual service instance
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                          // While the future is still executing, show a loading indicator or some other placeholder.
+                                          return CircularProgressIndicator(); // You can customize this loading indicator.
+                                        } else if (snapshot.hasError) {
+                                          // If there's an error, display an error message or handle it accordingly.
+                                          return Text('Error: ${snapshot.error}');
+                                        } else {
+                                          // When the future is complete, you can access the data and display it.
+                                          final unreadCount = snapshot.data;
+
+                                          if(unreadCount != 0){
+                                              return Container(
+                                              padding: EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.blue,
+                                              ),
+                                              child: Text(
+                                                '$unreadCount',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                          else{
+                                            return Container();
+                                          }
+                                        }
+                                      },
+                                    )
                                   ),
                                   Divider(
                                     thickness: 1.0,

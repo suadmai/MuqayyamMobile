@@ -21,13 +21,31 @@ class _ChatState extends State<Chat> {
   final ChatService _chatService = ChatService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
+  @override
+  void initState() {
+    super.initState();
+    // Call setReadMessages when the chat room is opened to mark messages as read
+    print("printing unread messages");
+    _setMessagesAsRead();
+  }
+
+  Future<void> _setMessagesAsRead() async {
+    try {
+      // Call setReadMessages with the appropriate chat room ID
+      await _chatService.setReadMessages(widget.receiverUserID, _firebaseAuth.currentUser!.uid);
+    } catch (e) {
+      print('Error setting messages as read: $e');
+    }
+  }
+
   void sendMessage() async {
+    print('SEND MESSAGE CALLED');
     if(_messageController.text.isNotEmpty){
       await _chatService.sendMessage(widget.receiverUserID, _messageController.text);
       _messageController.clear();
-      //clear the text controller after sending the message
-      _messageController.clear();
     }
+    print("send message failed");
+    _messageController.clear();
   }
 
   @override
@@ -59,6 +77,8 @@ class _ChatState extends State<Chat> {
     );
   }
 
+ScrollController _scrollController = ScrollController();
+
 Widget _buildMessageList(){
   return StreamBuilder(stream: _chatService.getMessages(
     widget.receiverUserID, _firebaseAuth.currentUser!.uid),
@@ -71,8 +91,18 @@ Widget _buildMessageList(){
         return const Text("Loading...");
       }
 
-      return ListView(
-        children: snapshot.data!.docs.map((document) => _buildMessageItem(document)).toList(),
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        // Scroll to the bottom when the data is loaded
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      });
+
+      return ListView.builder(
+         controller: _scrollController, // Attach the ScrollController here
+          itemCount: snapshot.data!.docs.length,
+          itemBuilder: (context, index) {
+          final document = snapshot.data!.docs[index];
+          return _buildMessageItem(document);
+        },
         );
       },
     );
