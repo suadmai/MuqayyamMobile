@@ -91,7 +91,7 @@ Widget _buildMessageList(){
         return const Text("Loading...");
       }
 
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         // Scroll to the bottom when the data is loaded
         _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
       });
@@ -130,7 +130,7 @@ Widget _buildMessageList(){
           Container(
             decoration: BoxDecoration(
               color: (data['senderId'] == _firebaseAuth.currentUser?.uid)
-                  ? Colors.blue
+                  ? (data['read'] == true) ? Color.fromARGB(255, 150, 123, 182) : Color.fromARGB(255, 150, 157, 219)
                   : Colors.grey[500],
               borderRadius: BorderRadius.circular(16),
             ),

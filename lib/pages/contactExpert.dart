@@ -293,7 +293,7 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                     future: FirebaseFirestore.instance.collection('users').doc(receiverID).get(),
                     builder: (context, userSnapshot) {
                       if (userSnapshot.connectionState == ConnectionState.waiting) {
-                        return Text('Sebentar...');
+                        return Container();
                       }
                       if (!userSnapshot.hasData) {
                         return Text('Receiver not found');
@@ -350,7 +350,7 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                                       builder: (context, snapshot) {
                                         if (snapshot.connectionState == ConnectionState.waiting) {
                                           // While the future is still executing, show a loading indicator or some other placeholder.
-                                          return CircularProgressIndicator(); // You can customize this loading indicator.
+                                          return Text(''); // You can customize this loading indicator.
                                         } else if (snapshot.hasError) {
                                           // If there's an error, display an error message or handle it accordingly.
                                           return Text('Error: ${snapshot.error}');
