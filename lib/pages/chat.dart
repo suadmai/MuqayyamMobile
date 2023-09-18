@@ -39,13 +39,12 @@ class _ChatState extends State<Chat> {
   }
 
   void sendMessage() async {
-    print('SEND MESSAGE CALLED');
     if(_messageController.text.isNotEmpty){
-      await _chatService.sendMessage(widget.receiverUserID, _messageController.text);
+      String message = _messageController.text;
       _messageController.clear();
+      await _chatService.sendMessage(widget.receiverUserID, message);
+      
     }
-    print("send message failed");
-    _messageController.clear();
   }
 
   @override
@@ -131,11 +130,15 @@ Widget _buildMessageList(){
             decoration: BoxDecoration(
               color: (data['senderId'] == _firebaseAuth.currentUser?.uid)
                   ? (data['read'] == true) ? Color.fromARGB(255, 150, 123, 182) : Color.fromARGB(255, 150, 157, 219)
-                  : Colors.grey[500],
+                  : const Color.fromARGB(255, 207, 207, 207),
               borderRadius: BorderRadius.circular(16),
             ),
             padding: const EdgeInsets.all(10),
-            child: Text(data['message'], style: const TextStyle(color: Colors.white),)),
+            child: Text(data['message'], 
+            style: TextStyle(
+              color: (data['senderId'] == _firebaseAuth.currentUser?.uid)
+              ? Colors.white
+              : Colors.black ),)),
         ],
       ),
     ),

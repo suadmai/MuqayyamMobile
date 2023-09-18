@@ -34,6 +34,7 @@ class Prayer{
   DateTime prayerTime = DateTime.now();
   bool prayed = false;
   bool missed = false;
+  int prayerScore = 0;
 }
 
 class TrackPrayer extends StatefulWidget {
@@ -70,7 +71,8 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                 ..prayerName = "subuh"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false;
+                ..missed = false
+                ..prayerScore = 5;
 
   Prayer syuruk = Prayer()
                 ..prayerName = "syuruk"
@@ -82,25 +84,29 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
                 ..prayerName = "zohor"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false;
+                ..missed = false
+                ..prayerScore = 4;
 
   Prayer asar = Prayer()
                 ..prayerName = "asar"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false;
+                ..missed = false
+                ..prayerScore = 4;
 
   Prayer maghrib = Prayer()
                 ..prayerName = "maghrib"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false;
+                ..missed = false
+                ..prayerScore = 3;
 
   Prayer isyak = Prayer()
                 ..prayerName = "isyak"
                 ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
                 ..prayed = false
-                ..missed = false;
+                ..missed = false
+                ..prayerScore = 4;
 
    @override
     void initState() {
@@ -376,6 +382,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   void performPrayer() {
     setState(() {
     currentPrayer.prayed = true;
+    FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).update({'score': FieldValue.increment(currentPrayer.prayerScore)});
     storePrayerData();
     //print("${currentPrayer.prayerName} prayed}");
     //checkForMissedPrayers();
