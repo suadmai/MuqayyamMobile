@@ -83,6 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                   MyTextField(
                     controller: emailController,
                     hintText: "Email",
+                    maxLines: 1,
                     obscureText: false,
                   ),
 
@@ -94,6 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                   MyTextField(
                     controller: passwordController,
                     hintText: "Password",
+                    maxLines: 1,
                     obscureText: true, //see what u typed
                   ),
 

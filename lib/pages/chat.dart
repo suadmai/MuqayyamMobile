@@ -150,20 +150,24 @@ Widget _buildMessageList(){
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
               child: MyTextField(
                 controller: _messageController,
                 hintText: "Mesej anda",
+                maxLines: 5,
                 obscureText: false,
               ),
             ),
           ),
-          CircleAvatar(
-            radius: 24,
-            backgroundColor: Colors.blue,
-            child: IconButton(
-              onPressed: sendMessage,
-              icon: const Icon(Icons.arrow_upward, size: 16, color: Colors.white),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
+            child: CircleAvatar(
+              radius: 24,
+              backgroundColor: const Color(0xFF82618B),
+              child: IconButton(
+                onPressed: sendMessage,
+                icon: const Icon(Icons.arrow_upward, size: 21, color: Colors.white),
+              ),
             ),
           ),
         ],

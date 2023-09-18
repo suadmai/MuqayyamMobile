@@ -95,12 +95,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   MyTextField(
                     controller: usernameController,
                     hintText: "usename",
+                    maxLines: 1,
                     obscureText: false,
                   ),
 
                   MyTextField(
                     controller: roleController,
                     hintText: "role",
+                    maxLines: 1,
                     obscureText: false,
                   ),
 
@@ -109,6 +111,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   MyTextField(
                     controller: emailController,
                     hintText: "Email",
+                    maxLines: 1,
                     obscureText: false,
                   ),
 
@@ -120,6 +123,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   MyTextField(
                     controller: passwordController,
                     hintText: "Password",
+                    maxLines: 1,
                     obscureText: true, //see what u typed
                   ),
 
@@ -131,6 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   MyTextField(
                     controller: passwordConfirmController,
                     hintText: "Confirm Password",
+                    maxLines: 1,
                     obscureText: true, //see what u typed
                   ),
 
