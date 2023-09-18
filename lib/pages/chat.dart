@@ -65,7 +65,6 @@ class _ChatState extends State<Chat> {
       // Rest of your content here
       body: Column(
         children: [
-          SizedBox(height: 20,),
           Expanded(
             child: _buildMessageList(),
             ),
@@ -145,25 +144,28 @@ Widget _buildMessageList(){
   );
 }
 
-
     Widget _buildMessageInput(){
       return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Expanded(
-            child: MyTextField(
-            controller: _messageController,
-            hintText: "Mesej anda",
-            obscureText: false,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: MyTextField(
+                controller: _messageController,
+                hintText: "Mesej anda",
+                obscureText: false,
+              ),
             ),
+          ),
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: Colors.blue,
+            child: IconButton(
+              onPressed: sendMessage,
+              icon: const Icon(Icons.arrow_upward, size: 16, color: Colors.white),
             ),
-
-            CircleAvatar(
-              radius: 24,
-              backgroundColor: Colors.blue,
-              child: IconButton(onPressed: sendMessage, 
-            icon: const Icon(Icons.arrow_upward, size: 16, color: Colors.white,)),
-            )
-            
+          ),
         ],
       );
     }
