@@ -153,6 +153,19 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
           mainAxisAlignment: MainAxisAlignment.start,
 
           children: <Widget>[
+
+          SizedBox(height: 10),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Text(
+                "Senarai pakar",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
             
         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: firestore.collection('users')
@@ -162,23 +175,8 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final doctors = snapshot.data!.docs;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 12),
-                Padding(
-                  padding: EdgeInsets.all(3.0),
-                  child: Text(
-                    'Senarai pakar',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 12),
-                SizedBox(
-                  height: 500,
+            return 
+                Expanded(
                   child: ListView.builder(
                   itemCount: doctors.length,
                   itemBuilder: (context, index) {
@@ -224,9 +222,7 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                             );
                   },
                 ),
-                ),
-              ],
-            );
+                );
           } else if (snapshot.hasError) {
             return ErrorWidget(snapshot.error!);
           } else {
@@ -252,31 +248,28 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
           mainAxisAlignment: MainAxisAlignment.start,
 
           children: <Widget>[
-        StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-          key: ValueKey<String>('chat_rooms_stream'),
-        stream: firestore.collection('chat_rooms')
-        .where('members', arrayContains: _firebaseAuth.currentUser!.uid)
-        .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final chats = snapshot.data!.docs;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 12),
-                Padding(
-                  padding: EdgeInsets.all(3.0),
-                  child: Text(
-                    'Senarai perbualan',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+          SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Text(
+                      "Senarai perbualan",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
-                SizedBox(height: 12),
-                SizedBox(
-                  height: 500,
+          SizedBox(height: 10),
+          StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          key: ValueKey<String>('chat_rooms_stream'),
+          stream: firestore.collection('chat_rooms')
+          .where('members', arrayContains: _firebaseAuth.currentUser!.uid)
+          .snapshots(),
+          builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final chats = snapshot.data!.docs;
+            return 
+                Expanded(
                   child: ListView.builder(
                   itemCount: chats.length,
                   itemBuilder: (context, index) {
@@ -390,9 +383,7 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                       );
                     },
                   ),
-                ),
-              ],
-            );
+                );
           } else if (snapshot.hasError) {
             return ErrorWidget(snapshot.error!);
           } else {
