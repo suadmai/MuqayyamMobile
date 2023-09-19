@@ -1,7 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:io';
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +14,7 @@ import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
 import 'package:wildlifego/pages/new_quran_page.dart';
 
+import 'package:image_picker/image_picker.dart';
 import '/services/auth_service.dart';
 
 class AdminHomeScreen extends StatefulWidget {
@@ -304,6 +309,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                             final description = post['description']
                                 as String?; // Handle null value
                             final date = post["date"] as String?;
+                            final imageURL = post['imageURL'] as String?;
                             
                             return Card(
                               shape: RoundedRectangleBorder(
@@ -381,6 +387,20 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                         style: TextStyle(fontSize: 14),
                                         maxLines: 10,
                                       ),
+                                      SizedBox(height: 8),
+                                      if (imageURL != null)
+                                      //give the image rounded corners
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          child:
+                                        Image.network(
+                                          imageURL,
+                                          width: double.infinity, // Make the image expand to the full width
+                                          height: 400, // Set the height as needed
+                                          fit: BoxFit.cover,
+                                        ),
+                                        ),
                                     ]),
                               ),
                             );
@@ -410,8 +430,31 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     }
 
     class _NewPostTextFieldState extends State<NewPostTextField> {
+      File? selectedImage;
       final TextEditingController _titleEditingController = TextEditingController();
-      TextEditingController _textEditingController = TextEditingController();
+      final TextEditingController _textEditingController = TextEditingController();
+
+      Future<void> _pickMedia() async {
+        final pickedMedia = await ImagePicker().pickMedia();
+
+        if (pickedMedia != null) {
+          if (pickedMedia.path.endsWith('.jpg') || pickedMedia.path.endsWith('.png')) {
+            // It's a photo (image)
+            print('Selected Photo: ${pickedMedia.path}');
+            
+            // Create a File object from the picked image path
+            File imageFile = File(pickedMedia.path);
+
+            // Display the selected image in your UI
+            setState(() {
+              selectedImage = imageFile;
+            });
+          } else if (pickedMedia.path.endsWith('.mp4') || pickedMedia.path.endsWith('.mov')) {
+            
+            print('Selected Video: ${pickedMedia.path}');
+          }
+        }
+      }
 
       Future<void> postToFirebase() async {
         final userID = FirebaseAuth.instance.currentUser!.uid;
@@ -422,6 +465,18 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         final title = _titleEditingController.text;
         final description = _textEditingController.text;
 
+        //first upload the image to Firebase Storage
+        print('Uploading image...');
+        if (selectedImage != null) {
+          final storageRef = FirebaseStorage.instance.ref().child('post_$postID.jpg');
+          await storageRef.putFile(selectedImage!);
+        }
+        //get the image URL from Firebase Storage
+        print('Getting download URL...');
+        final imageURL = selectedImage != null
+            ? await FirebaseStorage.instance.ref().child('post_$postID.jpg').getDownloadURL()
+            : null;
+        
         await FirebaseFirestore.instance
             .collection('AllPosts')
             .doc(postID)
@@ -432,6 +487,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           'title': title,
           'description': description,
           'date': date,
+          'imageURL': imageURL ?? '',
         });
       }
 
@@ -455,71 +511,87 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  //a handle to drag the bottom sheet up
-                  height: 5,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(16),
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                //a handle to drag the bottom sheet up
+                height: 5,
+                width: 50,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: TextField(
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    controller: _titleEditingController, // Use a separate controller for the title
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Tajuk hantaran', // Hint for the title field
+                    ),
+                  ),
+                ), // Add some spacing between the title field and the button
+                ElevatedButton(
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Color(0xFF82618B)),
+                  ),
+                  onPressed: () {
+                    // Post to Firebase with title and content
+                    postToFirebase();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Hantar'),
+                ),
+              ],
+            ),
+            TextField(
+              controller: _textEditingController,
+              minLines: 1,
+              maxLines: 10, // Adjust this to your preference
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Kongsi sesuatu...',
+              ),
+            ),
+            if (selectedImage != null)
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.5,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  image: DecorationImage(
+                    image: FileImage(selectedImage!),
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      controller: _titleEditingController, // Use a separate controller for the title
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Tajuk hantaran', // Hint for the title field
-                      ),
-                    ),
-                  ), // Add some spacing between the title field and the button
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Color(0xFF82618B)),
-                    ),
-                    onPressed: () {
-                      // Post to Firebase with title and content
-                      postToFirebase();
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('Hantar'),
-                  ),
-                ],
-              ),
-              TextField(
-                controller: _textEditingController,
-                maxLines: 10, // Adjust this to your preference
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Kongsi sesuatu...',
-                ),
-              ),
-              SizedBox(height: 30),
-            ],
-          ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: _pickMedia,
+              child: Text('Select Image'),
+            ),
+            // Display the selected image if available
+          ],
+        ),
         ),
       );
     }
-
-
 }
 
 
