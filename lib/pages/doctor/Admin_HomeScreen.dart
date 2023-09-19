@@ -388,8 +388,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                         maxLines: 10,
                                       ),
                                       SizedBox(height: 8),
-                                      if (imageURL != null)
-                                      //give the image rounded corners
+                                      if (imageURL != null && imageURL.isNotEmpty)
                                         ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(16),
