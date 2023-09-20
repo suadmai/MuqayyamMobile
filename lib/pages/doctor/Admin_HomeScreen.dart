@@ -1,19 +1,21 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'dart:io';
-import 'dart:math';
-
+//other pages
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wildlifego/pages/TrackPrayer.dart';
 import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
 import 'package:wildlifego/pages/new_quran_page.dart';
 
+//services
+import 'dart:io';
+import 'package:video_compress/video_compress.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:video_player/video_player.dart';
 import 'package:image_picker/image_picker.dart';
 import '/services/auth_service.dart';
 
@@ -360,7 +362,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                                     ),
                                                     //SizedBox(height: 8),
                                                     Text(
-                                                      "$date", // Replace with the user's name
+                                                      // date format dd/mm/yyyy
+                                                      DateFormat("dd/MM/yyyy").format(DateTime.parse(date!)), 
                                                       style: TextStyle(
                                                           fontSize: 12),
                                                     ),
@@ -430,36 +433,73 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
     class _NewPostTextFieldState extends State<NewPostTextField> {
       File? selectedImage;
+      VideoPlayerController? _videoPlayerController;
       final TextEditingController _titleEditingController = TextEditingController();
       final TextEditingController _textEditingController = TextEditingController();
+
+      @override
+      void initState() {
+        super.initState();
+        _titleEditingController.addListener(_updateButtonState);
+        _textEditingController.addListener(_updateButtonState);
+      }
+
+      void _updateButtonState() {
+        setState(() {});
+      }
+
+      @override
+      void dispose() {
+        // Remove the listeners to avoid memory leaks
+        _titleEditingController.removeListener(_updateButtonState);
+        _textEditingController.removeListener(_updateButtonState);
+        _videoPlayerController?.dispose();
+        _titleEditingController.dispose();
+        _textEditingController.dispose();
+        super.dispose();
+      }
 
       Future<void> _pickMedia() async {
         final pickedMedia = await ImagePicker().pickMedia();
 
         if (pickedMedia != null) {
+
           if (pickedMedia.path.endsWith('.jpg') || pickedMedia.path.endsWith('.png')) {
-            // It's a photo (image)
-            print('Selected Photo: ${pickedMedia.path}');
             
-            // Create a File object from the picked image path
             File imageFile = File(pickedMedia.path);
 
-            // Display the selected image in your UI
             setState(() {
               selectedImage = imageFile;
+              _videoPlayerController = null; // Reset video player controller if a video was previously selected
             });
-          } else if (pickedMedia.path.endsWith('.mp4') || pickedMedia.path.endsWith('.mov')) {
+          } 
+          else if (pickedMedia.path.endsWith('.mp4') || pickedMedia.path.endsWith('.mov')) {
+
+            File videoFile = File(pickedMedia.path);
+            // videoFile = await VideoCompress.compressVideo(
+            //   videoFile.path,
+            //   quality: VideoQuality.MediumQuality,
+            //   deleteOrigin: false,
+            // ) as File;
             
-            print('Selected Video: ${pickedMedia.path}');
+            VideoPlayerController videoPlayerController = VideoPlayerController.file(videoFile);
+            await videoPlayerController.initialize();
+
+            setState(() {
+              selectedImage = null;
+              _videoPlayerController = videoPlayerController;
+            });
           }
         }
       }
 
       Future<void> postToFirebase() async {
+        const folderPath = 'AllPosts/';
+
         final userID = FirebaseAuth.instance.currentUser!.uid;
         final usernameDocument = await FirebaseFirestore.instance.collection('users').doc(userID).get();
         final username = usernameDocument.data()!['username'].toString();
-        final date = DateFormat('dd/MM/yy').format(DateTime.now()).toString();
+        final date = (DateTime.now()).toString();
         final postID = FirebaseFirestore.instance.collection('AllPosts').doc().id;
         final title = _titleEditingController.text;
         final description = _textEditingController.text;
@@ -467,19 +507,25 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         //first upload the image to Firebase Storage
         print('Uploading image...');
         if (selectedImage != null) {
-          final storageRef = FirebaseStorage.instance.ref().child('post_$postID.jpg');
-          await storageRef.putFile(selectedImage!);
-        }
+
+        //TODO: downsize the image to save storage space
+        
+        // Create a storage reference with the specified folder path
+        final storageRef = FirebaseStorage.instance.ref().child('$folderPath/post_$postID.jpg');
+
+        // Upload the selected image to the specified folder
+        await storageRef.putFile(selectedImage!);
+      }
         //get the image URL from Firebase Storage
         print('Getting download URL...');
         final imageURL = selectedImage != null
-            ? await FirebaseStorage.instance.ref().child('post_$postID.jpg').getDownloadURL()
+            ? await FirebaseStorage.instance.ref().child('$folderPath/post_$postID.jpg').getDownloadURL()
             : null;
         
         await FirebaseFirestore.instance
-            .collection('AllPosts')
-            .doc(postID)
-            .set({
+          .collection('AllPosts')
+          .doc(postID)
+          .set({
           'postID': postID,
           'userID': userID,
           'username': username,
@@ -547,12 +593,19 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xFF82618B)),
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      _titleEditingController.text.isNotEmpty &&
+                              _textEditingController.text.isNotEmpty
+                          ? Color(0xFF82618B)
+                          : Colors.grey,
+                    ),
                   ),
                   onPressed: () {
                     // Post to Firebase with title and content
-                    postToFirebase();
+                    if(_titleEditingController.text.isNotEmpty && _textEditingController.text.isNotEmpty){
+                      postToFirebase();
+                    }
+                    
                     Navigator.of(context).pop();
                   },
                   child: Text('Hantar'),
@@ -568,22 +621,84 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 hintText: 'Kongsi sesuatu...',
               ),
             ),
-            if (selectedImage != null)
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.5,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  image: DecorationImage(
-                    image: FileImage(selectedImage!),
-                    fit: BoxFit.cover,
+            Column(
+              children: [
+                if (selectedImage != null)
+                  Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: FileImage(selectedImage!),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.close,
+                        color: Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            selectedImage = null; // Remove the selected image when cancel button is pressed
+                          });
+                        },
+                      ),
+                    ],
                   ),
+
+                if (_videoPlayerController != null && _videoPlayerController!.value.isInitialized)
+                  //give it a fixed height so it doesn't take up too much space when minimized
+                  //give it a rounded border
+                Stack(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16), // Adjust the radius as needed
+                        child: AspectRatio(
+                          aspectRatio: _videoPlayerController!.value.aspectRatio,
+                          child: VideoPlayer(_videoPlayerController!),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 1,
+                      right: 1,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          ),
+                        onPressed: () {
+                          setState(() {
+                            _videoPlayerController!.pause();
+                            _videoPlayerController!.seekTo(Duration.zero);
+                            _videoPlayerController = null;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
+              ],
+            ),
+            if(selectedImage == null && _videoPlayerController == null)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                onPressed: _pickMedia,
+                icon: Icon(
+                  Icons.add_photo_alternate,
+                  color: Colors.grey,
+                  size: 28,),
               ),
-            SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: _pickMedia,
-              child: Text('Select Image'),
             ),
             // Display the selected image if available
           ],
