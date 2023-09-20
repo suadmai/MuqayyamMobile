@@ -457,7 +457,7 @@ packages:
     source: hosted
     version: "1.9.1"
   mime:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: mime
       sha256: e4ff8e8564c03f255408decd16e7899da1733852a9110a58fe6d1b817684a63e
@@ -653,14 +653,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
-  video_compress:
-    dependency: "direct main"
-    description:
-      name: video_compress
-      sha256: "407693726e674a1e1958801deb2d9daf5a5297707ba6d03375007012dae7389a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.2"
   video_player:
     dependency: "direct main"
     description:

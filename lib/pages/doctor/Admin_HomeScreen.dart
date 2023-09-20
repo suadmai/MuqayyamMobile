@@ -13,8 +13,6 @@ import 'package:wildlifego/pages/new_quran_page.dart';
 
 //services
 import 'dart:io';
-import 'package:video_compress/video_compress.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:video_player/video_player.dart';
 import 'package:image_picker/image_picker.dart';
 import '/services/auth_service.dart';
@@ -36,6 +34,7 @@ class AdminHomeScreen extends StatefulWidget {
 // }
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
+  
   @override
   void initState() {
     super.initState();
@@ -300,10 +299,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                           itemCount: posts.length,
                           itemBuilder: (context, index) {
                             final post = posts[index].data();
-                            //final postID = post['postID'] as String?;
-                            //final userID = post['userID'] as String?; // Handle null value
-                            // final imageURL =
-                            //     post['imageURL'] as String?;
                             final username =
                                 post['username'] as String?; // Handle null value
                             final title =
@@ -312,6 +307,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                 as String?; // Handle null value
                             final date = post["date"] as String?;
                             final imageURL = post['imageURL'] as String?;
+                            final postType = post['postType'] as String?;
                             
                             return Card(
                               shape: RoundedRectangleBorder(
@@ -391,7 +387,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                         maxLines: 10,
                                       ),
                                       SizedBox(height: 8),
-                                      if (imageURL != null && imageURL.isNotEmpty)
+                                      if (postType == 'image' && imageURL != null)
                                         ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(16),
@@ -403,6 +399,20 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                           fit: BoxFit.cover,
                                         ),
                                         ),
+                                      if (postType == 'video' && imageURL != null)
+                                        VideoPlayerWidget(videoUrl: imageURL),
+                                        // ClipRRect(
+                                        //   borderRadius:
+                                        //     BorderRadius.circular(16),
+                                        //     child: AspectRatio(
+                                        //     aspectRatio: 16 / 9,
+                                        //     child: VideoPlayer(
+                                        //       VideoPlayerController.networkUrl(
+                                        //         Uri.parse(imageURL),
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        // ),
                                     ]),
                               ),
                             );
@@ -486,11 +496,23 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             await videoPlayerController.initialize();
 
             setState(() {
-              selectedImage = null;
+              selectedImage = videoFile;
               _videoPlayerController = videoPlayerController;
             });
           }
         }
+      }
+
+       Future<String> postType() async {
+        if (selectedImage != null) {
+          if (selectedImage!.path.endsWith('.jpg') || selectedImage!.path.endsWith('.png')) {
+            return 'image';
+          } else if (selectedImage!.path.endsWith('.mp4') || selectedImage!.path.endsWith('.mov')) {
+            return 'video';
+          }
+        }
+        // Default to 'text' if selectedImage is null or not recognized
+        return 'text';
       }
 
       Future<void> postToFirebase() async {
@@ -503,6 +525,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         final postID = FirebaseFirestore.instance.collection('AllPosts').doc().id;
         final title = _titleEditingController.text;
         final description = _textEditingController.text;
+        final type = await postType();
 
         //first upload the image to Firebase Storage
         print('Uploading image...');
@@ -533,6 +556,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           'description': description,
           'date': date,
           'imageURL': imageURL ?? '',
+          'postType': type,
         });
       }
 
@@ -623,7 +647,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             ),
             Column(
               children: [
-                if (selectedImage != null)
+                if (selectedImage != null && _videoPlayerController == null)
                   Stack(
                     alignment: Alignment.topRight,
                     children: [
@@ -652,8 +676,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                       ),
                     ],
                   ),
-
-                if (_videoPlayerController != null && _videoPlayerController!.value.isInitialized)
+                if (selectedImage != null && _videoPlayerController != null && _videoPlayerController!.value.isInitialized)
                   //give it a fixed height so it doesn't take up too much space when minimized
                   //give it a rounded border
                 Stack(
@@ -678,6 +701,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                           ),
                         onPressed: () {
                           setState(() {
+                            selectedImage = null;
                             _videoPlayerController!.pause();
                             _videoPlayerController!.seekTo(Duration.zero);
                             _videoPlayerController = null;
@@ -707,6 +731,91 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       );
     }
 }
+
+class VideoPlayerWidget extends StatefulWidget {
+  final String videoUrl;
+
+  VideoPlayerWidget({required this.videoUrl});
+
+  @override
+  _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
+}
+
+class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+  late VideoPlayerController _videoController;
+
+  @override
+  void initState() {
+    super.initState();
+    _videoController = VideoPlayerController.network(widget.videoUrl)
+      ..initialize().then((_) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _videoController.value.isInitialized
+        ? Column(
+            children: [
+              //give it a fixed height so it doesn't take up too much space when minimized
+              //give it a rounded border
+              Align(
+                alignment: Alignment.centerLeft,
+                child: 
+                Stack(
+                  children: [
+                    //give rounded border
+
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16), // Adjust the radius as needed
+                        child: AspectRatio(
+                          aspectRatio: _videoController.value.aspectRatio,
+                          child: VideoPlayer(_videoController),
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Center(
+                        child: IconButton(
+                          iconSize: 28,
+                          color: Colors.white,
+                          icon: Icon(
+                            //give icons shadow
+                            _videoController.value.isPlaying
+                                ? Icons.pause
+                                : Icons.play_arrow_rounded,
+                          ),
+                          onPressed: () {
+                            if (_videoController.value.isPlaying) {
+                              _videoController.pause();
+                            } else {
+                              _videoController.play();
+                            }
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          )
+        : CircularProgressIndicator(); // Show a loading indicator while initializing
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _videoController.dispose();
+  }
+}
+
 
 
 
