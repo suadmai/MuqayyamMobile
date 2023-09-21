@@ -7,12 +7,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:video_compress/video_compress.dart';
 import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
 import 'package:wildlifego/pages/new_quran_page.dart';
 
 //services
 import 'dart:io';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:video_player/video_player.dart';
 import 'package:image_picker/image_picker.dart';
 import '/services/auth_service.dart';
@@ -470,7 +472,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       }
 
       Future<void> _pickMedia() async {
-        final pickedMedia = await ImagePicker().pickMedia();
+        final pickedMedia = await ImagePicker().pickMedia(imageQuality: 80);
 
         if (pickedMedia != null) {
 
@@ -486,11 +488,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           else if (pickedMedia.path.endsWith('.mp4') || pickedMedia.path.endsWith('.mov')) {
 
             File videoFile = File(pickedMedia.path);
-            // videoFile = await VideoCompress.compressVideo(
-            //   videoFile.path,
-            //   quality: VideoQuality.MediumQuality,
-            //   deleteOrigin: false,
-            // ) as File;
             
             VideoPlayerController videoPlayerController = VideoPlayerController.file(videoFile);
             await videoPlayerController.initialize();
@@ -515,6 +512,20 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         return 'text';
       }
 
+      // TODO: Compress the image before uploading to Firebase Storage
+      // Future compressVideo(File selectedImage) async {
+
+      //   if(selectedImage.path.endsWith('.mp4') || selectedImage.path.endsWith('.mov')){
+      //     final compressedImage = await VideoCompress.compressVideo(
+      //       selectedImage.path,
+      //       quality: VideoQuality.LowQuality,
+      //       deleteOrigin: false,
+      //     );  
+      //     return compressedImage!;
+      //   }
+      //   return selectedImage;
+      // }
+
       Future<void> postToFirebase() async {
         const folderPath = 'AllPosts/';
 
@@ -528,11 +539,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         final type = await postType();
 
         //first upload the image to Firebase Storage
-        print('Uploading image...');
         if (selectedImage != null) {
-
-        //TODO: downsize the image to save storage space
-        
         // Create a storage reference with the specified folder path
         final storageRef = FirebaseStorage.instance.ref().child('$folderPath/post_$postID.jpg');
 
