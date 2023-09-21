@@ -513,18 +513,17 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       }
 
       // TODO: Compress the image before uploading to Firebase Storage
-      // Future compressVideo(File selectedImage) async {
+      Future compressVideo(File selectedImage) async {
 
-      //   if(selectedImage.path.endsWith('.mp4') || selectedImage.path.endsWith('.mov')){
-      //     final compressedImage = await VideoCompress.compressVideo(
-      //       selectedImage.path,
-      //       quality: VideoQuality.LowQuality,
-      //       deleteOrigin: false,
-      //     );  
-      //     return compressedImage!;
-      //   }
-      //   return selectedImage;
-      // }
+        if(selectedImage.path.endsWith('.mp4') || selectedImage.path.endsWith('.mov')){
+          final compressedVideoFile = await VideoCompress.compressVideo(
+            selectedImage.path,
+            quality: VideoQuality.LowQuality,
+          );  
+          return compressedVideoFile!.file;
+        }
+        return selectedImage;
+      }
 
       Future<void> postToFirebase() async {
         const folderPath = 'AllPosts/';
@@ -540,6 +539,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
         //first upload the image to Firebase Storage
         if (selectedImage != null) {
+        selectedImage = await compressVideo(selectedImage!);
         // Create a storage reference with the specified folder path
         final storageRef = FirebaseStorage.instance.ref().child('$folderPath/post_$postID.jpg');
 
