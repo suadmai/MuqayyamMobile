@@ -301,121 +301,164 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                           itemCount: posts.length,
                           itemBuilder: (context, index) {
                             final post = posts[index].data();
+                            final userID = post['userID'] as String?;
                             final username =
-                                post['username'] as String?; // Handle null value
+                                post['username'] as String?;
                             final title =
-                                post['title'] as String?; // Handle null value
+                                post['title'] as String?;
                             final description = post['description']
-                                as String?; // Handle null value
+                                as String?;
                             final date = post["date"] as String?;
                             final imageURL = post['imageURL'] as String?;
                             final postType = post['postType'] as String?;
                             
-                            return Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              color: Colors.white,
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 12,
-                                            backgroundColor: Colors
-                                                .blue, // Set the profile image's background color
-                                            child: Icon(
-                                              Icons.person,
-                                              size: 16,
-                                              color: Colors.white,
+                            return GestureDetector(
+
+                              onLongPress: () {
+                                // show vertical menu 
+                                if(post['userID'] == FirebaseAuth.instance.currentUser!.uid){
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Padam Hantaran'),
+                                      content: Text('Adakah anda ingin memadam hantaran ini?'),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                          child: Text('Batal'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop(false);
+                                          },
+                                        ),
+                                        ElevatedButton(
+                                          child: Text('Padam'),
+                                          onPressed: () {
+                                            if(post['userID'] == FirebaseAuth.instance.currentUser!.uid){
+                                              FirebaseFirestore.instance
+                                                .collection('AllPosts')
+                                                .doc(post['postID'])
+                                                .delete();
+                                              Navigator.of(context).pop(true);
+                                              //also delete the image from Firebase Storage
+                                              if (imageURL != null) {
+                                                FirebaseStorage.instance.refFromURL(imageURL).delete();
+                                              }
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                }
+                              },
+
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                color: Colors.white,
+                                elevation: 3,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 12,
+                                              backgroundColor: Colors
+                                                  .blue, // Set the profile image's background color
+                                              child: Icon(
+                                                Icons.person,
+                                                size: 16,
+                                                color: Colors.white,
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                              width:
-                                                  8), // Add some space between the profile image and the name
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start,
-                                                  children: [
-                                                    Text(
-                                                      '$username', // Replace with the user's name
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight
-                                                                  .bold),
-                                                    ),
-                                                    //SizedBox(height: 8),
-                                                    Text(
-                                                      // date format dd/mm/yyyy
-                                                      DateFormat("dd/MM/yyyy").format(DateTime.parse(date!)), 
-                                                      style: TextStyle(
-                                                          fontSize: 12),
-                                                    ),
-                                                    SizedBox(height: 12),
-                                                  ],
-                                                ),
-                                              ],
+                                            SizedBox(
+                                                width:
+                                                    8), // Add some space between the profile image and the name
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        '$username', // Replace with the user's name
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      //SizedBox(height: 8),
+                                                      Text(
+                                                        // date format dd/mm/yyyy
+                                                        DateFormat("dd/MM/yyyy").format(DateTime.parse(date!)), 
+                                                        style: TextStyle(
+                                                            fontSize: 12),
+                                                      ),
+                                                      SizedBox(height: 12),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
+                                          ],
+                                        ),
+                                        Text(
+                                          '$title',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                        ],
-                                      ),
-                                      Text(
-                                        '$title',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
                                         ),
-                                      ),
-                                      SizedBox(
-                                          height:
-                                              4), // Add some space between the title and the description
-                                      Text(
-                                        '$description',
-                                        style: TextStyle(fontSize: 14),
-                                        maxLines: 10,
-                                      ),
-                                      SizedBox(height: 8),
-                                      if (postType == 'image' && imageURL != null)
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          child:
-                                        Image.network(
-                                          imageURL,
-                                          width: double.infinity, // Make the image expand to the full width
-                                          height: 400, // Set the height as needed
-                                          fit: BoxFit.cover,
+                                        SizedBox(
+                                            height:
+                                                4), // Add some space between the title and the description
+                                        Text(
+                                          '$description',
+                                          style: TextStyle(fontSize: 14),
+                                          maxLines: 10,
                                         ),
-                                        ),
-                                      if (postType == 'video' && imageURL != null)
-                                        VideoPlayerWidget(videoUrl: imageURL),
-                                        // ClipRRect(
-                                        //   borderRadius:
-                                        //     BorderRadius.circular(16),
-                                        //     child: AspectRatio(
-                                        //     aspectRatio: 16 / 9,
-                                        //     child: VideoPlayer(
-                                        //       VideoPlayerController.networkUrl(
-                                        //         Uri.parse(imageURL),
-                                        //       ),
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                    ]),
+                                        SizedBox(height: 8),
+                                        if (postType == 'image' && imageURL != null)
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            child:
+                                          Image.network(
+                                            imageURL,
+                                            width: double.infinity, // Make the image expand to the full width
+                                            height: 400, // Set the height as needed
+                                            fit: BoxFit.cover,
+                                          ),
+                                          ),
+                                        if (postType == 'video' && imageURL != null)
+                                          VideoPlayerWidget(videoUrl: imageURL),
+                                          // ClipRRect(
+                                          //   borderRadius:
+                                          //     BorderRadius.circular(16),
+                                          //     child: AspectRatio(
+                                          //     aspectRatio: 16 / 9,
+                                          //     child: VideoPlayer(
+                                          //       VideoPlayerController.networkUrl(
+                                          //         Uri.parse(imageURL),
+                                          //       ),
+                                          //     ),
+                                          //   ),
+                                          // ),
+                                      ]),
+                                ),
                               ),
                             );
                             //);
@@ -774,18 +817,24 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                 child: 
                 Stack(
                   children: [
-                    //give rounded border
-
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.4,
-                      child: ClipRRect(
+                    ClipRRect(
                         borderRadius: BorderRadius.circular(16), // Adjust the radius as needed
+                        child: Align(
+                        alignment: Alignment.centerLeft,
                         child: AspectRatio(
-                          aspectRatio: _videoController.value.aspectRatio,
-                          child: VideoPlayer(_videoController),
+                          aspectRatio: 16 / 9,
+                          child: Container(
+                            color: Colors.black, // Set the background color to black
+                            child: Center(
+                              child: AspectRatio(
+                                aspectRatio: _videoController.value.aspectRatio,
+                                child: VideoPlayer(_videoController),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      ),
                     Positioned.fill(
                       child: Center(
                         child: IconButton(
