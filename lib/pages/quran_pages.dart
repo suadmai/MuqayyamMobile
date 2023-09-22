@@ -1,204 +1,227 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
-import 'dart:async';
-
-class LevelofSurahWidget extends StatelessWidget {
-  final String level;
-  final String leveldesc;
-  final List<String> surahs;
-  final String backgroundImageAsset;
-
-  LevelofSurahWidget({
-    required this.level,
-    required this.leveldesc,
-    required this.surahs,
-    required this.backgroundImageAsset,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 3.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12.0),
-                topRight: Radius.circular(12.0),
-              ),
-              image: DecorationImage(
-                image: AssetImage(backgroundImageAsset),
-                fit: BoxFit.cover,
-              ),
-            ),
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  level,
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 8.0),
-                Text(
-                  'Teacher: $leveldesc',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: surahs
-                  .map((surah) => GestureDetector(
-                        onTap: () {
-                          // Navigate to the placeholder page when tapped.
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  Placeholder(), // Replace with your actual page
-                            ),
-                          );
-                        },
-                        child: Text(
-                          surah,
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ))
-                  .toList(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:wildlifego/pages/surah_page.dart';
 
 class QuranPage extends StatefulWidget {
-  const QuranPage({Key? key}) : super(key: key);
+  const QuranPage({Key? key});
 
   @override
   State<QuranPage> createState() => _QuranPageState();
 }
 
 class _QuranPageState extends State<QuranPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Color(0xFFEBEBEB),
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF82618B),
-          title: const Text("Baca Al-Quran"),
-          actions: [
-            IconButton(
-              onPressed: () {
-                // Go to profile page
-              },
-              icon: const Icon(
-                Icons.account_circle,
-                size: 30,
-              ),
-            )
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // Handle floating action button press
-          },
-          backgroundColor: Color(0xFF82618B),
-          child: const Icon(Icons.podcasts),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        body: Center(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF82618B),
+        title: const Text('Quran'),
+        actions: [],
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
           child: Column(
-            children: [
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream:
+                    FirebaseFirestore.instance.collection('quran').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final levels = snapshot.data!.docs;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 12),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'Choose a Level',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 500,
+                          child: ListView.builder(
+                            itemCount: levels.length,
+                            itemBuilder: (context, index) {
+                              final level = levels[index].data();
+                              final title = level['title'] as String?;
+                              final description =
+                                  level['description'] as String?;
 
+                              return Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                color: Colors.white,
+                                elevation: 3,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: double.infinity,
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(12.0),
+                                            topRight: Radius.circular(12.0),
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                // Handle the tap event, e.g., navigate to a details page
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const Placeholder(),
+                                                  ),
+                                                );
+                                              },
+                                              child: Text(  //TITLE OF EACH LEVEL
+                                                '$title',
+                                                style: const TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 4,
+                                            ),
+                                            Text(
+                                              '$description',
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                              maxLines: 10,
+                                            ),
+                                            const SizedBox(
+                                              height: 8,
+                                            ),
+                                            // Display surah names
+                                            FutureBuilder<QuerySnapshot>(
+                                              future: FirebaseFirestore.instance
+                                                  .collection('quran')
+                                                  .doc(levels[index].id)
+                                                  .collection('surahs')
+                                                  .get(),
+                                              builder:
+                                                  (context, surahSnapshot) {
+                                                if (surahSnapshot
+                                                        .connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return const CircularProgressIndicator();
+                                                }
+                                                if (surahSnapshot.hasError) {
+                                                  return ErrorWidget(
+                                                      surahSnapshot.error!);
+                                                }
+                                                final surahs =
+                                                    surahSnapshot.data!.docs;
 
-              // 
-              SizedBox(height: 16.0),
-              LevelofSurahWidget(
-                level: 'Level 1',
-                leveldesc: 'Mr. Smith',
-                backgroundImageAsset: 'images/level1.jpg',
-                surahs: ['Apple', 'Banana', 'Orange'],
-              ),
-              SizedBox(height: 16.0),
-              LevelofSurahWidget(
-                level: 'Mathematics',
-                leveldesc: 'Mr. Smith',
-                backgroundImageAsset: 'images/level2.jpg',
-                surahs: ['Apple', 'Banana', 'Orange'],
+                                                return Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: surahs
+                                                      .map<Widget>(
+                                                          (surahDoc) {
+                                                        final surahData =
+                                                            surahDoc.data()
+                                                                as Map<String,
+                                                                    dynamic>;
+                                                        final surahName =
+                                                            surahData[
+                                                                    'surah_name']
+                                                                as String;
+                                                        return Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            GestureDetector(
+                                                              onTap: () {
+                                                                // Handle the tap event, e.g., navigate to a details page
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            SurahPage(
+                                                                      surahName:
+                                                                          surahName,
+                                                                      levelName:
+                                                                          levels[index]
+                                                                              .id,
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              },
+                                                              child: Text(
+                                                                surahName,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 24,
+                                                                  color: Color.fromARGB(255, 0, 0, 0),
+                                                                  fontWeight: FontWeight.bold,
+                                                                ),
+                                                              ),
+                                                            ),
+
+                                                            //GAP IN BETWEEN SURAHS
+                                                            const SizedBox(
+                                                              height: 8, // Add spacing between surah names
+                                                            ),
+                                                            Divider(), // Add a divider between surah names
+                                                            const SizedBox(
+                                                              height: 8, // Add spacing between surah names
+                                                            ),
+                                                            
+                                                          ],
+                                                        );
+                                                      }).toList(),
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  } else if (snapshot.hasError) {
+                    return ErrorWidget(snapshot.error!);
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
               ),
             ],
           ),
         ),
-
-        //Bottom App Bar
-        bottomNavigationBar: BottomAppBar(
-          color: Color(0xFF82618B),
-          shape: const CircularNotchedRectangle(),
-          notchMargin: 10.0,
-          child: SizedBox(
-            height: 60.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    // Handle home button press
-                  },
-                  icon: const Icon(Icons.home),
-                  color: Colors.white,
-                ),
-                IconButton(
-                  onPressed: () {
-                    // Handle search button press
-                  },
-                  icon: const Icon(Icons.search),
-                  color: Colors.white,
-                ),
-                IconButton(
-                  onPressed: () {
-                    // Handle trophy button press
-                  },
-                  icon: const Icon(Icons.emoji_events),
-                  color: Colors.white,
-                ),
-                IconButton(
-                  onPressed: () {
-                    // Handle settings button press
-                  },
-                  icon: const Icon(Icons.settings),
-                  color: Colors.white,
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
+      //add button here to go to placeholder page
     );
   }
 }

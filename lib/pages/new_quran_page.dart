@@ -17,10 +17,29 @@ class _QuranPageState extends State<QuranPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF82618B),
-        title: const Text('Quran'),
-        actions: [],
-      ),
+  backgroundColor: const Color(0xFF82618B),
+  title: StreamBuilder<DocumentSnapshot>(
+    stream: FirebaseFirestore.instance
+        .collection('users')
+        .doc(_auth.currentUser!.uid) // Assuming user is signed in
+        .snapshots(),
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        final userDoc = snapshot.data!;
+        final userScore = userDoc['score'] ?? 0; // Replace 'score' with the actual field name in Firestore
+        return Row(
+          children: [
+           
+            Text('$userScore'),
+          ],
+        );
+      } else {
+        return const Text('User Score: Loading...'); // Display loading while fetching data
+      }
+    },
+  ),
+),
+
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -91,7 +110,7 @@ class _QuranPageState extends State<QuranPage> {
                                               child: Text(
                                                 '$title',
                                                 style: const TextStyle(
-                                                  fontSize: 16,
+                                                  fontSize: 24,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -117,7 +136,8 @@ class _QuranPageState extends State<QuranPage> {
                                                   .collection('surahs')
                                                   .get(),
                                               builder: (context, surahSnapshot) {
-                                                if (surahSnapshot.connectionState == ConnectionState.waiting) {
+                                                if (surahSnapshot.connectionState ==
+                                                    ConnectionState.waiting) {
                                                   return const CircularProgressIndicator();
                                                 }
                                                 if (surahSnapshot.hasError) {
@@ -127,47 +147,96 @@ class _QuranPageState extends State<QuranPage> {
 
                                                 return Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    const Text(
-                                                      'Surah Names:',
-                                                      style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 4,
-                                                    ),
-                                                    Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: surahs.map<Widget>((surahDoc) {
-                                                        final surahData = surahDoc.data() as Map<String, dynamic>;
-                                                        final surahName = surahData['surah_name'] as String;
-                                                        return GestureDetector(
-                                                          onTap: () {
-                                                            // Handle the tap event, e.g., navigate to a details page
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder: (context) => SurahPage(
-                                                                  surahName: surahName,
-                                                                  levelName: levels[index].id,
+                                                  children: surahs.map<Widget>((surahDoc) {
+                                                    final surahData = surahDoc.data() as Map<String, dynamic>;
+                                                    final surahName = surahData['surah_name'] as String;
 
-                                                                ),
+                                                    return GestureDetector(
+                                                      onTap: () async {
+                                                        final user = _auth.currentUser;
+                                                        if (user != null) {
+                                                          final userId = user.uid;
+                                                          final surahRef = FirebaseFirestore.instance
+                                                              .collection('users')
+                                                              .doc(userId)
+                                                              .collection('reading_records')
+                                                              .doc(surahName);
+
+                                                          final surahDoc = await surahRef.get();
+
+                                                          if (!surahDoc.exists) {
+                                                            // Surah has not been read, mark as read
+                                                            await surahRef.set({
+                                                              'isRead': true,
+                                                            });
+
+                                                            // Update user's total points
+                                                            final userRef = FirebaseFirestore.instance
+                                                                .collection('users')
+                                                                .doc(userId);
+
+                                                            // Increment the user's score by 5
+                                                            userRef.update({
+                                                              'score': FieldValue.increment(5),
+                                                            });
+                                                          }
+
+                                                          // Handle the tap event, e.g., navigate to a details page
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) => SurahPage(
+                                                                surahName: surahName,
+                                                                levelName: levels[index].id,
                                                               ),
-                                                            );
-                                                          },
-                                                          child: Text(
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Text(
                                                             surahName,
                                                             style: const TextStyle(
-                                                              fontSize: 16,
-                                                              color: Colors.blue,
-                                                              decoration: TextDecoration.underline,
+                                                              fontSize: 24,
+                                                              color: Color.fromARGB(255, 0, 0, 0),
+                                                              fontWeight: FontWeight.bold,
                                                             ),
                                                           ),
-                                                        );
-                                                      }).toList(),
-                                                    ),
-                                                  ],
+                                                          StreamBuilder<DocumentSnapshot>(
+                                                            stream: FirebaseFirestore.instance
+                                                                .collection('users')
+                                                                .doc(_auth.currentUser!.uid)
+                                                                .collection('reading_records')
+                                                                .doc(surahName)
+                                                                .snapshots(),
+                                                            builder: (context, readStatusSnapshot) {
+                                                              if (readStatusSnapshot.connectionState == ConnectionState.waiting) {
+                                                                return const CircularProgressIndicator();
+                                                              }
+                                                              if (readStatusSnapshot.hasError) {
+                                                                return ErrorWidget(readStatusSnapshot.error!);
+                                                              }
+
+                                                              final readStatusData = readStatusSnapshot.data?.data() as Map<String, dynamic>?;
+
+                                                              // Check if the Surah is marked as read or not
+                                                              final isRead = readStatusData?['isRead'] ?? false;
+
+                                                              // Choose the appropriate icon and color based on the read status
+                                                              final icon = Icon(
+                                                                isRead ? Icons.done : Icons.bookmark_border,
+                                                                color: isRead ? Colors.green : Colors.grey,
+                                                              );
+
+                                                              return icon;
+                                                            },
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }).toList(),
                                                 );
                                               },
                                             ),
@@ -194,6 +263,7 @@ class _QuranPageState extends State<QuranPage> {
           ),
         ),
       ),
+      // Add a button here to go to a placeholder page
     );
   }
 }
