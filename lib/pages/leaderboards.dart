@@ -135,7 +135,8 @@ class _LeaderboardPageState extends State<LeaderboardPage>{
                         DocumentSnapshot ds = snapshot.data!.docs[index];
                         return Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: ds['userID'] == FirebaseAuth.instance.currentUser!.uid ? Colors.green[100] : //todo: change to user's color
+                            Colors.white,
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: const [
                               BoxShadow(

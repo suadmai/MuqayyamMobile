@@ -18,7 +18,7 @@ class AuthGate extends StatelessWidget {
           builder: (context, snapshot) {
             //user is logged in
             if (snapshot.hasData) {
-              return const AdminHomeScreen(); //for now open the admin home screen
+              return const HomeScreen(); //for now open the admin home screen
             }
 
             //user is NOT logged in
