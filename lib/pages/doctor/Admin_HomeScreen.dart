@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:video_compress/video_compress.dart';
+import 'package:wildlifego/pages/doctor/monitorPatient.dart';
 import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
 import 'package:wildlifego/pages/new_quran_page.dart';
@@ -212,7 +213,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  const QuranPage(),
+                                                  const PatientList(),
                                             ),
                                           );
                                         },
