@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +6,7 @@ import 'package:wildlifego/pages/TrackPrayer.dart';
 import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
 import 'package:wildlifego/pages/new_quran_page.dart';
+import 'package:wildlifego/pages/profile_page.dart';
 import 'package:wildlifego/pages/ranking_page.dart';
 import 'package:wildlifego/pages/rewards_page.dart';
 
@@ -79,9 +78,22 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: signOut,
             icon: const Icon(Icons.logout),
           ),
+
+
           IconButton(
             onPressed: () {
+
               //go to profile page
+              Navigator.push(
+                
+                context,
+                MaterialPageRoute(
+                builder: (context) =>  const ProfilePage(), // Pass the userID to the ChatPage
+                ),
+              );
+
+              
+              
             },
             icon: const Icon(
               Icons.account_circle,
