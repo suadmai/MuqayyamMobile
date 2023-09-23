@@ -8,6 +8,8 @@ import 'package:wildlifego/pages/TrackPrayer.dart';
 import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
 import 'package:wildlifego/pages/new_quran_page.dart';
+import 'package:wildlifego/pages/ranking_page.dart';
+import 'package:wildlifego/pages/rewards_page.dart';
 
 import '../services/auth_service.dart';
 import 'leaderboards.dart';
@@ -88,6 +90,76 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
+      drawer: Drawer(
+  child: StreamBuilder<User?>(
+    stream: FirebaseAuth.instance.authStateChanges(),
+    builder: (context, userSnapshot) {
+      if (userSnapshot.connectionState == ConnectionState.waiting) {
+        return CircularProgressIndicator();
+      } else if (!userSnapshot.hasData) {
+        return Container(); // No user is signed in, you can handle this case as needed.
+      }
+
+      final User user = userSnapshot.data!;
+      return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance.collection('users').doc(user.uid).snapshots(),
+        builder: (context, userDocumentSnapshot) {
+          if (userDocumentSnapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (!userDocumentSnapshot.hasData) {
+            return Container(); // Handle the case when user data is not available.
+          }
+
+          final userData = userDocumentSnapshot.data!.data() as Map<String, dynamic>?;
+          final String? nickname = userData?['username'] as String?;
+
+          return ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("images/profile.jpg"),
+                    fit: BoxFit.cover,
+                  ),
+                  color: Colors.blue,
+                ),
+                child: Text(
+                  nickname ?? 'Anonymous', // Display the user's nickname or 'Anonymous' if not available
+                  style: TextStyle(
+                    backgroundColor: Colors.black.withOpacity(0.5),
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.star_rounded),
+                iconColor: Colors.yellow,
+                title: const Text('Pangkat'),
+                onTap: () {
+                  // Update the state of the app.
+                  // ...
+                },
+              ),
+              ListTile(
+                
+                leading : const Icon(Icons.card_giftcard),
+                iconColor: Colors.blue,
+                title: const Text('Hadiah'),
+                onTap: () {
+                  // Update the state of the app.
+                  // ...
+                },
+              ),
+            ],
+          );
+        },
+      );
+    },
+  ),
+),
+
       //floating action button must be center
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -158,33 +230,38 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2), // Shadow color
-                            offset: Offset(0, 3), // Changes position of shadow
-                            blurRadius: 6, // Increases the blur of the shadow
-                            spreadRadius: 0, // Increases the size of the shadow
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Container(
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2), // Shadow color
+                          offset: Offset(0, 3), // Changes position of shadow
+                          blurRadius: 6, // Increases the blur of the shadow
+                          spreadRadius: 0, // Increases the size of the shadow
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            
                             child: Row(
+                              //make it scrollable
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
+                                
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -208,6 +285,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ],
                                 ),
+
+                                SizedBox(width: 10),
+
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -231,6 +311,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ],
                                 ),
+
+                                SizedBox(width: 10),
+
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -254,6 +337,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ],
                                 ),
+
+                                SizedBox(width: 10),
+
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -277,138 +363,193 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ],
                                 ),
+
+                                SizedBox(width: 10),
+
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                   RewardsPage(),
+                                            ),
+                                          );
+                                        },
+                                        icon: Icon(
+                                          Icons.card_giftcard_rounded,
+                                          size: 32,
+                                          color: Colors.blue,
+                                        )),
+                                    Text(
+                                      "Hadiah",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+
+                                SizedBox(width: 10),
+
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const RankingPage(),
+                                            ),
+                                          );
+                                        },
+                                        icon: Icon(
+                                          Icons.star_rounded,
+                                          size: 32,
+                                          color: Colors.yellow,
+                                        )),
+                                    Text(
+                                      "Pangkat",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+
+                                SizedBox(width: 10),
+                                
                               ],
-                            )),
-                      )),
-                ),
-                SizedBox(height: 10),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Text(
-                      "Maklumat terkini",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
+                            ),
+                          )),
+                    )),
+              ),
+              SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Text(
+                    "Maklumat terkini",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
-                SizedBox(height: 10),
-                Expanded(
-                  child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                    stream: FirebaseFirestore.instance
-                        .collection('AllPosts')
-                        .snapshots(),
-                        builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                        final posts = snapshot.data!.docs;
-                        return ListView.builder(
-                          itemCount: posts.length,
-                          itemBuilder: (context, index) {
-                            final post = posts[index].data();
-                            final postID = post['postID'] as String?;
-                            final userID = post['userID']
-                                as String?; // Handle null value
-                            // final imageURL =
-                            //     post['imageURL'] as String?;
-                            final title =
-                                post['title'] as String?; // Handle null value
-                            final description = post['description']
-                                as String?; // Handle null value
-                            final date = post["date"] as String?;
-                            
-                            return Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              color: Colors.white,
-                              elevation: 3,
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 12,
-                                            backgroundColor: Colors
-                                                .blue, // Set the profile image's background color
-                                            child: Icon(
-                                              Icons.person,
-                                              size: 16,
-                                              color: Colors.white,
-                                            ),
+              ),
+              SizedBox(height: 10),
+              Expanded(
+                child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('AllPosts')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final posts = snapshot.data!.docs;
+                      return ListView.builder(
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          final post = posts[index].data();
+                          final postID = post['postID'] as String?;
+                          final userID =
+                              post['userID'] as String?; // Handle null value
+                          // final imageURL =
+                          //     post['imageURL'] as String?;
+                          final title =
+                              post['title'] as String?; // Handle null value
+                          final description = post['description']
+                              as String?; // Handle null value
+                          final date = post["date"] as String?;
+
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            color: Colors.white,
+                            elevation: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 12,
+                                          backgroundColor: Colors
+                                              .blue, // Set the profile image's background color
+                                          child: Icon(
+                                            Icons.person,
+                                            size: 16,
+                                            color: Colors.white,
                                           ),
-                                          SizedBox(
-                                              width:
-                                                  8), // Add some space between the profile image and the name
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start,
-                                                  children: [
-                                                    Text(
-                                                      '$userID', // Replace with the user's name
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight
-                                                                  .bold),
-                                                    ),
-                                                    //SizedBox(height: 8),
-                                                    Text(
-                                                      "$date", // Replace with the user's name
-                                                      style: TextStyle(
-                                                          fontSize: 12),
-                                                    ),
-                                                    SizedBox(height: 12),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        '$title',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
                                         ),
+                                        SizedBox(
+                                            width:
+                                                8), // Add some space between the profile image and the name
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '$userID', // Replace with the user's name
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  //SizedBox(height: 8),
+                                                  Text(
+                                                    "$date", // Replace with the user's name
+                                                    style:
+                                                        TextStyle(fontSize: 12),
+                                                  ),
+                                                  SizedBox(height: 12),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Text(
+                                      '$title',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      SizedBox(
-                                          height:
-                                              4), // Add some space between the title and the description
-                                      Text(
-                                        '$description',
-                                        style: TextStyle(fontSize: 14),
-                                        maxLines: 10,
-                                      ),
-                                    ]),
-                              ),
-                            );
-                            //);
-                          },
-                        );
-                      } else if (snapshot.hasError) {
-                        return ErrorWidget(snapshot.error!);
-                      } else {
-                        return const CircularProgressIndicator();
-                      }
-                    },
-                  ),
+                                    ),
+                                    SizedBox(
+                                        height:
+                                            4), // Add some space between the title and the description
+                                    Text(
+                                      '$description',
+                                      style: TextStyle(fontSize: 14),
+                                      maxLines: 10,
+                                    ),
+                                  ]),
+                            ),
+                          );
+                          //);
+                        },
+                      );
+                    } else if (snapshot.hasError) {
+                      return ErrorWidget(snapshot.error!);
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+        ),
       ),
     );
   }

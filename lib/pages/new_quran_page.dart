@@ -29,7 +29,7 @@ class _QuranPageState extends State<QuranPage> {
         final userScore = userDoc['score'] ?? 0; // Replace 'score' with the actual field name in Firestore
         return Row(
           children: [
-           
+            const Text('Score: '), // You can customize the text
             Text('$userScore'),
           ],
         );
