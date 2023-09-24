@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:wildlifego/services/auth_gate.dart';
 import 'package:wildlifego/services/auth_service.dart';
 import 'package:provider/provider.dart';
@@ -19,8 +20,12 @@ List<Widget> imageWidgets = [];
 
 Future<void> main() async {
 
+    await Future.delayed(const Duration(seconds: 30));
+  FlutterNativeSplash.remove;
 
   WidgetsFlutterBinding.ensureInitialized();
+
+
 await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     ChangeNotifierProvider(
