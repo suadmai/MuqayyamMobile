@@ -7,6 +7,7 @@ import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
 import 'package:wildlifego/pages/new_quran_page.dart';
 import 'package:wildlifego/pages/profile_page.dart';
+import 'package:wildlifego/pages/ramadan_page.dart';
 import 'package:wildlifego/pages/ranking_page.dart';
 import 'package:wildlifego/pages/rewards_page.dart';
 
@@ -15,8 +16,11 @@ import 'leaderboards.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+  
   @override
   State<HomeScreen> createState() => _HomeScreenState();
+
+  
 }
 
 // Future<void> logout(BuildContext context) async {
@@ -68,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
@@ -323,6 +328,55 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ],
                                 ),
+
+                                SizedBox(width: 10),
+
+                                Column(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    IconButton(
+      onPressed: () {
+        final currentDate = DateTime.now();
+        final enableDate = DateTime(2024, 3, 12);
+
+        if (currentDate.isAfter(enableDate)) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const RamadanPage(),
+            ),
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Access Restricted'),
+                content: Text('Access to this page will be available after March 12, 2024.'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      },
+      icon: Icon(
+        Icons.nights_stay_rounded,
+        size: 32,
+      ),
+    ),
+    Text(
+      "Jejak Ramadan",
+      style: TextStyle(fontSize: 12),
+    ),
+  ],
+),
 
                                 SizedBox(width: 10),
 
