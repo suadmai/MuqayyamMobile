@@ -58,7 +58,7 @@ dependencies:
 flutter_icons:
   android: true
   ios: false
-  image_path: "images/appstore.png"
+  image_path: "images/muqayyam_icon.png"
  
   
   
