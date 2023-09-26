@@ -46,7 +46,7 @@ class _RewardsPageState extends State<RewardsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: const Text('Rewards'),
+        title: const Text('Ganjaran'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -56,7 +56,7 @@ class _RewardsPageState extends State<RewardsPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
-                'Hadiah Khas Untuk Anda!',
+                'Ganjaran Khas Untuk Anda!',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -84,7 +84,7 @@ class _RewardsPageState extends State<RewardsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Total Points',
+                          'Markah saya',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -104,7 +104,7 @@ class _RewardsPageState extends State<RewardsPage> {
               ),
               const SizedBox(height: 24),
               const Text(
-                'Available Rewards',
+                'Ganjaran yang boleh ditebus',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -229,7 +229,7 @@ class RewardItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Points Required: $pointsRequired',
+                'Mata diperlukan: $pointsRequired',
                 style: const TextStyle(
                   fontSize: 16,
                 ),
@@ -241,7 +241,7 @@ class RewardItem extends StatelessWidget {
                     
                     const SnackBar(
                       content: Text(
-                        'You have successfully redeemed this reward.',
+                        'Anda telah berjaya menebus ganjaran ini!',
                       ),
                     ),
                     
@@ -262,7 +262,7 @@ class RewardItem extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text(
-                        'You do not have enough points to redeem this reward.',
+                        'Anda tidak mempunyai cukup mata untuk menebus ganjaran ini.',
                       ),
                     ),
                   );
@@ -272,7 +272,7 @@ class RewardItem extends StatelessWidget {
                       ? const Color(0xFF82618B)
                       : Colors.grey,
                 ),
-                child: const Text('Redeem'),
+                child: const Text('Tebus'),
               ),
             ],
           ),
