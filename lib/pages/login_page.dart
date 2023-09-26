@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   //welcome back
                   Text(
-                    'Welcome Back!',
+                    'Selamat Datang!',
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   MyTextField(
                     controller: emailController,
-                    hintText: "Email",
+                    hintText: "Alamat emel",
                     maxLines: 1,
                     obscureText: false,
                   ),
@@ -94,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                   //password textfield
                   MyTextField(
                     controller: passwordController,
-                    hintText: "Password",
+                    hintText: "Kata laluan",
                     maxLines: 1,
                     obscureText: true, //see what u typed
                   ),
@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
 
                   //sign in button
-                  MyButton(onTap: signIn, text: "Sign In"),
+                  MyButton(onTap: signIn, text: "Log masuk"),
 
                   const SizedBox(
                     height: 20,
@@ -114,12 +114,12 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Not a user yet?"),
+                      Text("Belum mempunyai akaun?"),
                       SizedBox(width: 4),
                       GestureDetector(
                         onTap: widget.onTap,
                         child: Text(
-                          "Become One Now!!",
+                          "Daftar sekarang",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
