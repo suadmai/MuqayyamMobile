@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:wildlifego/pages/homeScreen.dart';
 import 'package:wildlifego/services/auth_gate.dart';
 
-import 'home_page.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

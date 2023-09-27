@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../pages/doctor/Admin_HomeScreen.dart';
 import '../pages/homeScreen.dart';
-import '../pages/home_page.dart';
 import 'login_or_register.dart';
 
 class AuthGate extends StatelessWidget {

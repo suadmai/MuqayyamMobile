@@ -107,75 +107,79 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      drawer: Drawer(
-  child: StreamBuilder<User?>(
-    stream: FirebaseAuth.instance.authStateChanges(),
-    builder: (context, userSnapshot) {
-      if (userSnapshot.connectionState == ConnectionState.waiting) {
-        return CircularProgressIndicator();
-      } else if (!userSnapshot.hasData) {
-        return Container(); // No user is signed in, you can handle this case as needed.
-      }
 
-      final User user = userSnapshot.data!;
-      return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('users').doc(user.uid).snapshots(),
-        builder: (context, userDocumentSnapshot) {
-          if (userDocumentSnapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else if (!userDocumentSnapshot.hasData) {
-            return Container(); // Handle the case when user data is not available.
-          }
 
-          final userData = userDocumentSnapshot.data!.data() as Map<String, dynamic>?;
-          final String? nickname = userData?['username'] as String?;
+      //DRAWER NOT USED FOR NOW
+      
+//       drawer: Drawer(
+//   child: StreamBuilder<User?>(
+//     stream: FirebaseAuth.instance.authStateChanges(),
+//     builder: (context, userSnapshot) {
+//       if (userSnapshot.connectionState == ConnectionState.waiting) {
+//         return CircularProgressIndicator();
+//       } else if (!userSnapshot.hasData) {
+//         return Container(); // No user is signed in, you can handle this case as needed.
+//       }
 
-          return ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("images/profile.jpg"),
-                    fit: BoxFit.cover,
-                  ),
-                  color: Colors.blue,
-                ),
-                child: Text(
-                  nickname ?? 'Anonymous', // Display the user's nickname or 'Anonymous' if not available
-                  style: TextStyle(
-                    backgroundColor: Colors.black.withOpacity(0.5),
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.star_rounded),
-                iconColor: Colors.yellow,
-                title: const Text('Pangkat'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
-              ListTile(
+//       final User user = userSnapshot.data!;
+//       return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+//         stream: FirebaseFirestore.instance.collection('users').doc(user.uid).snapshots(),
+//         builder: (context, userDocumentSnapshot) {
+//           if (userDocumentSnapshot.connectionState == ConnectionState.waiting) {
+//             return CircularProgressIndicator();
+//           } else if (!userDocumentSnapshot.hasData) {
+//             return Container(); // Handle the case when user data is not available.
+//           }
+
+//           final userData = userDocumentSnapshot.data!.data() as Map<String, dynamic>?;
+//           final String? nickname = userData?['username'] as String?;
+
+//           return ListView(
+//             padding: EdgeInsets.zero,
+//             children: [
+//               DrawerHeader(
+//                 decoration: BoxDecoration(
+//                   image: DecorationImage(
+//                     image: AssetImage("images/profile.jpg"),
+//                     fit: BoxFit.cover,
+//                   ),
+//                   color: Colors.blue,
+//                 ),
+//                 child: Text(
+//                   nickname ?? 'Anonymous', // Display the user's nickname or 'Anonymous' if not available
+//                   style: TextStyle(
+//                     backgroundColor: Colors.black.withOpacity(0.5),
+//                     color: Colors.white,
+//                     fontSize: 24,
+//                   ),
+//                 ),
+//               ),
+//               ListTile(
+//                 leading: const Icon(Icons.star_rounded),
+//                 iconColor: Colors.yellow,
+//                 title: const Text('Pangkat'),
+//                 onTap: () {
+//                   // Update the state of the app.
+//                   // ...
+//                 },
+//               ),
+//               ListTile(
                 
-                leading : const Icon(Icons.card_giftcard),
-                iconColor: Colors.blue,
-                title: const Text('Hadiah'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
-            ],
-          );
-        },
-      );
-    },
-  ),
-),
+//                 leading : const Icon(Icons.card_giftcard),
+//                 iconColor: Colors.blue,
+//                 title: const Text('Hadiah'),
+//                 onTap: () {
+//                   // Update the state of the app.
+//                   // ...
+//                 },
+//               ),
+//             ],
+//           );
+//         },
+//       );
+//     },
+//   ),
+// ),
 
       //floating action button must be center
       floatingActionButton: FloatingActionButton(
