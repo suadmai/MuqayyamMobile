@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -47,17 +49,17 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Sign Out'),
-          content: const Text('Are you sure you want to sign out?'),
+          title: Text('Sign Out'),
+          content: Text('Are you sure you want to sign out?'),
           actions: <Widget>[
             ElevatedButton(
-              child: const Text('Cancel'),
+              child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             ElevatedButton(
-              child: const Text('Sign Out'),
+              child: Text('Sign Out'),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -77,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEBEBEB),
+      backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Muqayyam Mobile™"),
@@ -196,11 +198,11 @@ class _HomeScreenState extends State<HomeScreen> {
           //);
         },
         child: const Icon(Icons.podcasts),
-        backgroundColor: const Color(0xFF82618B),
+        backgroundColor: Color(0xFF82618B),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        color: const Color(0xFF82618B),
+        color: Color(0xFF82618B),
         shape: const CircularNotchedRectangle(),
         notchMargin: 10.0,
         child: SizedBox(
@@ -269,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.2), // Shadow color
-                          offset: const Offset(0, 3), // Changes position of shadow
+                          offset: Offset(0, 3), // Changes position of shadow
                           blurRadius: 6, // Increases the blur of the shadow
                           spreadRadius: 0, // Increases the size of the shadow
                         ),
@@ -299,18 +301,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           );
                                         },
-                                        icon: const Icon(
+                                        icon: Icon(
                                           Icons.mosque_rounded,
                                           size: 32,
                                         )),
-                                    const Text(
+                                    Text(
                                       "Jejak solat",
                                       style: TextStyle(fontSize: 12),
                                     ),
                                   ],
                                 ),
 
-                                const SizedBox(width: 10),
+                                SizedBox(width: 10),
 
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -325,18 +327,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           );
                                         },
-                                        icon: const Icon(
+                                        icon: Icon(
                                           Icons.import_contacts_rounded,
                                           size: 32,
                                         )),
-                                    const Text(
+                                    Text(
                                       "Baca al-Quran",
                                       style: TextStyle(fontSize: 12),
                                     ),
                                   ],
                                 ),
 
-                                const SizedBox(width: 10),
+                                SizedBox(width: 10),
 
                                 Column(
   mainAxisAlignment: MainAxisAlignment.center,
@@ -374,19 +376,19 @@ class _HomeScreenState extends State<HomeScreen> {
         //   );
         // }
       },
-      icon: const Icon(
+      icon: Icon(
         Icons.nights_stay_rounded,
         size: 32,
       ),
     ),
-    const Text(
+    Text(
       "Jejak Ramadan",
       style: TextStyle(fontSize: 12),
     ),
   ],
 ),
 
-                                const SizedBox(width: 10),
+                                SizedBox(width: 10),
 
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -401,18 +403,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           );
                                         },
-                                        icon: const Icon(
+                                        icon: Icon(
                                           Icons.star_rounded,
                                           size: 32,
                                         )),
-                                    const Text(
+                                    Text(
                                       "Pencapaian",
                                       style: TextStyle(fontSize: 12),
                                     ),
                                   ],
                                 ),
 
-                                const SizedBox(width: 10),
+                                SizedBox(width: 10),
 
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -427,18 +429,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           );
                                         },
-                                        icon: const Icon(
+                                        icon: Icon(
                                           Icons.contact_support_rounded,
                                           size: 32,
                                         )),
-                                    const Text(
+                                    Text(
                                       "Hubungi pakar",
                                       style: TextStyle(fontSize: 12),
                                     ),
                                   ],
                                 ),
 
-                                const SizedBox(width: 10),
+                                SizedBox(width: 10),
 
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -453,19 +455,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           );
                                         },
-                                        icon: const Icon(
+                                        icon: Icon(
                                           Icons.card_giftcard_rounded,
                                           size: 32,
                                           color: Colors.blue,
                                         )),
-                                    const Text(
+                                    Text(
                                       "Hadiah",
                                       style: TextStyle(fontSize: 12),
                                     ),
                                   ],
                                 ),
 
-                                const SizedBox(width: 10),
+                                SizedBox(width: 10),
 
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -480,37 +482,37 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           );
                                         },
-                                        icon: const Icon(
+                                        icon: Icon(
                                           Icons.star_rounded,
                                           size: 32,
                                           color: Colors.yellow,
                                         )),
-                                    const Text(
+                                    Text(
                                       "Pangkat",
                                       style: TextStyle(fontSize: 12),
                                     ),
                                   ],
                                 ),
 
-                                const SizedBox(width: 10),
+                                SizedBox(width: 10),
                                 
                               ],
                             ),
                           )),
                     )),
               ),
-              const SizedBox(height: 10),
-              const Align(
+              SizedBox(height: 10),
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: Text(
                     "Maklumat terkini",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               Expanded(
                   child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                     stream: FirebaseFirestore.instance
@@ -551,7 +553,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            const CircleAvatar(
+                                            CircleAvatar(
                                               radius: 12,
                                               backgroundColor: Colors
                                                   .blue, // Set the profile image's background color
@@ -561,7 +563,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 color: Colors.white,
                                               ),
                                             ),
-                                            const SizedBox(
+                                            SizedBox(
                                                 width:
                                                     8), // Add some space between the profile image and the name
                                             Expanded(
@@ -576,7 +578,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     children: [
                                                       Text(
                                                         '$username', // Replace with the user's name
-                                                        style: const TextStyle(
+                                                        style: TextStyle(
                                                             fontSize: 14,
                                                             fontWeight:
                                                                 FontWeight
@@ -586,10 +588,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       Text(
                                                         // date format dd/mm/yyyy
                                                         DateFormat("dd/MM/yyyy").format(DateTime.parse(date!)), 
-                                                        style: const TextStyle(
+                                                        style: TextStyle(
                                                             fontSize: 12),
                                                       ),
-                                                      const SizedBox(height: 12),
+                                                      SizedBox(height: 12),
                                                     ],
                                                   ),
                                                 ],
@@ -599,20 +601,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         Text(
                                           '$title',
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        const SizedBox(
+                                        SizedBox(
                                             height:
                                                 4), // Add some space between the title and the description
                                         Text(
                                           '$description',
-                                          style: const TextStyle(fontSize: 14),
+                                          style: TextStyle(fontSize: 14),
                                           maxLines: 10,
                                         ),
-                                        const SizedBox(height: 8),
+                                        SizedBox(height: 8),
                                         if (postType == 'image' && imageURL != null)
                                           ClipRRect(
                                             borderRadius:
