@@ -1,50 +1,60 @@
 import 'package:flutter/material.dart';
 
-class MyDropdownButton extends StatefulWidget {
+class MyDropdownButton extends StatelessWidget {
   final List<String> items;
   final String value;
   final ValueChanged<String?> onChanged;
   final String hintText;
 
   const MyDropdownButton({
+    Key? key,
     required this.items,
     required this.value,
     required this.onChanged,
     required this.hintText,
-  });
+  }) : super(key: key);
 
-  @override
-  _MyDropdownButtonState createState() => _MyDropdownButtonState();
-}
-
-class _MyDropdownButtonState extends State<MyDropdownButton> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30.0),
-        color: Colors.white,
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: DropdownButtonFormField(
-          value: widget.value,
-          onChanged: widget.onChanged,
-          items: widget.items.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-          decoration: InputDecoration(
-            hintText: widget.hintText,
-            border: InputBorder.none, // Remove the border
-            hintStyle: const TextStyle(
-              color: Color.fromARGB(255, 140, 138, 138),
+    List<DropdownMenuItem<String>> dropdownItems = items.map<DropdownMenuItem<String>>(
+      (String item) {
+        return DropdownMenuItem<String>(
+          value: item,
+          child: Text(item),
+        );
+      },
+    ).toList();
+
+    if (hintText.isNotEmpty) {
+      dropdownItems.insert(
+        0,
+        DropdownMenuItem<String>(
+          value: '',
+          child: Text(
+            hintText,
+            style: const TextStyle(
+              color: Colors.grey, // Customize hint text color if needed
             ),
           ),
         ),
+      );
+    }
+
+    return DropdownButtonFormField<String>(
+      value: value,
+      items: dropdownItems,
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 12.0, // Adjust the vertical padding to match MyTextField
+          horizontal: 20.0,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide.none,
+        ),
+        fillColor: Colors.white,
+        filled: true,
       ),
     );
   }
