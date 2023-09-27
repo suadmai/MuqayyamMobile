@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Muqayyam Mobile"),
+        title: const Text("Muqayyam Mobile™"),
         actions: [
           IconButton(
             onPressed: signOut,
