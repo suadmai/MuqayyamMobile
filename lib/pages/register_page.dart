@@ -20,8 +20,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
-  String selectedRole = '';
-  final roles = ['pengguna', 'doktor'];
+  String selectedRole = 'Pengguna';
+  final roles = ['Pengguna', 'Doktor'];
 
   //signup user
   void signUp() async {
@@ -34,24 +34,13 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    if(selectedRole == ''){
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Sila pilih peranan"),
-        ),
-      );
-      return;
-    }
-
     //get auth service
     final authService = Provider.of<AuthService>(context, listen: false);
-    print('selectedRole: $selectedRole');
 
     try{
       await authService.signUpWithEmailandPassword(
         usernameController.text,
-        //roleController.text,
-        selectedRole,
+        roleController.text,
         emailController.text,
         passwordController.text,
       );
@@ -89,63 +78,18 @@ class _RegisterPageState extends State<RegisterPage> {
                       Icons.app_registration,
                       size: 80,
                     ),
-
-                MyDropdownButton(
-                  items: roles,
-                  value: selectedRole,
-                  onChanged: (newValue) {
-                    setState(() {
-                      selectedRole = newValue!;
-                    });
-                  },
-                  hintText: 'Pilih Peranan',
-                ),
-
-                const SizedBox(
-                  height: 20,
-                ),
-
-                  //email textfield
-                  MyTextField(
-                    controller: emailController,
-                    hintText: "Alamat emel",
-                    maxLines: 1,
-                    obscureText: false,
-                  ),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  //password textfield
-                  MyTextField(
-                    controller: passwordController,
-                    hintText: "Kata laluan",
-                    maxLines: 1,
-                    obscureText: true, //see what u typed
-                  ),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  //password confirm textfield
-                  MyTextField(
-                    controller: passwordConfirmController,
-                    hintText: "Sahkan kata laluan",
-                    maxLines: 1,
-                    obscureText: true, //see what u typed
-                  ),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  //sign in button
-                  MyButton(
-                    onTap: signUp,
-                    //turn to circular progress indicator when loading
-                    text: "Daftar"
+        
+                    const SizedBox(
+                      height: 20,
+                    ),
+        
+                    //welcome back
+                    Text(
+                      "Daftar Akaun",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
         
                     const SizedBox(
