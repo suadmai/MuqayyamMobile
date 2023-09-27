@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wildlifego/components/my_dropdown.dart';
 
 import '../components/my_button.dart';
 import '../components/my_text_field.dart';
@@ -19,13 +20,15 @@ class _RegisterPageState extends State<RegisterPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
+  String selectedRole = 'Pengguna';
+  final roles = ['Pengguna', 'Doktor'];
 
   //signup user
   void signUp() async {
     if (passwordController.text != passwordConfirmController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Password does not match"),
+          content: Text("Kata laluan tidak sama"),
         ),
       );
       return;
@@ -70,7 +73,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     height: 20,
                   ),
 
-                  Icon(
+                  const Icon(
                     Icons.app_registration,
                     size: 80,
                   ),
@@ -81,7 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   //welcome back
                   Text(
-                    " Register Here!",
+                    "Daftar Akaun",
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -94,23 +97,35 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   MyTextField(
                     controller: usernameController,
-                    hintText: "usename",
+                    hintText: "Nama pengguna",
                     maxLines: 1,
                     obscureText: false,
                   ),
 
-                  MyTextField(
-                    controller: roleController,
-                    hintText: "role",
-                    maxLines: 1,
-                    obscureText: false,
-                  ),
+                  const SizedBox(
+                    height: 20
+                    ),
 
+                   MyDropdownButton(
+                      items: roles,
+                      value: selectedRole,
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedRole = newValue!;
+                        });
+                      },
+                      hintText: 'Pilih Peranan',
+                    ),
+
+
+                const SizedBox(
+                  height: 20,
+                ),
 
                   //email textfield
                   MyTextField(
                     controller: emailController,
-                    hintText: "Email",
+                    hintText: "Alamat emel",
                     maxLines: 1,
                     obscureText: false,
                   ),
@@ -122,7 +137,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   //password textfield
                   MyTextField(
                     controller: passwordController,
-                    hintText: "Password",
+                    hintText: "Kata laluan",
                     maxLines: 1,
                     obscureText: true, //see what u typed
                   ),
@@ -134,7 +149,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   //password confirm textfield
                   MyTextField(
                     controller: passwordConfirmController,
-                    hintText: "Confirm Password",
+                    hintText: "Sahkan kata laluan",
                     maxLines: 1,
                     obscureText: true, //see what u typed
                   ),
@@ -144,7 +159,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
 
                   //sign in button
-                  MyButton(onTap: signUp, text: "Sign Up"),
+                  MyButton(
+                    onTap: signUp, 
+                    text: "Daftar"
+                    ),
 
                   const SizedBox(
                     height: 20,
@@ -154,12 +172,12 @@ class _RegisterPageState extends State<RegisterPage> {
                    Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Already a user?"),
+                      Text("Sudah mempunyai akaun?"),
                       SizedBox(width: 4),
                       GestureDetector(
                         onTap: widget.onTap,
-                        child: Text(
-                          "Login Now!",
+                        child: const Text(
+                          "Log masuk sekarang",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
