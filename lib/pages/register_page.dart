@@ -20,8 +20,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
-  String selectedRole = 'Pengguna';
-  final roles = ['Pengguna', 'Doktor'];
+  String selectedRole = '';
+  final roles = ['pengguna', 'doktor'];
 
   //signup user
   void signUp() async {
@@ -34,13 +34,24 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
+    if(selectedRole == ''){
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Sila pilih peranan"),
+        ),
+      );
+      return;
+    }
+
     //get auth service
     final authService = Provider.of<AuthService>(context, listen: false);
+    print('selectedRole: $selectedRole');
 
     try{
       await authService.signUpWithEmailandPassword(
         usernameController.text,
-        roleController.text,
+        //roleController.text,
+        selectedRole,
         emailController.text,
         passwordController.text,
       );
@@ -106,17 +117,16 @@ class _RegisterPageState extends State<RegisterPage> {
                     height: 20
                     ),
 
-                   MyDropdownButton(
-                      items: roles,
-                      value: selectedRole,
-                      onChanged: (newValue) {
-                        setState(() {
-                          selectedRole = newValue!;
-                        });
-                      },
-                      hintText: 'Pilih Peranan',
-                    ),
-
+                MyDropdownButton(
+                  items: roles,
+                  value: selectedRole,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedRole = newValue!;
+                    });
+                  },
+                  hintText: 'Pilih Peranan',
+                ),
 
                 const SizedBox(
                   height: 20,
@@ -160,7 +170,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   //sign in button
                   MyButton(
-                    onTap: signUp, 
+                    onTap: signUp,
+                    //turn to circular progress indicator when loading
                     text: "Daftar"
                     ),
 
