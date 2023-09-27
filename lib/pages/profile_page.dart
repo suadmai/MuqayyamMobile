@@ -13,9 +13,9 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late User _user;
-  late String _name;
-  int? _score;
+  late User _user = FirebaseAuth.instance.currentUser!;
+  late String _name = '';
+  int? _score = 0;
 
   @override
   void initState() {
