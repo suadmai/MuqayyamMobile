@@ -536,8 +536,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             final date = post["date"] as String?;
                             final imageURL = post['imageURL'] as String?;
                             final postType = post['postType'] as String?;
-                            
-                            Card(
+
+                            return Card(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
