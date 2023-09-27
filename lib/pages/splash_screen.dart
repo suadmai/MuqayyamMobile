@@ -53,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen>
               ),
               SizedBox(height: 10),
               Text(
-                'Selamat Datang ke Muqayyam!',
+                'Selamat Datang ke Muqayyam Mobile™!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color:Color(0xFF82618B),
