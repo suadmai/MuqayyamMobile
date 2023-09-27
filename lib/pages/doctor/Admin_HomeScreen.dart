@@ -45,6 +45,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   void signOut() async {
     bool confirm = await showDialog(
+      
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -77,6 +78,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
