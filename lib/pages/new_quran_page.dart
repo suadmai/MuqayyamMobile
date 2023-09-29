@@ -29,7 +29,7 @@ class _QuranPageState extends State<QuranPage> {
         final userScore = userDoc['score'] ?? 0; // Replace 'score' with the actual field name in Firestore
         return Row(
           children: [
-            const Text('Score: '), // You can customize the text
+            const Text('Skor: '), // You can customize the text
             Text('$userScore'),
           ],
         );
@@ -58,7 +58,7 @@ class _QuranPageState extends State<QuranPage> {
                         const Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Text(
-                            'Choose a Level',
+                            'Pilih surah',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -164,6 +164,17 @@ class _QuranPageState extends State<QuranPage> {
 
                                                           final surahDoc = await surahRef.get();
 
+                                                          // Handle the tap event, e.g., navigate to a details page
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) => SurahPage(
+                                                                surahName: surahName,
+                                                                levelName: levels[index].id,
+                                                              ),
+                                                            ),
+                                                          );
+
                                                           if (!surahDoc.exists) {
                                                             // Surah has not been read, mark as read
                                                             await surahRef.set({
@@ -180,28 +191,20 @@ class _QuranPageState extends State<QuranPage> {
                                                               'score': FieldValue.increment(5),
                                                             });
                                                           }
-
-                                                          // Handle the tap event, e.g., navigate to a details page
-                                                          Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                              builder: (context) => SurahPage(
-                                                                surahName: surahName,
-                                                                levelName: levels[index].id,
-                                                              ),
-                                                            ),
-                                                          );
                                                         }
                                                       },
                                                       child: Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
-                                                          Text(
-                                                            surahName,
-                                                            style: const TextStyle(
-                                                              fontSize: 24,
-                                                              color: Color.fromARGB(255, 0, 0, 0),
-                                                              fontWeight: FontWeight.bold,
+                                                          Padding(
+                                                            padding: const EdgeInsets.all(8.0),
+                                                            child: Text(
+                                                              surahName,
+                                                              style: const TextStyle(
+                                                                fontSize: 24,
+                                                                color: Color.fromARGB(255, 0, 0, 0),
+                                                                fontWeight: FontWeight.bold,
+                                                              ),
                                                             ),
                                                           ),
                                                           StreamBuilder<DocumentSnapshot>(
@@ -225,10 +228,16 @@ class _QuranPageState extends State<QuranPage> {
                                                               final isRead = readStatusData?['isRead'] ?? false;
 
                                                               // Choose the appropriate icon and color based on the read status
-                                                              final icon = Icon(
-                                                                isRead ? Icons.done : Icons.bookmark_border,
-                                                                color: isRead ? Colors.green : Colors.grey,
-                                                              );
+                                                              //create a circle indicator
+                                                              final icon = isRead
+                                                                  ? const Icon(
+                                                                      Icons.circle,
+                                                                      color: Colors.greenAccent,
+                                                                    )
+                                                                  : const Icon(
+                                                                      Icons.circle,
+                                                                      color: Color.fromARGB(0xFF, 0xD9, 0xD9, 0xD9),
+                                                                    );
 
                                                               return icon;
                                                             },
