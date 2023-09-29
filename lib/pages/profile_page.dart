@@ -197,6 +197,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   onTap: () {
                     _signOut(); // Call the sign-out function
+                    //pop the current page
+                    Navigator.pop(context);
                   },
                 ),
                 const Divider(),
