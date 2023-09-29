@@ -131,7 +131,8 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Muqayyam™"),
         actions: [
-          //
+          
+          //SIGN OUT NOT USED HERE
           // IconButton(
           //   onPressed: signOut,
           //   icon: const Icon(Icons.logout),
@@ -316,56 +317,60 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(width: 10),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        // final currentDate = DateTime.now();
-                                        // final enableDate = DateTime(2024, 3, 12);
 
-                                        // if (currentDate.isAfter(enableDate)) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const RamadanPage(),
-                                          ),
-                                        );
-                                        // }
-                                        // else {
-                                        //   showDialog(
-                                        //     context: context,
-                                        //     builder: (context) {
-                                        //       return AlertDialog(
-                                        //         title: Text('Access Restricted'),
-                                        //         content: Text('Access to this page will be available after March 12, 2024.'),
-                                        //         actions: <Widget>[
-                                        //           TextButton(
-                                        //             child: Text('OK'),
-                                        //             onPressed: () {
-                                        //               Navigator.of(context).pop();
-                                        //             },
-                                        //           ),
-                                        //         ],
-                                        //       );
-                                        //     },
-                                        //   );
-                                        // }
-                                      },
-                                      icon: Icon(
-                                        Icons.nights_stay_rounded,
-                                        size: 32,
-                                        color: Colors.orange,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Jejak Ramadan",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ],
-                                ),
+
+                                // RAMADAN FEATURE COMING SOON!!
+
+                                // SizedBox(width: 10),
+                                // Column(
+                                //   mainAxisAlignment: MainAxisAlignment.center,
+                                //   children: [
+                                //     IconButton(
+                                //       onPressed: () {
+                                //         // final currentDate = DateTime.now();
+                                //         // final enableDate = DateTime(2024, 3, 12);
+
+                                //         // if (currentDate.isAfter(enableDate)) {
+                                //         Navigator.push(
+                                //           context,
+                                //           MaterialPageRoute(
+                                //             builder: (context) =>
+                                //                 const RamadanPage(),
+                                //           ),
+                                //         );
+                                //         // }
+                                //         // else {
+                                //         //   showDialog(
+                                //         //     context: context,
+                                //         //     builder: (context) {
+                                //         //       return AlertDialog(
+                                //         //         title: Text('Access Restricted'),
+                                //         //         content: Text('Access to this page will be available after March 12, 2024.'),
+                                //         //         actions: <Widget>[
+                                //         //           TextButton(
+                                //         //             child: Text('OK'),
+                                //         //             onPressed: () {
+                                //         //               Navigator.of(context).pop();
+                                //         //             },
+                                //         //           ),
+                                //         //         ],
+                                //         //       );
+                                //         //     },
+                                //         //   );
+                                //         // }
+                                //       },
+                                //       icon: Icon(
+                                //         Icons.nights_stay_rounded,
+                                //         size: 32,
+                                //         color: Colors.orange,
+                                //       ),
+                                //     ),
+                                //     Text(
+                                //       "Jejak Ramadan",
+                                //       style: TextStyle(fontSize: 12),
+                                //     ),
+                                //   ],
+                                // ),
                                 SizedBox(width: 10),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
