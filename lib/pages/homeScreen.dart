@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wildlifego/components/layout.dart';
 import 'package:wildlifego/pages/TrackPrayer.dart';
 import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
@@ -15,17 +16,18 @@ import 'package:wildlifego/pages/ramadan_page.dart';
 import 'package:wildlifego/pages/ranking_page.dart';
 import 'package:wildlifego/pages/rewards_page.dart';
 
+
+import '../components/bottom_app_bar.dart';
 import '../services/auth_service.dart';
 import 'doctor/Admin_HomeScreen.dart';
 import 'leaderboards.dart';
 
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
-  
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
-
-  
 }
 
 // Future<void> logout(BuildContext context) async {
@@ -39,6 +41,17 @@ class HomeScreen extends StatefulWidget {
 // }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0;
+
+  void _onTabSelected(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+      // Handle navigation or other functionality based on the selected tab.
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -50,30 +63,34 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String formatText(String text) {
-  var newText = text.split('');
-  //loop through each character
-  for (int i = 0; i < newText.length; i++) {
-    //if the character is a hyphen followed by a space
-    if (newText[i] == '-' && i + 1 < newText.length && newText[i + 1] == ' ') {
-      if (i > 0) {
-        newText[i] = '\n\n-';
-      } else {
-        newText[i] = '-';
+    var newText = text.split('');
+    //loop through each character
+    for (int i = 0; i < newText.length; i++) {
+      //if the character is a hyphen followed by a space
+      if (newText[i] == '-' &&
+          i + 1 < newText.length &&
+          newText[i + 1] == ' ') {
+        if (i > 0) {
+          newText[i] = '\n\n-';
+        } else {
+          newText[i] = '-';
+        }
+      }
+      //if the character is a period followed by a number
+      if (containsNumber(newText[i]) &&
+          newText[i + 1] == '.' &&
+          i + 1 < newText.length) {
+        if (i > 0) {
+          newText[i] = '\n\n${newText[i]}';
+        } else {
+          newText[i] = newText[i];
+        }
       }
     }
-    //if the character is a period followed by a number
-    if (containsNumber(newText[i]) && newText[i+1] == '.' && i + 1 < newText.length) {
-      if (i > 0) {
-        newText[i] = '\n\n${newText[i]}';
-      } else {
-        newText[i] = newText[i];
-      }
-    }
+    String newTextString = newText.join();
+    print(newTextString);
+    return newTextString;
   }
-  String newTextString = newText.join();
-  print(newTextString);
-  return newTextString;
-}
 
   void signOut() async {
     bool confirm = await showDialog(
@@ -108,33 +125,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Muqayyam™"),
         actions: [
-
           //
           // IconButton(
           //   onPressed: signOut,
           //   icon: const Icon(Icons.logout),
           // ),
 
-
           IconButton(
             onPressed: () {
-
               //go to profile page
               Navigator.push(
-                
                 context,
                 MaterialPageRoute(
-                builder: (context) =>  const ProfilePage(), // Pass the userID to the ChatPage
+                  builder: (context) =>
+                      const ProfilePage(), // Pass the userID to the ChatPage
                 ),
               );
-
             },
             icon: const Icon(
               Icons.account_circle,
@@ -144,9 +156,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
-
       //DRAWER NOT USED FOR NOW
-      
+
 //       drawer: Drawer(
 //   child: StreamBuilder<User?>(
 //     stream: FirebaseAuth.instance.authStateChanges(),
@@ -200,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
 //                 },
 //               ),
 //               ListTile(
-                
+
 //                 leading : const Icon(Icons.card_giftcard),
 //                 iconColor: Colors.blue,
 //                 title: const Text('Hadiah'),
@@ -218,61 +229,11 @@ class _HomeScreenState extends State<HomeScreen> {
 // ),
 
       //floating action button must be center
-      
+
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        color: Color(0xFF82618B),
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 10.0,
-        child: SizedBox(
-          height: 60.0,
-          child: Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceAround, // Updated alignment
-            children: <Widget>[
-              // Home
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.home),
-                color: Colors.white,
-              ),
-
-              // Search (You can replace this with your desired search functionality)
-              IconButton(
-                onPressed: () {
-                  // Add your search functionality here
-                },
-                icon: const Icon(Icons.search),
-                color: Colors.white,
-              ),
-
-              // Trophy (You can replace this with your desired trophy functionality)
-              IconButton(
-                onPressed: () {
-                  // Add your trophy functionality here
-                },
-                icon: const Icon(Icons.emoji_events),
-                color: Colors.white,
-              ),
-
-              // Settings (You can replace this with your desired settings functionality)
-              IconButton(
-                onPressed: () {
-                  // Add your settings functionality here
-                },
-                icon: const Icon(Icons.settings),
-                color: Colors.white,
-              ),
-            ],
-          ),
-        ),
+      bottomNavigationBar: CustomBottomAppBar(
+         onTabSelected: _onTabSelected,
+        currentIndex: _currentIndex,
       ),
       body: Center(
         child: Padding(
@@ -301,12 +262,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
-                            
                             child: Row(
                               //make it scrollable
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -323,7 +282,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         icon: Icon(
                                           Icons.mosque_rounded,
                                           size: 32,
-                                          color: Color.fromARGB(255, 74, 80, 255),
+                                          color:
+                                              Color.fromARGB(255, 74, 80, 255),
                                         )),
                                     Text(
                                       "Jejak solat",
@@ -331,9 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ],
                                 ),
-
                                 SizedBox(width: 10),
-
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -358,60 +316,57 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ],
                                 ),
-
                                 SizedBox(width: 10),
-
                                 Column(
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    IconButton(
-      onPressed: () {
-        // final currentDate = DateTime.now();
-        // final enableDate = DateTime(2024, 3, 12);
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        // final currentDate = DateTime.now();
+                                        // final enableDate = DateTime(2024, 3, 12);
 
-        // if (currentDate.isAfter(enableDate)) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const RamadanPage(),
-            ),
-          );
-        // } 
-        // else {
-        //   showDialog(
-        //     context: context,
-        //     builder: (context) {
-        //       return AlertDialog(
-        //         title: Text('Access Restricted'),
-        //         content: Text('Access to this page will be available after March 12, 2024.'),
-        //         actions: <Widget>[
-        //           TextButton(
-        //             child: Text('OK'),
-        //             onPressed: () {
-        //               Navigator.of(context).pop();
-        //             },
-        //           ),
-        //         ],
-        //       );
-        //     },
-        //   );
-        // }
-      },
-      icon: Icon(
-        Icons.nights_stay_rounded,
-        size: 32,
-        color: Colors.orange,
-      ),
-    ),
-    Text(
-      "Jejak Ramadan",
-      style: TextStyle(fontSize: 12),
-    ),
-  ],
-),
-
+                                        // if (currentDate.isAfter(enableDate)) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const RamadanPage(),
+                                          ),
+                                        );
+                                        // }
+                                        // else {
+                                        //   showDialog(
+                                        //     context: context,
+                                        //     builder: (context) {
+                                        //       return AlertDialog(
+                                        //         title: Text('Access Restricted'),
+                                        //         content: Text('Access to this page will be available after March 12, 2024.'),
+                                        //         actions: <Widget>[
+                                        //           TextButton(
+                                        //             child: Text('OK'),
+                                        //             onPressed: () {
+                                        //               Navigator.of(context).pop();
+                                        //             },
+                                        //           ),
+                                        //         ],
+                                        //       );
+                                        //     },
+                                        //   );
+                                        // }
+                                      },
+                                      icon: Icon(
+                                        Icons.nights_stay_rounded,
+                                        size: 32,
+                                        color: Colors.orange,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Jejak Ramadan",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ],
+                                ),
                                 SizedBox(width: 10),
-
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -436,9 +391,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ],
                                 ),
-
                                 SizedBox(width: 10),
-
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -455,7 +408,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         icon: Icon(
                                           Icons.contact_support_rounded,
                                           size: 32,
-                                          color: Color (0xFF82618B),
+                                          color: Color(0xFF82618B),
                                         )),
                                     Text(
                                       "Hubungi pakar",
@@ -463,9 +416,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ],
                                 ),
-
                                 SizedBox(width: 10),
-
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -475,7 +426,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                   RewardsPage(),
+                                                  RewardsPage(),
                                             ),
                                           );
                                         },
@@ -490,10 +441,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ],
                                 ),
-
-
                                 SizedBox(width: 10),
-                                
                               ],
                             ),
                           )),
@@ -512,146 +460,142 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 10),
               Expanded(
-                  child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                    stream: FirebaseFirestore.instance
-                        .collection('AllPosts')
-                        .orderBy('date', descending: true)
-                        .snapshots(),
-                        builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                        final posts = snapshot.data!.docs;
-                        return ListView.builder(
-                          itemCount: posts.length,
-                          itemBuilder: (context, index) {
-                            final post = posts[index].data();
-                            final userID = post['userID'] as String?;
-                            final username =
-                                post['username'] as String?;
-                            final title =
-                                post['title'] as String?;
-                            final description = post['description']
-                                as String?;
-                            final date = post["date"] as String?;
-                            final imageURL = post['imageURL'] as String?;
-                            final postType = post['postType'] as String?;
+                child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection('AllPosts')
+                      .orderBy('date', descending: true)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final posts = snapshot.data!.docs;
+                      return ListView.builder(
+                        itemCount: posts.length,
+                        itemBuilder: (context, index) {
+                          final post = posts[index].data();
+                          final userID = post['userID'] as String?;
+                          final username = post['username'] as String?;
+                          final title = post['title'] as String?;
+                          final description = post['description'] as String?;
+                          final date = post["date"] as String?;
+                          final imageURL = post['imageURL'] as String?;
+                          final postType = post['postType'] as String?;
 
-                            return Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                color: Colors.white,
-                                elevation: 3,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            color: Colors.white,
+                            elevation: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            CircleAvatar(
-                                              radius: 12,
-                                              backgroundColor: Colors
-                                                  .blue, // Set the profile image's background color
-                                              child: Icon(
-                                                Icons.person,
-                                                size: 16,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                                width:
-                                                    8), // Add some space between the profile image and the name
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        '$username', // Replace with the user's name
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      //SizedBox(height: 8),
-                                                      Text(
-                                                        // date format dd/mm/yyyy
-                                                        DateFormat("dd/MM/yyyy").format(DateTime.parse(date!)), 
-                                                        style: TextStyle(
-                                                            fontSize: 12),
-                                                      ),
-                                                      SizedBox(height: 12),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Text(
-                                          '$title',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
+                                        CircleAvatar(
+                                          radius: 12,
+                                          backgroundColor: Colors
+                                              .blue, // Set the profile image's background color
+                                          child: Icon(
+                                            Icons.person,
+                                            size: 16,
+                                            color: Colors.white,
                                           ),
                                         ),
                                         SizedBox(
-                                            height:
-                                                4), // Add some space between the title and the description
-                                        Text(
-                                          formatText(description!),
-                                          style: TextStyle(fontSize: 14),
-                                          //maxLines: 10,
+                                            width:
+                                                8), // Add some space between the profile image and the name
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '$username', // Replace with the user's name
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  //SizedBox(height: 8),
+                                                  Text(
+                                                    // date format dd/mm/yyyy
+                                                    DateFormat("dd/MM/yyyy")
+                                                        .format(DateTime.parse(
+                                                            date!)),
+                                                    style:
+                                                        TextStyle(fontSize: 12),
+                                                  ),
+                                                  SizedBox(height: 12),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        SizedBox(height: 8),
-                                        if (postType == 'image' && imageURL != null)
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                            child:
-                                          Image.network(
-                                            imageURL,
-                                            width: double.infinity, // Make the image expand to the full width
-                                            height: 400, // Set the height as needed
-                                            fit: BoxFit.cover,
-                                          ),
-                                          ),
-                                        if (postType == 'video' && imageURL != null)
-                                          VideoPlayerWidget(videoUrl: imageURL),
-                                          // ClipRRect(
-                                          //   borderRadius:
-                                          //     BorderRadius.circular(16),
-                                          //     child: AspectRatio(
-                                          //     aspectRatio: 16 / 9,
-                                          //     child: VideoPlayer(
-                                          //       VideoPlayerController.networkUrl(
-                                          //         Uri.parse(imageURL),
-                                          //       ),
-                                          //     ),
-                                          //   ),
-                                          // ),
-                                      ]),
-                                ),
-                              );
-                          },
-                        );
-                      } else if (snapshot.hasError) {
-                        return ErrorWidget(snapshot.error!);
-                      } else {
-                        return const CircularProgressIndicator();
-                      }
-                    },
-                  ),
+                                      ],
+                                    ),
+                                    Text(
+                                      '$title',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        height:
+                                            4), // Add some space between the title and the description
+                                    Text(
+                                      formatText(description!),
+                                      style: TextStyle(fontSize: 14),
+                                      //maxLines: 10,
+                                    ),
+                                    SizedBox(height: 8),
+                                    if (postType == 'image' && imageURL != null)
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: Image.network(
+                                          imageURL,
+                                          width: double
+                                              .infinity, // Make the image expand to the full width
+                                          height:
+                                              400, // Set the height as needed
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    if (postType == 'video' && imageURL != null)
+                                      VideoPlayerWidget(videoUrl: imageURL),
+                                    // ClipRRect(
+                                    //   borderRadius:
+                                    //     BorderRadius.circular(16),
+                                    //     child: AspectRatio(
+                                    //     aspectRatio: 16 / 9,
+                                    //     child: VideoPlayer(
+                                    //       VideoPlayerController.networkUrl(
+                                    //         Uri.parse(imageURL),
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                  ]),
+                            ),
+                          );
+                        },
+                      );
+                    } else if (snapshot.hasError) {
+                      return ErrorWidget(snapshot.error!);
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  },
                 ),
+              ),
             ],
           ),
         ),

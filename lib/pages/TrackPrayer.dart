@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:wildlifego/components/bottom_app_bar.dart';
 
 extension StringExtensions on String {
   String capitalizeFirst() {
@@ -55,6 +56,16 @@ class TrackPrayer extends StatefulWidget {
 // }
 
 class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin {
+
+  int _currentIndex = 0;
+
+  void _onTabSelected(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
+
 
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -491,58 +502,9 @@ Color getPrayerIconColor(Prayer prayer) {
         child: const Icon(Icons.podcasts),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        color: Color(0xFF82618B),
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 10.0,
-        child: SizedBox(
-          height: 60.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround, // Updated alignment
-            children: <Widget>[
-              // Home
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const TrackPrayer(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.home),
-                color: Colors.white,
-              ),
-
-              // Search (You can replace this with your desired search functionality)
-              IconButton(
-                onPressed: () {
-                  // Add your search functionality here
-                },
-                icon: const Icon(Icons.search),
-                color: Colors.white,
-              ),
-
-              // Trophy (You can replace this with your desired trophy functionality)
-              IconButton(
-                onPressed: () {
-                  // Add your trophy functionality here
-                },
-                icon: const Icon(Icons.emoji_events),
-                color: Colors.white,
-              ),
-
-              // Settings (You can replace this with your desired settings functionality)
-              IconButton(
-                onPressed: () {
-                  // Add your settings functionality here
-                },
-                icon: const Icon(Icons.settings),
-                color: Colors.white,
-              ),
-            ],
-          ),
-        ),
+      bottomNavigationBar: CustomBottomAppBar(
+         onTabSelected: _onTabSelected,
+        currentIndex: _currentIndex,
       ),
       body: Stack(
         children: [
@@ -734,4 +696,5 @@ Color getPrayerIconColor(Prayer prayer) {
       )
     );
   }
+  //THE HENTAM WAY
 }

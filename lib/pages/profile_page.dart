@@ -129,13 +129,20 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Row(
               children: <Widget>[
                 Expanded(
+                  
                   child: Container(
+                  
+                    
                     color: const Color(0xFF82618B),
                     child: ListTile(
+                      
                       title: Text(
+                        
                         _score?.toString() ?? '',
+                        textAlign: TextAlign.center,
                         
                         style: const TextStyle(
+
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
                           color: Colors.white,
@@ -143,6 +150,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       subtitle: const Text(
                         'Markah',
+                        textAlign: TextAlign.center,
                         
                         style: TextStyle(
                           fontSize: 20,
@@ -179,6 +187,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     style: const TextStyle(
                      color: const Color(0xFF82618B),
                       fontSize: 20,
+                      fontWeight: FontWeight.bold,
                       
                     ),
                   ),
