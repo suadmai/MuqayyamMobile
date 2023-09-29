@@ -57,14 +57,6 @@ class TrackPrayer extends StatefulWidget {
 
 class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin {
 
-  int _currentIndex = 0;
-
-  void _onTabSelected(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
 
 
   late AnimationController _animationController;
@@ -487,25 +479,29 @@ Color getPrayerIconColor(Prayer prayer) {
           )
         ],
       ),
+
+
+      
       //floating action button must be center
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //Navigator.push(
-            //context,
-            //MaterialPageRoute(
-              //builder: (context) =>
-                  //CameraPage(cameraController: _cameraController),
-            //),
-          //);
-        }, 
-        backgroundColor: Color(0xFF82618B),
-        child: const Icon(Icons.podcasts),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: CustomBottomAppBar(
-         onTabSelected: _onTabSelected,
-        currentIndex: _currentIndex,
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     //Navigator.push(
+      //       //context,
+      //       //MaterialPageRoute(
+      //         //builder: (context) =>
+      //             //CameraPage(cameraController: _cameraController),
+      //       //),
+      //     //);
+      //   }, 
+      //   backgroundColor: Color(0xFF82618B),
+      //   child: const Icon(Icons.podcasts),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // bottomNavigationBar: MyBottomAppBar(
+      //   
+      // ),
+
+
       body: Stack(
         children: [
           Center(

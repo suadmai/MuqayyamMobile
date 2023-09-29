@@ -98,30 +98,30 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         ],
       ),
       //floating action button must be center
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            //backgroundColor: Colors.transparent, // Set the background color to transparent
-            barrierColor: Colors.transparent,
-            builder: (BuildContext context) {
-              return SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
-                  ),
-                  child: NewPostTextField(
-                  ), // Create a separate widget for the text field
-                ),
-              );
-            },
-          );
-        },
-        child: const Icon(Icons.add),
-        backgroundColor: Color(0xFF82618B),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     showModalBottomSheet(
+      //       context: context,
+      //       isScrollControlled: true,
+      //       //backgroundColor: Colors.transparent, // Set the background color to transparent
+      //       barrierColor: Colors.transparent,
+      //       builder: (BuildContext context) {
+      //         return SingleChildScrollView(
+      //           child: Container(
+      //             padding: EdgeInsets.only(
+      //               bottom: MediaQuery.of(context).viewInsets.bottom,
+      //             ),
+      //             child: NewPostTextField(
+      //             ), // Create a separate widget for the text field
+      //           ),
+      //         );
+      //       },
+      //     );
+      //   },
+      //   child: const Icon(Icons.add),
+      //   backgroundColor: Color(0xFF82618B),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
 
       // bottomNavigationBar: MyBottomAppBar(),

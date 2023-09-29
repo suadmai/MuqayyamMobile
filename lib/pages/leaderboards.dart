@@ -48,24 +48,27 @@ class _LeaderboardPageState extends State<LeaderboardPage>{
           )
         ],
       ),
+
+
+
       //floating action button must be center
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //Navigator.push(
-            //context,
-            //MaterialPageRoute(
-              //builder: (context) =>
-                  //CameraPage(cameraController: _cameraController),
-            //),
-          //);
-        },
-        child: const Icon(Icons.podcasts), 
-        backgroundColor: Color(0xFF82618B),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     //Navigator.push(
+      //       //context,
+      //       //MaterialPageRoute(
+      //         //builder: (context) =>
+      //             //CameraPage(cameraController: _cameraController),
+      //       //),
+      //     //);
+      //   },
+      //   child: const Icon(Icons.podcasts), 
+      //   backgroundColor: Color(0xFF82618B),
+      // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       // bottomNavigationBar: MyBottomAppBar(),
-      
+
       body:
        Center(
         child: Column(

@@ -234,12 +234,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
       //floating action button must be center
 
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       // bottomNavigationBar: MyBottomAppBar(
          
       // ),
-      
+
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
