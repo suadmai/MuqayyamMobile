@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../services/auth_service.dart';
+import 'login_page.dart'; // Replace with the actual login page file
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -62,8 +63,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (confirm) {
       final authService = Provider.of<AuthService>(context, listen: false);
-      authService.signOut();
-      
+      await authService.signOut();
+
+      // Navigate to the login page and remove all previous routes from the stack
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => LoginPage(onTap: () {  },)), 
+        (Route<dynamic> route) => false, // This removes all previous routes
+      );
     }
   }
 
@@ -87,7 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Row(
@@ -128,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: ListTile(
                       title: Text(
                         _score?.toString() ?? '',
-                        textAlign: TextAlign.center,
+                        
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
@@ -137,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       subtitle: const Text(
                         'Markah',
-                        textAlign: TextAlign.center,
+                        
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.white70,
@@ -173,7 +179,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     style: const TextStyle(
                      color: const Color(0xFF82618B),
                       fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      
                     ),
                   ),
                   subtitle: const Text(
@@ -186,7 +192,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   title: Text(
                     'Log Keluar',
                     style: const TextStyle(
-                    color: const Color(0xFF82618B),
+                      color: const Color(0xFF82618B),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -197,7 +203,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   onTap: () {
                     _signOut(); // Call the sign-out function
-                    
                   },
                 ),
                 const Divider(),
