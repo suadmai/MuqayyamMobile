@@ -24,7 +24,9 @@ class _PatientDetailsState extends State<PatientDetails>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const TopAppBar(title: "Pantau Pesakit"),
-      bottomNavigationBar: const MyBottomAppBar(),
+
+      // bottomNavigationBar: const MyBottomAppBar(),
+
       body: SingleChildScrollView(
         child: Center(
           child: Padding(

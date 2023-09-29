@@ -52,9 +52,9 @@ class _QuranPageState extends State<QuranPage> {
   ),
 ),
 
-bottomNavigationBar: MyBottomAppBar(
+// bottomNavigationBar: MyBottomAppBar(
        
-      ),
+//       ),
 
       body: Center(
         child: Padding(

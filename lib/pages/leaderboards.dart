@@ -63,7 +63,9 @@ class _LeaderboardPageState extends State<LeaderboardPage>{
         backgroundColor: Color(0xFF82618B),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: MyBottomAppBar(),
+
+      // bottomNavigationBar: MyBottomAppBar(),
+      
       body:
        Center(
         child: Column(
