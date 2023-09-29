@@ -485,7 +485,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           color: Colors.blue,
                                         )),
                                     Text(
-                                      "Hadiah",
+                                      "Ganjaran",
                                       style: TextStyle(fontSize: 12),
                                     ),
                                   ],

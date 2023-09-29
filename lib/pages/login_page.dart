@@ -69,9 +69,10 @@ class _LoginPageState extends State<LoginPage> {
                       height: 20,
                     ),
           
-                    const Icon(
-                      Icons.message,
-                      size: 80,
+                    //add image
+                    Image.asset(
+                      "images/icon_transparent.png",
+                      height: 150,
                     ),
           
                     const SizedBox(
@@ -115,7 +116,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
           
                     //sign in button
-                    MyButton(onTap: signIn, text: "Log masuk"),
+                    MyButton(
+                    onTap: signIn,
+                    text: "Log masuk"),
           
                     const SizedBox(
                       height: 20,
