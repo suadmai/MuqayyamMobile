@@ -69,9 +69,10 @@ class _LoginPageState extends State<LoginPage> {
                       height: 20,
                     ),
           
-                    const Icon(
-                      Icons.message,
-                      size: 80,
+                    //add image
+                    Image.asset(
+                      "images/icon.png",
+                      height: 200,
                     ),
           
                     const SizedBox(
