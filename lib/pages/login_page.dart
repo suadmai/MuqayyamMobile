@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Colors.grey[100],
         body: SafeArea(
           // below notch
-          child: Expanded(
+          child: SingleChildScrollView(
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
