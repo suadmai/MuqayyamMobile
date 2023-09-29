@@ -28,7 +28,7 @@ class AuthGate extends StatelessWidget {
                       final userRole = roleSnapshot.data!['role'];
 
                       // Check user role and navigate accordingly
-                      if (userRole == 'doktor') {
+                      if (userRole == 'Doktor') {
                         return const AdminHomeScreen();
                       } else {
                         return const HomeScreen();

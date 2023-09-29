@@ -98,7 +98,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       minRadius: 60.0,
                       child: CircleAvatar(
                         radius: 50.0,
-                        backgroundImage: AssetImage('images/profile.jpg'),
+                        child:
+                            const Icon(Icons.person, size: 50, color: Colors.white70),
+                        
                       ),
                     ),
                   ],
@@ -154,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   title: Text(
                     'Tukar Username',
                     style: const TextStyle(
-                      color: Colors.deepOrange,
+                      color: const Color(0xFF82618B),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -169,7 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   title: Text(
                     'Tukar Gambar Profile',
                     style: const TextStyle(
-                      color: Colors.deepOrange,
+                     color: const Color(0xFF82618B),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -184,7 +186,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   title: Text(
                     'Log Keluar',
                     style: const TextStyle(
-                      color: Colors.deepOrange,
+                    color: const Color(0xFF82618B),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
