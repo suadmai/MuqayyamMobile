@@ -169,7 +169,7 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
             
         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: firestore.collection('users')
-        .where('role', isEqualTo: 'doctor')
+        .where('role', isEqualTo: 'Doktor')
         .where('userID', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)//taknak tunjuk diri sendiri
         .snapshots(),
         builder: (context, snapshot) {
