@@ -46,88 +46,90 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Colors.grey[100],
         body: SafeArea(
           // below notch
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  //logo
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  Icon(
-                    Icons.message,
-                    size: 80,
-                  ),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  //welcome back
-                  Text(
-                    'Selamat Datang!',
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
+          child: Expanded(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    //logo
+          
+                    const SizedBox(
+                      height: 20,
                     ),
-                  ),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  MyTextField(
-                    controller: emailController,
-                    hintText: "Alamat emel",
-                    maxLines: 1,
-                    obscureText: false,
-                  ),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  //password textfield
-                  MyTextField(
-                    controller: passwordController,
-                    hintText: "Kata laluan",
-                    maxLines: 1,
-                    obscureText: true, //see what u typed
-                  ),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  //sign in button
-                  MyButton(onTap: signIn, text: "Log masuk"),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  //not member? register
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Belum mempunyai akaun?"),
-                      SizedBox(width: 4),
-                      GestureDetector(
-                        onTap: widget.onTap,
-                        child: Text(
-                          "Daftar sekarang",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+          
+                    Icon(
+                      Icons.message,
+                      size: 80,
+                    ),
+          
+                    const SizedBox(
+                      height: 20,
+                    ),
+          
+                    //welcome back
+                    Text(
+                      'Selamat Datang!',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+          
+                    const SizedBox(
+                      height: 20,
+                    ),
+          
+                    MyTextField(
+                      controller: emailController,
+                      hintText: "Alamat emel",
+                      maxLines: 1,
+                      obscureText: false,
+                    ),
+          
+                    const SizedBox(
+                      height: 20,
+                    ),
+          
+                    //password textfield
+                    MyTextField(
+                      controller: passwordController,
+                      hintText: "Kata laluan",
+                      maxLines: 1,
+                      obscureText: true, //see what u typed
+                    ),
+          
+                    const SizedBox(
+                      height: 20,
+                    ),
+          
+                    //sign in button
+                    MyButton(onTap: signIn, text: "Log masuk"),
+          
+                    const SizedBox(
+                      height: 20,
+                    ),
+          
+                    //not member? register
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Belum mempunyai akaun?"),
+                        SizedBox(width: 4),
+                        GestureDetector(
+                          onTap: widget.onTap,
+                          child: Text(
+                            "Daftar sekarang",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  )
-                ],
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),
