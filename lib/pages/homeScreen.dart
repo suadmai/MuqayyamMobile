@@ -44,6 +44,37 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
+  bool containsNumber(String text) {
+    final regex = RegExp(r'\d');
+    return regex.hasMatch(text);
+  }
+
+  String formatText(String text) {
+  var newText = text.split('');
+  //loop through each character
+  for (int i = 0; i < newText.length; i++) {
+    //if the character is a hyphen followed by a space
+    if (newText[i] == '-' && i + 1 < newText.length && newText[i + 1] == ' ') {
+      if (i > 0) {
+        newText[i] = '\n\n-';
+      } else {
+        newText[i] = '-';
+      }
+    }
+    //if the character is a period followed by a number
+    if (containsNumber(newText[i]) && newText[i+1] == '.' && i + 1 < newText.length) {
+      if (i > 0) {
+        newText[i] = '\n\n${newText[i]}';
+      } else {
+        newText[i] = newText[i];
+      }
+    }
+  }
+  String newTextString = newText.join();
+  print(newTextString);
+  return newTextString;
+}
+
   void signOut() async {
     bool confirm = await showDialog(
       context: context,
@@ -577,9 +608,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                             height:
                                                 4), // Add some space between the title and the description
                                         Text(
-                                          '$description',
+                                          formatText(description!),
                                           style: TextStyle(fontSize: 14),
-                                          maxLines: 10,
+                                          //maxLines: 10,
                                         ),
                                         SizedBox(height: 8),
                                         if (postType == 'image' && imageURL != null)
