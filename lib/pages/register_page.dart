@@ -166,23 +166,28 @@ class _RegisterPageState extends State<RegisterPage> {
           
                     ),
                     //not member? register
-                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Sudah mempunyai akaun?"),
-                        SizedBox(width: 4),
-                        GestureDetector(
-                          onTap: widget.onTap,
-                          child: const Text(
-                            "Log masuk sekarang",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                     Container(
+                      width: double.infinity,
+                       child: FittedBox(
+                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Sudah mempunyai akaun?"),
+                            SizedBox(width: 4),
+                            GestureDetector(
+                              onTap: widget.onTap,
+                              child: const Text(
+                                "Log masuk sekarang",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                 
+                              ),
                             ),
-          
-                          ),
-                        ),
-                      ],
-                    )
+                          ],
+                                           ),
+                       ),
+                     )
                   ],
                 ),
               ),
