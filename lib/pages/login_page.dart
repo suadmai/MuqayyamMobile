@@ -20,6 +20,15 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  String removeSpace(final emailController) {
+  var newEmail = emailController.split('');
+  newEmail.removeWhere((element) => element == ' ');
+  String newEmailString = newEmail.join();
+  print(newEmailString is String);
+  print("""the new email is '$newEmailString'""");
+  return newEmailString;
+}
+
   //signup user
   void signIn() async {
     //get auth service
@@ -27,7 +36,8 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       await authService.signInWithEmailandPassword(
-        emailController.text,
+        removeSpace(emailController.text),
+        //emailController.text,
         passwordController.text,
       );
     } catch (e) {
@@ -59,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 20,
                     ),
           
-                    Icon(
+                    const Icon(
                       Icons.message,
                       size: 80,
                     ),
@@ -69,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
           
                     //welcome back
-                    Text(
+                    const Text(
                       'Selamat Datang!',
                       style: TextStyle(
                         fontSize: 30,
@@ -115,11 +125,11 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Belum mempunyai akaun?"),
+                        const Text("Belum mempunyai akaun?"),
                         SizedBox(width: 4),
                         GestureDetector(
                           onTap: widget.onTap,
-                          child: Text(
+                          child: const Text(
                             "Daftar sekarang",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
