@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:wildlifego/components/layout.dart';
 import 'package:wildlifego/pages/surah_page.dart';
 
 import '../components/bottom_app_bar.dart';
@@ -51,9 +52,8 @@ class _QuranPageState extends State<QuranPage> {
   ),
 ),
 
-bottomNavigationBar: CustomBottomAppBar(
-         onTabSelected: _onTabSelected,
-        currentIndex: _currentIndex,
+bottomNavigationBar: MyBottomAppBar(
+       
       ),
 
       body: Center(

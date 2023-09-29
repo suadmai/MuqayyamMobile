@@ -122,6 +122,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         backgroundColor: Color(0xFF82618B),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+      
       bottomNavigationBar: BottomAppBar(
         color: Color(0xFF82618B),
         shape: const CircularNotchedRectangle(),
@@ -176,6 +178,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           ),
         ),
       ),
+
+
       body: Center(
           child: Padding(
             padding: const EdgeInsets.all(10.0),

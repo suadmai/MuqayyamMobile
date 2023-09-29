@@ -47,13 +47,13 @@ class _SplashScreenState extends State<SplashScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
               Image(
-                image: AssetImage('images/muqayyam_icon.png'),
+                image: AssetImage('images/icon_transparent.png'),
                 height: 300,
                 width: 300,
               ),
               SizedBox(height: 10),
               Text(
-                'Selamat Datang ke Muqayyam™!',
+                'Selamat Datang ke Nusantara™!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color:Color(0xFF82618B),

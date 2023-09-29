@@ -79,7 +79,9 @@ class SurahPage extends StatelessWidget {
                       children: [
                         Text(
                           arabic,
+                          textAlign: TextAlign.right,
                           style: TextStyle(
+
                             fontSize: 32,
                           ),
                         ),

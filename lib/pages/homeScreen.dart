@@ -41,15 +41,18 @@ class HomeScreen extends StatefulWidget {
 // }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
 
-  void _onTabSelected(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+  //FOR DETAILED BOTTOM APP BAR (CustomBottomAppBar)
+  
+  // int _currentIndex = 0;
 
-      // Handle navigation or other functionality based on the selected tab.
-  }
+  // void _onTabSelected(int index) {
+  //   setState(() {
+  //     _currentIndex = index;
+  //   });
+
+  //     // Handle navigation or other functionality based on the selected tab.
+  // }
 
 
   @override
@@ -131,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Muqayyam™"),
         actions: [
-          
+
           //SIGN OUT NOT USED HERE
           // IconButton(
           //   onPressed: signOut,
@@ -232,9 +235,8 @@ class _HomeScreenState extends State<HomeScreen> {
       //floating action button must be center
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: CustomBottomAppBar(
-         onTabSelected: _onTabSelected,
-        currentIndex: _currentIndex,
+      bottomNavigationBar: MyBottomAppBar(
+         
       ),
       body: Center(
         child: Padding(
