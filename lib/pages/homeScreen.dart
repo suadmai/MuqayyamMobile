@@ -84,10 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Muqayyam™"),
         actions: [
-          IconButton(
-            onPressed: signOut,
-            icon: const Icon(Icons.logout),
-          ),
+
+          //
+          // IconButton(
+          //   onPressed: signOut,
+          //   icon: const Icon(Icons.logout),
+          // ),
 
 
           IconButton(
