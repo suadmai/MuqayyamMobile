@@ -84,6 +84,8 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Muqayyam™"),
         actions: [
+
+          //
           // IconButton(
           //   onPressed: signOut,
           //   icon: const Icon(Icons.logout),
@@ -102,8 +104,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               );
 
-              
-              
             },
             icon: const Icon(
               Icons.account_circle,
@@ -187,19 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
 // ),
 
       //floating action button must be center
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          //Navigator.push(
-          //context,
-          //MaterialPageRoute(
-          //builder: (context) =>
-          //CameraPage(cameraController: _cameraController),
-          //),
-          //);
-        },
-        child: const Icon(Icons.podcasts),
-        backgroundColor: Color(0xFF82618B),
-      ),
+      
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         color: Color(0xFF82618B),
@@ -304,6 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         icon: Icon(
                                           Icons.mosque_rounded,
                                           size: 32,
+                                          color: Color.fromARGB(255, 74, 80, 255),
                                         )),
                                     Text(
                                       "Jejak solat",
@@ -330,6 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         icon: Icon(
                                           Icons.import_contacts_rounded,
                                           size: 32,
+                                          color: Colors.green,
                                         )),
                                     Text(
                                       "Baca al-Quran",
@@ -379,6 +369,7 @@ class _HomeScreenState extends State<HomeScreen> {
       icon: Icon(
         Icons.nights_stay_rounded,
         size: 32,
+        color: Colors.orange,
       ),
     ),
     Text(
@@ -406,6 +397,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         icon: Icon(
                                           Icons.star_rounded,
                                           size: 32,
+                                          color: Colors.yellow,
                                         )),
                                     Text(
                                       "Pencapaian",
@@ -432,6 +424,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         icon: Icon(
                                           Icons.contact_support_rounded,
                                           size: 32,
+                                          color: Color (0xFF82618B),
                                         )),
                                     Text(
                                       "Hubungi pakar",
@@ -467,32 +460,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
 
-                                SizedBox(width: 10),
-
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const RankingPage(),
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.star_rounded,
-                                          size: 32,
-                                          color: Colors.yellow,
-                                        )),
-                                    Text(
-                                      "Pangkat",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ],
-                                ),
 
                                 SizedBox(width: 10),
                                 
