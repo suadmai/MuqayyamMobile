@@ -24,9 +24,36 @@ class HomeScreen extends StatefulWidget {
   
   @override
   State<HomeScreen> createState() => _HomeScreenState();
-
-  
 }
+
+  const appVersion = '0.5.0';
+
+  void checkAppVersion(BuildContext context){
+    final firebase = FirebaseFirestore.instance;
+    firebase.collection('appVersion').doc('version').get().then((value) {
+      if(value.exists){
+        if(value.data()!['current_version'] != appVersion){
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Kemas kini tersedia'),
+                content: Text('Sila kemas kini aplikasi anda untuk menikmati fungsi terkini!'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }
+    });
+  }
 
 // Future<void> logout(BuildContext context) async {
 //   await FirebaseAuth.instance.signOut();
@@ -42,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    checkAppVersion(context);
   }
 
   bool containsNumber(String text) {
