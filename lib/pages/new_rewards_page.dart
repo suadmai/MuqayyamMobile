@@ -55,13 +55,6 @@ class _RewardsPageState extends State<RewardsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text(
-                'Ganjaran Khas Untuk Anda!',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
               const SizedBox(height: 16),
               Container(
                 decoration: BoxDecoration(

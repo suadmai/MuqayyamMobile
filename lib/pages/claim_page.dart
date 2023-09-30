@@ -1,7 +1,49 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-class ClaimPage extends StatelessWidget {
-  const ClaimPage({Key? key}) : super(key: key);
+class ClaimPage extends StatefulWidget {
+  final rewardId;
+
+  const ClaimPage({Key? key, required this.rewardId}) : super(key: key);
+
+  @override
+  State<ClaimPage> createState() => _ClaimPageState();
+}
+
+class _ClaimPageState extends State<ClaimPage> {
+  final firebase = FirebaseFirestore.instance;
+  
+  Future<String> createUniqueCode() async{
+    String code = "";
+    final existingCodes = await firebase.collection('redeptions').get();
+
+    do {
+      code = Random().nextInt(999999).toString().padLeft(6, '0');
+    } while (existingCodes.docs.any((doc) => doc['code'] == code));
+
+    print('the code is : $code');
+    return code;
+  }
+
+  void createRedemption(){
+    firebase 
+      .collection('redeptions')
+      .add({
+        'code': createUniqueCode(),
+        'userId' : FirebaseAuth.instance.currentUser!.uid,
+        'rewardId' : rewardId,
+      });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    createUniqueCode();
+  }
 
   @override
   Widget build(BuildContext context) {
