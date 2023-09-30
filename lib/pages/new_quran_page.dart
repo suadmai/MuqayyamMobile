@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:wildlifego/pages/surah_page.dart';
 
+import '../components/bottom_app_bar.dart';
+
 class QuranPage extends StatefulWidget {
   const QuranPage({Key? key});
 
@@ -11,11 +13,20 @@ class QuranPage extends StatefulWidget {
 }
 
 class _QuranPageState extends State<QuranPage> {
+
+  int _currentIndex = 0;
+
+  void _onTabSelected(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       appBar: AppBar(
   backgroundColor: const Color(0xFF82618B),
   title: StreamBuilder<DocumentSnapshot>(
@@ -39,6 +50,11 @@ class _QuranPageState extends State<QuranPage> {
     },
   ),
 ),
+
+bottomNavigationBar: CustomBottomAppBar(
+         onTabSelected: _onTabSelected,
+        currentIndex: _currentIndex,
+      ),
 
       body: Center(
         child: Padding(
