@@ -14,7 +14,7 @@ import 'package:wildlifego/pages/new_quran_page.dart';
 import 'package:wildlifego/pages/profile_page.dart';
 import 'package:wildlifego/pages/ramadan_page.dart';
 import 'package:wildlifego/pages/ranking_page.dart';
-import 'package:wildlifego/pages/rewards_page.dart';
+import 'package:wildlifego/pages/new_rewards_page.dart';
 
 
 import '../components/bottom_app_bar.dart';
