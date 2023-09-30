@@ -30,7 +30,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-  const appVersion = '0.5.0';
+  const appVersion = '1.0.1';
 
   void checkAppVersion(BuildContext context){
     final firebase = FirebaseFirestore.instance;
@@ -456,31 +456,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
                                 SizedBox(width: 10),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  RewardsPage(),
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.card_giftcard_rounded,
-                                          size: 32,
-                                          color: Colors.blue,
-                                        )),
-                                    Text(
-                                      "Ganjaran",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(width: 10),
+                                
+                                
                               ],
                             ),
                           )),
