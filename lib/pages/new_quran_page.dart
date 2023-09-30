@@ -39,12 +39,7 @@ class _QuranPageState extends State<QuranPage> {
       if (snapshot.hasData) {
         final userDoc = snapshot.data!;
         final userScore = userDoc['score'] ?? 0; // Replace 'score' with the actual field name in Firestore
-        return Row(
-          children: [
-            const Text('Skor: '), // You can customize the text
-            Text('$userScore'),
-          ],
-        );
+        return Text('Baca al-Quran');
       } else {
         return const Text('User Score: Loading...'); // Display loading while fetching data
       }

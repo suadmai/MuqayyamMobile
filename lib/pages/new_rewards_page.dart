@@ -46,7 +46,7 @@ class _RewardsPageState extends State<RewardsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: const Text('Ganjaran (baru)'),
+        title: const Text('Ganjaran'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

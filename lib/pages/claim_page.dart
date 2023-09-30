@@ -7,7 +7,8 @@ class ClaimPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Claim Reward'),
+        title: Text('Tebus ganjaran'),
+        backgroundColor: const Color(0xFF82618B),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -22,7 +23,7 @@ class ClaimPage extends StatelessWidget {
               const SizedBox(height: 16.0),
               Text(
                 //a;
-                'Congratulations!',
+                'Tahniah!',
                 style: TextStyle(
                   fontSize: 24.0, 
                   fontWeight: FontWeight.bold
@@ -32,7 +33,7 @@ class ClaimPage extends StatelessWidget {
               ),
               const SizedBox(height: 16.0),
               Text(
-                'You have successfully claimed your reward.',
+                'Anda telah berjaya menebus ganjaran ini',
                 style: TextStyle(fontSize: 20.0),
                 textAlign: TextAlign.center,
               ),
@@ -45,7 +46,7 @@ class ClaimPage extends StatelessWidget {
 
               const SizedBox(height: 16.0),
               Text(
-                'Dont forget to show this QR code to the counter to claim your reward.',
+                'Sila tunjukkan kod QR untuk menebus ganjaran ini',
                 style: TextStyle(fontSize: 20.0),
                 textAlign: TextAlign.center,
                 

@@ -30,7 +30,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-  const appVersion = '0.5.0';
+  const appVersion = '1.0.1';
 
   void checkAppVersion(BuildContext context){
     final firebase = FirebaseFirestore.instance;

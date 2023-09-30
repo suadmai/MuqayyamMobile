@@ -77,12 +77,15 @@ class SurahPage extends StatelessWidget {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          arabic,
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-
-                            fontSize: 32,
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            arabic,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                        
+                              fontSize: 32,
+                            ),
                           ),
                         ),
                         SizedBox(height: 8),
