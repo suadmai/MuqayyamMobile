@@ -16,22 +16,19 @@ class RewardsPage extends StatefulWidget {
 }
 
 class _RewardsPageState extends State<RewardsPage> {
-  int totalPoints = 0; // Initialize totalPoints to 0
+  int totalPoints = 0;
 
   @override
   void initState() {
     super.initState();
-    fetchUserScore(); // Fetch the user's score when the page is initialized
+    fetchUserScore();
   }
 
   Future<void> fetchUserScore() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       final DocumentSnapshot<Map<String, dynamic>> userDoc =
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
+          await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
       final int? userScore = userDoc.get('score') as int?;
       if (userScore != null) {
         setState(() {
@@ -51,7 +48,6 @@ class _RewardsPageState extends State<RewardsPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          // Wrap the Column with SingleChildScrollView
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -104,7 +100,6 @@ class _RewardsPageState extends State<RewardsPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              //list of rewards
               StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('rewards')
@@ -121,11 +116,11 @@ class _RewardsPageState extends State<RewardsPage> {
                       itemBuilder: (context, index) {
                         final DocumentSnapshot document = documents[index];
                         return RewardItem(
+                          rewardId: document.id,
                           title: document.get('title') as String,
                           description: document.get('description') as String,
                           pointsRequired:
                               document.get('points_required') as int,
-                          //imageUrl: document.get('image_url') as String, 
                           userPoints: totalPoints,
                         );
                       },
@@ -147,28 +142,30 @@ class _RewardsPageState extends State<RewardsPage> {
   }
 }
 
-//EDIT UI OF REWARDS HERE
-
 class RewardItem extends StatelessWidget {
+  final String rewardId;
   final String title;
   final String description;
   final int pointsRequired;
-  //final String imageUrl;
   final int userPoints;
 
   RewardItem({
+    required this.rewardId,
     required this.title,
     required this.description,
     required this.pointsRequired,
-    //required this.imageUrl,
     required this.userPoints,
   });
 
-  double getProgress() {
-    if (pointsRequired <= 0) {
-      return 1.0; // Completed
-    }
-    return userPoints / pointsRequired;
+  Future<bool> isRewardClaimed(String userId) async {
+    final DocumentSnapshot redeemedDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('redeemedRewards')
+        .doc(rewardId)
+        .get();
+
+    return redeemedDoc.exists;
   }
 
   @override
@@ -191,11 +188,6 @@ class RewardItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image.network(
-          //   //imageUrl,
-          //   width: double.infinity,
-          //   height: 100,
-          // ),
           const SizedBox(height: 16),
           Text(
             title,
@@ -227,37 +219,39 @@ class RewardItem extends StatelessWidget {
                 ),
               ),
               ElevatedButton(
-                onPressed: userPoints >= pointsRequired? () {
-                  
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    
-                    const SnackBar(
-                      content: Text(
-                        'Anda telah berjaya menebus ganjaran ini!',
-                      ),
-                    ),
-                    
-                  );
+                onPressed: () async {
+                  // final isClaimed =
+                  //     await isRewardClaimed(FirebaseAuth.instance.currentUser!.uid);
 
-                  
+                  // if (isClaimed) {
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(
+                  //       content: Text('Anda telah menebus ganjaran ini sebelum ini.'),
+                  //     ),
+                  //   );
+                  // } else {
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(
+                  //       content: Text('Anda telah berjaya menebus ganjaran ini!'),
+                  //     ),
+                  //   );
 
-                  // Implement redemption logic here
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ClaimPage(),
-                    ),
-                  );
-                } 
-                
-                : () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Anda tidak mempunyai cukup mata untuk menebus ganjaran ini.',
+                  //   await FirebaseFirestore.instance
+                  //       .collection('users')
+                  //       .doc(FirebaseAuth.instance.currentUser!.uid)
+                  //       .collection('redeemedRewards')
+                  //       .doc(rewardId)
+                  //       .set({
+                  //     'claimedAt': FieldValue.serverTimestamp(),
+                  //   });
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ClaimPage(rewardId: rewardId),
                       ),
-                    ),
-                  );
+                    );
+                  //}
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: userPoints >= pointsRequired
@@ -271,5 +265,12 @@ class RewardItem extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  double getProgress() {
+    if (pointsRequired <= 0) {
+      return 1.0;
+    }
+    return userPoints / pointsRequired;
   }
 }

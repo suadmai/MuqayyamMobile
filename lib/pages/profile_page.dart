@@ -18,6 +18,9 @@ class _ProfilePageState extends State<ProfilePage> {
   late String _name = '';
   int? _score = 0;
 
+  // for editing username
+    TextEditingController _usernameController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -72,6 +75,63 @@ class _ProfilePageState extends State<ProfilePage> {
       );
     }
   }
+
+  //function for editing username
+
+  Future<void> _changeUsername() async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Change Username'),
+          content: TextField(
+            controller: _usernameController,
+            decoration: InputDecoration(labelText: 'New Username'),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: Text('Save'),
+              onPressed: () {
+                _updateUsername(_usernameController.text);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  //function for updating username
+
+  Future<void> _updateUsername(String newUsername) async {
+    try {
+      final userDocRef = FirebaseFirestore.instance.collection('users').doc(_user.uid);
+
+      await userDocRef.update({'username': newUsername});
+
+      setState(() {
+        _name = newUsername;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Username updated successfully!')),
+      );
+    } catch (error) {
+      print('Error updating username: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update username. Please try again.')),
+      );
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -179,6 +239,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     'Tukar username anda',
                     style: TextStyle(fontSize: 18),
                   ),
+                  onTap: () {
+                    _changeUsername();
+                  },
                 ),
                 const Divider(),
                 ListTile(

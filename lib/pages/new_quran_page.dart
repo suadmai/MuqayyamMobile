@@ -15,13 +15,9 @@ class QuranPage extends StatefulWidget {
 
 class _QuranPageState extends State<QuranPage> {
 
-  int _currentIndex = 0;
+  
 
-  void _onTabSelected(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
+  
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
