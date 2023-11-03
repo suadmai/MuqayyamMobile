@@ -15,6 +15,7 @@ import 'package:wildlifego/pages/profile_page.dart';
 import 'package:wildlifego/pages/ramadan_page.dart';
 import 'package:wildlifego/pages/ranking_page.dart';
 import 'package:wildlifego/pages/new_rewards_page.dart';
+import 'package:wildlifego/pages/tasbih.dart';
 
 
 import '../components/bottom_app_bar.dart';
@@ -352,6 +353,31 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
 
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TasbihPage(),
+                                            ),
+                                          );
+                                        },
+                                        icon: Icon(
+                                          Icons.front_hand_rounded,
+                                          size: 32,
+                                          color:
+                                              Color.fromARGB(255, 167, 81, 149),
+                                        )),
+                                    Text(
+                                      "Tasbih",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ],
+                                ),
 
                                 // RAMADAN FEATURE COMING SOON!!
 

@@ -58,7 +58,7 @@ class _ClaimPageState extends State<ClaimPage> {
     print('create redemption is called');
   }
 
-  // Future<bool> isRedeemed(String rewardId)async {
+  // Future<bool> isRedeemed(String rewardId) async {
   //   await firebase
   //       .collection('users')
   //       .doc(FirebaseAuth.instance.currentUser!.uid)
