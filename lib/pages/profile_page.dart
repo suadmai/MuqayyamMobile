@@ -1,6 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:provider/provider.dart';
 
 import '../services/auth_service.dart';
@@ -14,12 +17,13 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late User _user = FirebaseAuth.instance.currentUser!;
-  late String _name = '';
-  int? _score = 0;
+  late User _user;
+  late String _name;
+  int? _score;
+  String? _profilePictureUrl; // Add this if you want to display the profile picture
 
-  // for editing username
-    TextEditingController _usernameController = TextEditingController();
+  // For editing username
+  TextEditingController _usernameController = TextEditingController();
 
   @override
   void initState() {
@@ -34,8 +38,9 @@ class _ProfilePageState extends State<ProfilePage> {
         .doc(_user.uid)
         .get();
     setState(() {
-      _name = userDoc.get('username') as String;
-      _score = userDoc.get('score') as int?;
+      _name = userDoc.data()?['username'] as String;
+      _score = userDoc.data()?['score'] as int?;
+      _profilePictureUrl = userDoc.data()?['profilePicture'] as String?; // Add this to load the profile picture URL
     });
   }
 
@@ -44,17 +49,17 @@ class _ProfilePageState extends State<ProfilePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Log Keluar'),
-          content: Text('Anda pasti anda mahu log keluar?'),
+          title: const Text('Log Keluar'),
+          content: const Text('Anda pasti anda mahu log keluar?'),
           actions: <Widget>[
             ElevatedButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             ElevatedButton(
-              child: Text('Sign Out'),
+              child: const Text('Sign Out'),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -68,35 +73,32 @@ class _ProfilePageState extends State<ProfilePage> {
       final authService = Provider.of<AuthService>(context, listen: false);
       await authService.signOut();
 
-      // Navigate to the login page and remove all previous routes from the stack
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => LoginPage(onTap: () {  },)), 
-        (Route<dynamic> route) => false, // This removes all previous routes
+        MaterialPageRoute(builder: (context) =>  LoginPage(onTap: () {  },)), // Make sure LoginPage is a constant constructor
+        (Route<dynamic> route) => false,
       );
     }
   }
-
-  //function for editing username
 
   Future<void> _changeUsername() async {
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Change Username'),
+          title: const Text('Change Username'),
           content: TextField(
             controller: _usernameController,
-            decoration: InputDecoration(labelText: 'New Username'),
+            decoration: const InputDecoration(labelText: 'New Username'),
           ),
           actions: <Widget>[
             ElevatedButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              child: Text('Save'),
+              child: const Text('Save'),
               onPressed: () {
                 _updateUsername(_usernameController.text);
                 Navigator.of(context).pop();
@@ -108,11 +110,10 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  //function for updating username
-
   Future<void> _updateUsername(String newUsername) async {
     try {
-      final userDocRef = FirebaseFirestore.instance.collection('users').doc(_user.uid);
+      final userDocRef =
+          FirebaseFirestore.instance.collection('users').doc(_user.uid);
 
       await userDocRef.update({'username': newUsername});
 
@@ -131,6 +132,44 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> uploadProfilePicture() async {
+  final picker = ImagePicker();
+  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+  if (pickedFile != null) {
+    File imageFile = File(pickedFile.path);
+    String userId = _user.uid;
+
+    try {
+      // Upload the file to Firebase Storage
+      TaskSnapshot snapshot = await FirebaseStorage.instance
+          .ref('profile_pictures/$userId')
+          .putFile(imageFile);
+
+      // When complete, fetch the download URL
+      String downloadUrl = await snapshot.ref.getDownloadURL();
+
+      // Update user document in Firestore with the new profile picture URL
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({'profilePicture': downloadUrl});
+
+      // Update the local user data
+      setState(() {
+        _profilePictureUrl = downloadUrl;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Profile picture updated successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update profile picture. Please try again.')),
+      );
+    }
+  }
+}
 
 
   @override
@@ -153,10 +192,9 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             child: Column(
-              
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     CircleAvatar(
@@ -164,16 +202,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       minRadius: 60.0,
                       child: CircleAvatar(
                         radius: 50.0,
-                        child:
-                            const Icon(Icons.person, size: 50, color: Colors.white70),
-                        
+                        backgroundImage: _profilePictureUrl != null
+                            ? NetworkImage(_profilePictureUrl!)
+                            : null, // Display the profile picture if available
+                        child: _profilePictureUrl == null
+                            ? const Icon(Icons.person, size: 50, color: Colors.white70)
+                            : null, // Show an icon if no profile picture is available
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 Text(
                   _name ?? '',
                   style: const TextStyle(
@@ -189,20 +228,13 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  
                   child: Container(
-                  
-                    
                     color: const Color(0xFF82618B),
                     child: ListTile(
-                      
                       title: Text(
-                        
                         _score?.toString() ?? '',
                         textAlign: TextAlign.center,
-                        
                         style: const TextStyle(
-
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
                           color: Colors.white,
@@ -211,7 +243,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       subtitle: const Text(
                         'Markah',
                         textAlign: TextAlign.center,
-                        
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.white70,
@@ -229,8 +260,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 ListTile(
                   title: Text(
                     'Tukar Username',
-                    style: const TextStyle(
-                      color: const Color(0xFF82618B),
+                    style: TextStyle(
+                      color: Color(0xFF82618B),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -239,32 +270,30 @@ class _ProfilePageState extends State<ProfilePage> {
                     'Tukar username anda',
                     style: TextStyle(fontSize: 18),
                   ),
-                  onTap: () {
-                    _changeUsername();
-                  },
+                  onTap: _changeUsername,
                 ),
                 const Divider(),
                 ListTile(
                   title: Text(
                     'Tukar Gambar Profile',
-                    style: const TextStyle(
-                     color: const Color(0xFF82618B),
+                    style: TextStyle(
+                      color: Color(0xFF82618B),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      
                     ),
                   ),
                   subtitle: const Text(
                     'Tukar gambar profile anda',
                     style: TextStyle(fontSize: 18),
                   ),
+                  onTap: uploadProfilePicture,
                 ),
                 const Divider(),
                 ListTile(
                   title: Text(
                     'Log Keluar',
-                    style: const TextStyle(
-                      color: const Color(0xFF82618B),
+                    style: TextStyle(
+                      color: Color(0xFF82618B),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -273,9 +302,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     'Log keluar dari akaun anda',
                     style: TextStyle(fontSize: 18),
                   ),
-                  onTap: () {
-                    _signOut(); // Call the sign-out function
-                  },
+                  onTap: _signOut,
                 ),
                 const Divider(),
               ],

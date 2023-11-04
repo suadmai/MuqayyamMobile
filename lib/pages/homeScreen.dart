@@ -17,12 +17,10 @@ import 'package:wildlifego/pages/ranking_page.dart';
 import 'package:wildlifego/pages/new_rewards_page.dart';
 import 'package:wildlifego/pages/tasbih.dart';
 
-
 import '../components/bottom_app_bar.dart';
 import '../services/auth_service.dart';
 import 'doctor/Admin_HomeScreen.dart';
 import 'leaderboards.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -31,34 +29,35 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-  const appVersion = '1.0.1';
+const appVersion = '1.0.1';
 
-  void checkAppVersion(BuildContext context){
-    final firebase = FirebaseFirestore.instance;
-    firebase.collection('appVersion').doc('version').get().then((value) {
-      if(value.exists){
-        if(value.data()!['current_version'] != appVersion){
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('Kemas kini tersedia'),
-                content: Text('Sila kemas kini aplikasi anda untuk menikmati fungsi terkini!'),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text('OK'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        }
+void checkAppVersion(BuildContext context) {
+  final firebase = FirebaseFirestore.instance;
+  firebase.collection('appVersion').doc('version').get().then((value) {
+    if (value.exists) {
+      if (value.data()!['current_version'] != appVersion) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Kemas kini tersedia'),
+              content: Text(
+                  'Sila kemas kini aplikasi anda untuk menikmati fungsi terkini!'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       }
-    });
-  }
+    }
+  });
+}
 
 // Future<void> logout(BuildContext context) async {
 //   await FirebaseAuth.instance.signOut();
@@ -71,9 +70,8 @@ class HomeScreen extends StatefulWidget {
 // }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   //FOR DETAILED BOTTOM APP BAR (CustomBottomAppBar)
-  
+
   // int _currentIndex = 0;
 
   // void _onTabSelected(int index) {
@@ -84,11 +82,26 @@ class _HomeScreenState extends State<HomeScreen> {
   //     // Handle navigation or other functionality based on the selected tab.
   // }
 
+  String? _profilePictureUrl;
+  late User _user;
 
   @override
   void initState() {
     super.initState();
     checkAppVersion(context);
+    _user = FirebaseAuth.instance.currentUser!;
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_user.uid)
+        .get();
+    setState(() {
+      _profilePictureUrl = userDoc.data()?['profilePicture']
+          as String?; // Add this to load the profile picture URL
+    });
   }
 
   bool containsNumber(String text) {
@@ -165,7 +178,6 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Nusantara™"),
         actions: [
-
           //SIGN OUT NOT USED HERE
           // IconButton(
           //   onPressed: signOut,
@@ -183,9 +195,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               );
             },
-            icon: const Icon(
-              Icons.account_circle,
-              size: 30,
+            icon: CircleAvatar(
+              backgroundColor: Colors.white70,
+              minRadius: 60.0,
+              child: CircleAvatar(
+                radius: 50.0,
+                backgroundImage: _profilePictureUrl != null
+                    ? NetworkImage(_profilePictureUrl!)
+                    : null, // Display the profile picture if available
+                child: _profilePictureUrl == null
+                    ? const Icon(Icons.person, size: 50, color: Colors.white70)
+                    : null, // Show an icon if no profile picture is available
+              ),
             ),
           )
         ],
@@ -268,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       // bottomNavigationBar: MyBottomAppBar(
-         
+
       // ),
 
       body: Center(
@@ -388,29 +409,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                     IconButton(
                                       onPressed: () {
                                         final currentDate = DateTime.now();
-                                        final enableDate = DateTime(2024, 3, 12);
+                                        final enableDate =
+                                            DateTime(2024, 3, 12);
 
                                         if (currentDate.isAfter(enableDate)) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const RamadanPage(),
-                                          ),
-                                        );
-                                        }
-                                        else {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const RamadanPage(),
+                                            ),
+                                          );
+                                        } else {
                                           showDialog(
                                             context: context,
                                             builder: (context) {
                                               return AlertDialog(
-                                                title: Text('Ramadhan Belum Tiba! '),
-                                                content: Text('Ini akan dibuka pada 12 Mac 2024'),
+                                                title: Text(
+                                                    'Ramadhan Belum Tiba! '),
+                                                content: Text(
+                                                    'Ini akan dibuka pada 12 Mac 2024'),
                                                 actions: <Widget>[
                                                   TextButton(
                                                     child: Text('OK'),
                                                     onPressed: () {
-                                                      Navigator.of(context).pop();
+                                                      Navigator.of(context)
+                                                          .pop();
                                                     },
                                                   ),
                                                 ],
