@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -157,15 +160,49 @@ class RewardItem extends StatelessWidget {
     required this.userPoints,
   });
 
-  Future<bool> isRewardClaimed(String userId) async {
-    final DocumentSnapshot redeemedDoc = await FirebaseFirestore.instance
+  Future<String> createUniqueCode() async {
+    String code = "";
+    //check if there is another code with the same rewardId
+
+    //check from user document if the code already exists
+    QuerySnapshot existingCodes = await FirebaseFirestore.instance
         .collection('users')
-        .doc(userId)
-        .collection('redeemedRewards')
-        .doc(rewardId)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('redemptions')
         .get();
 
-    return redeemedDoc.exists;
+    do {
+      code = Random().nextInt(999999).toString().padLeft(6, '0');
+    } while (existingCodes.docs.any((doc) => doc['code'] == code));
+
+    print('the code is : $code');
+    return code;
+  }
+
+  Future<void> createRedemption(String uniqueCode, String rewardId) async {
+    //check if reward with rewardId exists in any of the user's redemptions
+    QuerySnapshot existingRedemptions = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('redemptions')
+        .where('rewardId', isEqualTo: rewardId)
+        .get();
+
+    if (existingRedemptions.docs.isEmpty) {
+    //create a firebase document inside user document
+    DocumentReference userReference = FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid);
+    CollectionReference redemptionsCollectionRef = userReference.collection('redemptions');
+    DocumentReference redemptionDocumentRef = redemptionsCollectionRef.doc(uniqueCode);
+
+    await redemptionDocumentRef.set({
+    'code': uniqueCode,
+    'userId': FirebaseAuth.instance.currentUser!.uid,
+    'rewardId': rewardId,
+    });
+    }
+    else{
+      print('reward already redeemed');
+    }
   }
 
   @override
@@ -220,35 +257,14 @@ class RewardItem extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  // final isClaimed =
-                  //     await isRewardClaimed(FirebaseAuth.instance.currentUser!.uid);
-
-                  // if (isClaimed) {
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(
-                  //       content: Text('Anda telah menebus ganjaran ini sebelum ini.'),
-                  //     ),
-                  //   );
-                  // } else {
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(
-                  //       content: Text('Anda telah berjaya menebus ganjaran ini!'),
-                  //     ),
-                  //   );
-
-                  //   await FirebaseFirestore.instance
-                  //       .collection('users')
-                  //       .doc(FirebaseAuth.instance.currentUser!.uid)
-                  //       .collection('redeemedRewards')
-                  //       .doc(rewardId)
-                  //       .set({
-                  //     'claimedAt': FieldValue.serverTimestamp(),
-                  //   });
-
+                  String uniqueCode = await createUniqueCode();
+                  createRedemption(uniqueCode, rewardId);
+                  print('sending $uniqueCode');
+                    // ignore: use_build_context_synchronously
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ClaimPage(rewardId: rewardId),
+                        builder: (context) => ClaimPage(uniqueCode: uniqueCode),
                       ),
                     );
                   //}
