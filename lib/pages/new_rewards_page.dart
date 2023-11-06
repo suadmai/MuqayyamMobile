@@ -160,11 +160,17 @@ class RewardItem extends StatelessWidget {
     required this.userPoints,
   });
 
-  Future<String> createUniqueCode() async {
+  Future<String> createUniqueCode(String rewardId) async {
     String code = "";
     //check if there is another code with the same rewardId
+    QuerySnapshot existingUniqueCode = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('redemptions')
+        .where('rewardId', isEqualTo: rewardId)
+        .get();
 
-    //check from user document if the code already exists
+    if (existingUniqueCode.docs.isEmpty) {
     QuerySnapshot existingCodes = await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -175,8 +181,12 @@ class RewardItem extends StatelessWidget {
       code = Random().nextInt(999999).toString().padLeft(6, '0');
     } while (existingCodes.docs.any((doc) => doc['code'] == code));
 
-    print('the code is : $code');
     return code;
+    }
+    else{
+      //if there is another code with the same rewardId, return the code
+      return existingUniqueCode.docs.first.get('code');
+    }
   }
 
   Future<void> createRedemption(String uniqueCode, String rewardId) async {
@@ -257,7 +267,7 @@ class RewardItem extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  String uniqueCode = await createUniqueCode();
+                  String uniqueCode = await createUniqueCode(rewardId);
                   createRedemption(uniqueCode, rewardId);
                   print('sending $uniqueCode');
                     // ignore: use_build_context_synchronously

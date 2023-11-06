@@ -116,7 +116,7 @@ class _ClaimPageState extends State<ClaimPage> {
             ),
             const SizedBox(height: 8.0),
             Text(
-              'kod unik :${widget.uniqueCode}',
+              widget.uniqueCode,
               style: const TextStyle(fontSize: 20.0),
               textAlign: TextAlign.center,
             ),
