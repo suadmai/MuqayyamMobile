@@ -18,6 +18,7 @@ import 'package:wildlifego/pages/new_rewards_page.dart';
 import 'package:wildlifego/pages/tasbih.dart';
 
 import '../components/bottom_app_bar.dart';
+import '../components/menu_buttons.dart';
 import '../services/auth_service.dart';
 import 'doctor/Admin_HomeScreen.dart';
 import 'leaderboards.dart';
@@ -298,108 +299,96 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                    height: 100,
+              Container(
+                //adjust height to fit the content
+                height: 140,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2), // Shadow color
-                          offset: Offset(0, 3), // Changes position of shadow
-                          blurRadius: 6, // Increases the blur of the shadow
-                          spreadRadius: 0, // Increases the size of the shadow
-                        ),
-                      ],
+                      color: Colors.grey[200],
                     ),
                     child: Center(
-                      child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SingleChildScrollView(
+                      child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               //make it scrollable
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const TrackPrayer(),
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.mosque_rounded,
-                                          size: 32,
-                                          color:
-                                              Color.fromARGB(255, 74, 80, 255),
-                                        )),
-                                    Text(
-                                      "Jejak solat",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ],
+                                MenuButton(
+                                  buttonText: 'Jejak Solat',
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const TrackPrayer(), // Pass the userID to the ChatPage
+                                      ),
+                                    );
+                                  },
+                                  imagePath: 'lib/icons/icons_Track_Prayer.png',
                                 ),
                                 SizedBox(width: 10),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const QuranPage(),
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.import_contacts_rounded,
-                                          size: 32,
-                                          color: Colors.green,
-                                        )),
-                                    Text(
-                                      "Baca al-Quran",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ],
+
+                                MenuButton(
+                                  buttonText: 'Baca al-Quran',
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const QuranPage(), // Pass the userID to the ChatPage
+                                      ),
+                                    );
+                                  },
+                                  imagePath: 'lib/icons/icons_Read_Quran.png',
                                 ),
 
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  TasbihPage(),
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.front_hand_rounded,
-                                          size: 32,
-                                          color:
-                                              Color.fromARGB(255, 167, 81, 149),
-                                        )),
-                                    Text(
-                                      "Tasbih",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ],
+                                SizedBox(width: 10),
+
+                                MenuButton(
+                                  buttonText: 'Papan Markah',
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            LeaderboardPage(), // Pass the userID to the ChatPage
+                                      ),
+                                    );
+                                  },
+                                  imagePath: 'lib/icons/icons_Leaderboards.png',
                                 ),
 
+                                SizedBox(width: 10),
+
+                                MenuButton(
+                                  buttonText: 'Hubungi Pakar',
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ContactExpert(), // Pass the userID to the ChatPage
+                                      ),
+                                    );
+                                  },
+                                  imagePath: 'lib/icons/icons_Contact_Expert.png',
+                                ),
+
+                                SizedBox(width: 10),
+
+                                MenuButton(
+                                  buttonText: 'Ganjaran',
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            RewardsPage(), // Pass the userID to the ChatPage
+                                      ),
+                                    );
+                                  },
+                                  imagePath: 'lib/icons/icons_Rewards.png',
+                                ),
                                 // RAMADAN FEATURE COMING SOON!!
 
                                 SizedBox(width: 10),
@@ -533,9 +522,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 SizedBox(width: 10),
                               ],
                             ),
-                          )),
+                          )
                     )),
-              ),
               SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerLeft,
