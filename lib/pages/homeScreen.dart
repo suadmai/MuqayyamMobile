@@ -301,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: <Widget>[
               Container(
                 //adjust height to fit the content
-                height: 140,
+                height: 150,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       color: Colors.grey[200],
@@ -309,218 +309,90 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Center(
                       child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
-                            child: Row(
-                              //make it scrollable
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                MenuButton(
-                                  buttonText: 'Jejak Solat',
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const TrackPrayer(), // Pass the userID to the ChatPage
-                                      ),
-                                    );
-                                  },
-                                  imagePath: 'lib/icons/icons_Track_Prayer.png',
-                                ),
-                                SizedBox(width: 10),
-
-                                MenuButton(
-                                  buttonText: 'Baca al-Quran',
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const QuranPage(), // Pass the userID to the ChatPage
-                                      ),
-                                    );
-                                  },
-                                  imagePath: 'lib/icons/icons_Read_Quran.png',
-                                ),
-
-                                SizedBox(width: 10),
-
-                                MenuButton(
-                                  buttonText: 'Papan Markah',
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            LeaderboardPage(), // Pass the userID to the ChatPage
-                                      ),
-                                    );
-                                  },
-                                  imagePath: 'lib/icons/icons_Leaderboards.png',
-                                ),
-
-                                SizedBox(width: 10),
-
-                                MenuButton(
-                                  buttonText: 'Hubungi Pakar',
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ContactExpert(), // Pass the userID to the ChatPage
-                                      ),
-                                    );
-                                  },
-                                  imagePath: 'lib/icons/icons_Contact_Expert.png',
-                                ),
-
-                                SizedBox(width: 10),
-
-                                MenuButton(
-                                  buttonText: 'Ganjaran',
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            RewardsPage(), // Pass the userID to the ChatPage
-                                      ),
-                                    );
-                                  },
-                                  imagePath: 'lib/icons/icons_Rewards.png',
-                                ),
-                                // RAMADAN FEATURE COMING SOON!!
-
-                                SizedBox(width: 10),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        final currentDate = DateTime.now();
-                                        final enableDate =
-                                            DateTime(2024, 3, 12);
-
-                                        if (currentDate.isAfter(enableDate)) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const RamadanPage(),
-                                            ),
-                                          );
-                                        } else {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title: Text(
-                                                    'Ramadhan Belum Tiba! '),
-                                                content: Text(
-                                                    'Ini akan dibuka pada 12 Mac 2024'),
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                    child: Text('OK'),
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        }
-                                      },
-                                      icon: Icon(
-                                        Icons.nights_stay_rounded,
-                                        size: 32,
-                                        color: Colors.orange,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Jejak Ramadan",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(width: 10),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const LeaderboardPage(), // Pass the userID to the ChatPage
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.star_rounded,
-                                          size: 32,
-                                          color: Colors.yellow,
-                                        )),
-                                    Text(
-                                      "Pencapaian",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(width: 10),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const ContactExpert(), // Pass the userID to the ChatPage
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.contact_support_rounded,
-                                          size: 32,
-                                          color: Color(0xFF82618B),
-                                        )),
-                                    Text(
-                                      "Hubungi pakar",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(width: 10),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  RewardsPage(),
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.card_giftcard_rounded,
-                                          size: 32,
-                                          color: Colors.blue,
-                                        )),
-                                    Text(
-                                      "Ganjaran",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(width: 10),
-                              ],
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                //make it scrollable
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  MenuButton(
+                                    buttonText: 'Jejak Solat',
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const TrackPrayer(), // Pass the userID to the ChatPage
+                                        ),
+                                      );
+                                    },
+                                    imagePath: 'lib/icons/icons_Track_Prayer.png',
+                                  ),
+                                  SizedBox(width: 10),
+                            
+                                  MenuButton(
+                                    buttonText: 'Baca al-Quran',
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const QuranPage(), // Pass the userID to the ChatPage
+                                        ),
+                                      );
+                                    },
+                                    imagePath: 'lib/icons/icons_Read_Quran.png',
+                                  ),
+                            
+                                  SizedBox(width: 10),
+                            
+                                  MenuButton(
+                                    buttonText: 'Papan Markah',
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              LeaderboardPage(), // Pass the userID to the ChatPage
+                                        ),
+                                      );
+                                    },
+                                    imagePath: 'lib/icons/icons_Leaderboards.png',
+                                  ),
+                            
+                                  SizedBox(width: 10),
+                            
+                                  MenuButton(
+                                    buttonText: 'Hubungi Pakar',
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ContactExpert(), // Pass the userID to the ChatPage
+                                        ),
+                                      );
+                                    },
+                                    imagePath: 'lib/icons/icons_Contact_Expert.png',
+                                  ),
+                            
+                                  SizedBox(width: 10),
+                            
+                                  MenuButton(
+                                    buttonText: 'Ganjaran',
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              RewardsPage(), // Pass the userID to the ChatPage
+                                        ),
+                                      );
+                                    },
+                                    imagePath: 'lib/icons/icons_Rewards.png',
+                                  ),
+                                ],
+                              ),
                             ),
                           )
                     )),
