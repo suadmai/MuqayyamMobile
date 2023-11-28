@@ -14,9 +14,7 @@ class MenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2.0),
-      child: Container(
+    return Container(
           width: 110, // Set a fixed width
           height: 120, // Set a fixed height
           decoration: BoxDecoration(
@@ -24,9 +22,9 @@ class MenuButton extends StatelessWidget {
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 2,
+                spreadRadius: 1.5,
                 blurRadius: 5,
-                offset: const Offset(0, 3),
+                offset: const Offset(0, 1),
               ),
             ],
           ),
@@ -63,7 +61,6 @@ class MenuButton extends StatelessWidget {
               ),
             ),
           ),
-        ),
-    );
+        );
   }
 }
