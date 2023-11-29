@@ -129,18 +129,13 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text("Belum mempunyai akaun?"),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4),
                         GestureDetector(
                           onTap: widget.onTap,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 8,
-                            ),
-                            child: const Text(
-                              "Daftar sekarang",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+                          child: const Text(
+                            "Daftar sekarang",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
