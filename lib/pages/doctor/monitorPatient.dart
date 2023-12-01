@@ -120,7 +120,7 @@ class _PatientListState extends State<PatientList>{
             
         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: firestore.collection('users')
-        .where('role', isEqualTo: 'doctor')
+        .where('role', isEqualTo: '')
         .where('userID', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)//taknak tunjuk diri sendiri
         .snapshots(),
         builder: (context, snapshot) {

@@ -65,6 +65,7 @@ class _ChatState extends State<Chat> {
       // Rest of your content here
       body: Column(
         children: [
+          const SizedBox(height: 20,),
           Expanded(
             child: _buildMessageList(),
             ),

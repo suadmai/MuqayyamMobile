@@ -872,9 +872,3 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     _videoController.dispose();
   }
 }
-
-
-
-
-
-
