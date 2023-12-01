@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wildlifego/components/prayerwidget.dart';
+import 'package:wildlifego/components/scorewidget.dart';
 import 'package:wildlifego/firebase/firebase_config.dart';
 import 'package:wildlifego/main.dart';
 import 'package:wildlifego/pages/chat.dart';
@@ -52,225 +53,215 @@ class _PatientDetailsState extends State<PatientDetails>{
       // bottomNavigationBar: const MyBottomAppBar(),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
-            children: [
-              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                stream: firestore.collection("users")
-                      .where("userID", isEqualTo: widget.patientId)
-                      .snapshots(),
-                
-                builder: (context, snapshot) {
-        
-                final patient = snapshot.data!.docs.first.data();
-                String? _profilePictureUrl = patient['profilePicture'] as String?;
-                String? patientName = patient['username'] as String?;
-                String? patientAge = "";
-                String? patientGender = "";
-                String? patientEmail = patient['email'] as String?;
-                String? healthInfo = "";
-        
-                  return Card(
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const CircleAvatar(
-                                  radius: 30,
-                                  child: Icon(Icons.person, size: 40,),
-                                ),
-                                const SizedBox(width: 20),
-                                Text(
-                                  patientName.toString(),
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+              children: [
+                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: firestore.collection("users")
+                        .where("userID", isEqualTo: widget.patientId)
+                        .snapshots(),
+                  
+                  builder: (context, snapshot) {
+          
+                  final patient = snapshot.data!.docs.first.data();
+                  String? _profilePictureUrl = patient['profilePicture'] as String?;
+                  String? patientName = patient['username'] as String?;
+                  String? patientAge = "";
+                  String? patientGender = "";
+                  String? patientEmail = patient['email'] as String?;
+                  String? healthInfo = "";
+          
+                    return Card(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  RichText(text: const TextSpan(
-                                    text: 'Jantina: ',
-                                    style: TextStyle(fontSize: 14, color: Colors.black),
-                                    children: <TextSpan>[
-                                      TextSpan(text: 'lelaki', style: TextStyle(fontWeight: FontWeight.bold)),
-                                    ],
-                                  )),
+                                  const CircleAvatar(
+                                    radius: 30,
+                                    child: Icon(Icons.person, size: 40,),
+                                  ),
                                   const SizedBox(width: 20),
-                                  RichText(text: const TextSpan(
-                                    text: 'Umur: ',
-                                    style: TextStyle(fontSize: 14, color: Colors.black),
-                                    children: <TextSpan>[
-                                      TextSpan(text: '30', style: TextStyle(fontWeight: FontWeight.bold)),
-                                    ],
-                                  )),
+                                  Text(
+                                    patientName.toString(),
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ],
                               ),
-                              const SizedBox(height: 12),
-                              RichText(text: TextSpan(
-                                    text: 'Alamat Emel: ',
-                                    style: const TextStyle(fontSize: 14, color: Colors.black),
-                                    children: <TextSpan>[
-                                      TextSpan(text: patientEmail.toString(), style: TextStyle(fontWeight: FontWeight.bold)),
-                                    ],
-                                  )),
-                              const SizedBox(height: 12),
-                              RichText(text: const TextSpan(
-                                    text: 'Masalah kesihatan: ',
-                                    style: TextStyle(fontSize: 14, color: Colors.black),
-                                    children: <TextSpan>[
-                                      TextSpan(text: 'tiada', style: TextStyle(fontWeight: FontWeight.bold)),
-                                    ],
-                                  )),
-                              ],
-                            ),
-                           
-                          ],
-                        ),
-                    ),
-                  );
-                }
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                    onPressed: () {
-                      const snackBar = SnackBar(content: Text('Penanda berjaya ditambah'));
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      setState(() {
-                        bookmarked = !bookmarked;
-                      });
-                      print(bookmarked);
-                    },
-                    icon: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
-                        return ScaleTransition(child: child, scale: animation);
-                      },
-                      child: Icon(
-                        bookmarked ? Icons.bookmark_add_outlined : Icons.bookmark,
-                        color: Colors.black,
-                        key: ValueKey<bool>(bookmarked),
-                      ),
-                    ),
-                    label: Text(
-                      bookmarked ? 'Tambah Penanda' : 'Buang Penanda',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                      minimumSize: MaterialStateProperty.all<Size>(const Size(100, 50)),
-                    ),
-                  ),
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        //go to chat page
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Chat(
-                              receiverUserID: userID,
-                              receiverUserName: username,
-                              receiverUserEmail: userEmail), // Pass the userID to the ChatPage
+                              const SizedBox(height: 20),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                  children: [
+                                    RichText(text: const TextSpan(
+                                      text: 'Jantina: ',
+                                      style: TextStyle(fontSize: 14, color: Colors.black),
+                                      children: <TextSpan>[
+                                        TextSpan(text: 'lelaki', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      ],
+                                    )),
+                                    const SizedBox(width: 20),
+                                    RichText(text: const TextSpan(
+                                      text: 'Umur: ',
+                                      style: TextStyle(fontSize: 14, color: Colors.black),
+                                      children: <TextSpan>[
+                                        TextSpan(text: '30', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      ],
+                                    )),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                RichText(text: TextSpan(
+                                      text: 'Alamat Emel: ',
+                                      style: const TextStyle(fontSize: 14, color: Colors.black),
+                                      children: <TextSpan>[
+                                        TextSpan(text: patientEmail.toString(), style: TextStyle(fontWeight: FontWeight.bold)),
+                                      ],
+                                    )),
+                                const SizedBox(height: 12),
+                                RichText(text: const TextSpan(
+                                      text: 'Masalah kesihatan: ',
+                                      style: TextStyle(fontSize: 14, color: Colors.black),
+                                      children: <TextSpan>[
+                                        TextSpan(text: 'tiada', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      ],
+                                    )),
+                                ],
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                      icon: const Icon(Icons.mail_outline_rounded, color: Colors.black,),
-                      label: const Text('Hantar Mesej', style: TextStyle(color: Colors.black),),
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          )
-                        ),
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                        minimumSize: MaterialStateProperty.all<Size>(const Size(100, 50)),
+                      ),
+                    );
+                  }
+                ),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton.icon(
+                            onPressed: () {
+                              final snackBar = SnackBar(content: Text(bookmarked? 'Penanda berjaya ditambah' : 'Penanda berjaya dibuang'));
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              setState(() {
+                                bookmarked = !bookmarked;
+                              });
+                              print(bookmarked);
+                            },
+                            icon: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              transitionBuilder: (Widget child, Animation<double> animation) {
+                                return ScaleTransition(child: child, scale: animation);
+                              },
+                              child: Icon(
+                                bookmarked ? Icons.bookmark_add_outlined : Icons.bookmark,
+                                color: Colors.black,
+                                key: ValueKey<bool>(bookmarked),
+                              ),
+                            ),
+                            label: Text(
+                              bookmarked ? 'Tambah Penanda' : 'Buang Penanda',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
+                              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                              padding: MaterialStateProperty.all<EdgeInsetsGeometry>(const EdgeInsets.symmetric(vertical: 20)),
+                            ),
+                          ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                //go to chat page
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Chat(
+                                      receiverUserID: userID,
+                                      receiverUserName: username,
+                                      receiverUserEmail: userEmail), // Pass the userID to the ChatPage
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.mail_outline_rounded, color: Colors.black,),
+                              label: const Text('Hantar Mesej', style: TextStyle(color: Colors.black),),
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  )
+                                ),
+                                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(const EdgeInsets.symmetric(vertical: 20)),
+                              )
+                            ),
+                          ),
+                        ],
+                      ),
+                ),
+                //PrayerData(patientId: widget.patientId),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    ScoreWidget(patientId: widget.patientId),
+                    const SizedBox(width: 4),
+                    PrayerWidget(patientId: widget.patientId)
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Expanded(
+                      child: 
+                      Card(
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
+                      ),
+                        child: const AspectRatio(
+                          aspectRatio: 1,
+                          child: Text('Box 1', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),)),
                       )
                     ),
-                  ),
-                ],
-              ),
-              //PrayerData(patientId: widget.patientId),
-              const SizedBox(height: 6),
-              Row(
-                children: [
-                  Expanded(
-                    child: 
-                    Card(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: 
+                      Card(
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
+                      ),
+                        child: const AspectRatio(
+                          aspectRatio: 1,
+                          child: Text('Box 1', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),)),
+                      )
                     ),
-                      child: const AspectRatio(
-                        aspectRatio: 1,
-                        child: Text('Box 1', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),)),
-                    )
-                  ),
-                  const SizedBox(width: 6),
-                  PrayerWidget(patientId: widget.patientId)
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: 
-                    Card(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
-                    ),
-                      child: const AspectRatio(
-                        aspectRatio: 1,
-                        child: Text('Box 1', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),)),
-                    )
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: 
-                    Card(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
-                    ),
-                      child: const AspectRatio(
-                        aspectRatio: 1,
-                        child: Text('Box 1', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),)),
-                    )
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      )
-    );
+                  ],
+                )
+              ]
+            ),
+        )
+        )
+      );
   }
 }
 
