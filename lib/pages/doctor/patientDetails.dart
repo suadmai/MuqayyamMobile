@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:wildlifego/components/prayerwidget.dart';
 import 'package:wildlifego/firebase/firebase_config.dart';
 import 'package:wildlifego/main.dart';
 import 'package:wildlifego/pages/chat.dart';
@@ -10,7 +11,7 @@ import 'package:wildlifego/pages/chat.dart';
 import '../../components/layout.dart';
 
 class PatientDetails extends StatefulWidget {
-  final patientId;
+  final String patientId;
 
   const PatientDetails({super.key, required this.patientId});
   @override
@@ -158,14 +159,21 @@ class _PatientDetailsState extends State<PatientDetails>{
                       });
                       print(bookmarked);
                     },
-                    icon: Icon(
-                      bookmarked ? Icons.bookmark_add_outlined : Icons.bookmark,
-                      color: Colors.black,
+                    icon: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      transitionBuilder: (Widget child, Animation<double> animation) {
+                        return ScaleTransition(child: child, scale: animation);
+                      },
+                      child: Icon(
+                        bookmarked ? Icons.bookmark_add_outlined : Icons.bookmark,
+                        color: Colors.black,
+                        key: ValueKey<bool>(bookmarked),
+                      ),
                     ),
                     label: Text(
                       bookmarked ? 'Tambah Penanda' : 'Buang Penanda',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.black),
                     ),
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -207,8 +215,57 @@ class _PatientDetailsState extends State<PatientDetails>{
                     ),
                   ),
                 ],
-              )
+              ),
               //PrayerData(patientId: widget.patientId),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Expanded(
+                    child: 
+                    Card(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
+                    ),
+                      child: const AspectRatio(
+                        aspectRatio: 1,
+                        child: Text('Box 1', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),)),
+                    )
+                  ),
+                  const SizedBox(width: 6),
+                  PrayerWidget(patientId: widget.patientId)
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: 
+                    Card(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
+                    ),
+                      child: const AspectRatio(
+                        aspectRatio: 1,
+                        child: Text('Box 1', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),)),
+                    )
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: 
+                    Card(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
+                    ),
+                      child: const AspectRatio(
+                        aspectRatio: 1,
+                        child: Text('Box 1', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),)),
+                    )
+                  ),
+                ],
+              )
             ],
           ),
         ),

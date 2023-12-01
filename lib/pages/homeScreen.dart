@@ -194,14 +194,14 @@ class _HomeScreenState extends State<HomeScreen> {
       print('firebase read from syncPrayerData');
       if(snapshot.exists){
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-        //print(data);
-        setState(() {
           subuh.prayed = data['subuh'];
           syuruk.prayed = data['syuruk'];
           zohor.prayed = data['zohor'];
           asar.prayed = data['asar'];
           maghrib.prayed = data['maghrib'];
           isyak.prayed = data['isyak'];
+        print(data);
+        setState(() {
         });
       }
       else{

@@ -143,7 +143,7 @@ class _PatientListState extends State<PatientList>{
                 context,
                 MaterialPageRoute(
                   builder: (context) => PatientDetails(
-                    patientId: userID,
+                    patientId: userID as String,
                   )
                 ),
               );
