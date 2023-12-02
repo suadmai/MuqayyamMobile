@@ -4,37 +4,52 @@ import 'package:intl/intl.dart';
 import 'package:wildlifego/firebase/firebase_config.dart';
 
 
-class ScoreWidget extends StatefulWidget {
+class QuranWidget extends StatefulWidget {
   final String patientId;
 
-  const ScoreWidget({super.key, required this.patientId});
+  const QuranWidget({super.key, required this.patientId});
 
   @override
-  State<ScoreWidget> createState() => _ScoreWidgetState();
+  State<QuranWidget> createState() => _QuranWidgetState();
 }
 
-class _ScoreWidgetState extends State<ScoreWidget> {
+class _QuranWidgetState extends State<QuranWidget> {
   FirebaseFirestore firestore = FirebaseConfig.firestore;
-  int userScore = 0;
+  int readCount = 0;
 
   @override
   void initState() {
     super.initState();
     print(widget.patientId);
-    getScore();
-  }
-
-   Future <void> getScore() async{
-    final DocumentSnapshot<Map<String, dynamic>> 
-    userData = await firestore.
-                collection('users').
-                doc(widget.patientId).
-                get();
-    
-    userScore = userData.data()!['score'];
+    getReadingRecord();
     setState(() {
       
     });
+  }
+
+   Future <void> getReadingRecord() async{
+    final QuerySnapshot<Map<String, dynamic>> 
+    readingData = await firestore.
+                collection('users').
+                doc(widget.patientId).
+                collection('reading_records').
+                get();
+    
+    countReadSurah(readingData.docs);
+    setState(() {
+      
+    });
+  }
+
+  void countReadSurah(dynamic userReadData){
+    int count = 0;
+    for (var i = 0; i < userReadData.length; i++) {
+      if (userReadData[i]['isRead'] == true) {
+        count++;
+      }
+    }
+    readCount = count;
+    print(readCount);
   }
 
   @override
@@ -54,14 +69,14 @@ class _ScoreWidgetState extends State<ScoreWidget> {
                   crossAxisAlignment: CrossAxisAlignment.center, // Align title to the start (left)
                   children: [
                     const Text(
-                      'Jumlah Markah',
+                      'Surah Dibaca',
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,),
                       textAlign: TextAlign.center,
                     ),
                     Expanded(
                       child: Center(
                         child: Text(
-                          userScore.toString(),
+                          readCount.toString(),
                           style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                         ),
                       ),

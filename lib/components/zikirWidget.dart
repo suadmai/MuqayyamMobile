@@ -4,18 +4,18 @@ import 'package:intl/intl.dart';
 import 'package:wildlifego/firebase/firebase_config.dart';
 
 
-class ScoreWidget extends StatefulWidget {
+class ZikirWidget extends StatefulWidget {
   final String patientId;
 
-  const ScoreWidget({super.key, required this.patientId});
+  const ZikirWidget({super.key, required this.patientId});
 
   @override
-  State<ScoreWidget> createState() => _ScoreWidgetState();
+  State<ZikirWidget> createState() => _ZikirWidgetState();
 }
 
-class _ScoreWidgetState extends State<ScoreWidget> {
+class _ZikirWidgetState extends State<ZikirWidget> {
   FirebaseFirestore firestore = FirebaseConfig.firestore;
-  int userScore = 0;
+  int totalZikir = 0;
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _ScoreWidgetState extends State<ScoreWidget> {
                 doc(widget.patientId).
                 get();
     
-    userScore = userData.data()!['score'];
+    //userScore = userData.data()!['score'];
     setState(() {
       
     });
@@ -46,7 +46,7 @@ class _ScoreWidgetState extends State<ScoreWidget> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
             ),
-            child: AspectRatio(
+            child: const AspectRatio(
               aspectRatio: 1,
               child: Padding(
                 padding: const EdgeInsets.all(18.0),
@@ -54,14 +54,14 @@ class _ScoreWidgetState extends State<ScoreWidget> {
                   crossAxisAlignment: CrossAxisAlignment.center, // Align title to the start (left)
                   children: [
                     const Text(
-                      'Jumlah Markah',
+                      'Jumlah Zikir',
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,),
                       textAlign: TextAlign.center,
                     ),
                     Expanded(
                       child: Center(
                         child: Text(
-                          userScore.toString(),
+                          '200',
                           style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                         ),
                       ),

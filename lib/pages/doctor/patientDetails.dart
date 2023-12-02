@@ -4,7 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wildlifego/components/prayerwidget.dart';
+import 'package:wildlifego/components/quranwidget.dart';
 import 'package:wildlifego/components/scorewidget.dart';
+import 'package:wildlifego/components/zikirWidget.dart';
 import 'package:wildlifego/firebase/firebase_config.dart';
 import 'package:wildlifego/main.dart';
 import 'package:wildlifego/pages/chat.dart';
@@ -172,10 +174,10 @@ class _PatientDetailsState extends State<PatientDetails>{
                               ),
                             ),
                             label: Text(
-                              bookmarked ? 'Tambah Penanda' : 'Buang Penanda',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.black),
-                            ),
+                                bookmarked ? 'Tambah Penanda' : 'Buang Penanda',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.black),
+                              ),
                             style: ButtonStyle(
                               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -230,31 +232,9 @@ class _PatientDetailsState extends State<PatientDetails>{
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Expanded(
-                      child: 
-                      Card(
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
-                      ),
-                        child: const AspectRatio(
-                          aspectRatio: 1,
-                          child: Text('Box 1', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),)),
-                      )
-                    ),
+                    QuranWidget(patientId: widget.patientId),
                     const SizedBox(width: 4),
-                    Expanded(
-                      child: 
-                      Card(
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
-                      ),
-                        child: const AspectRatio(
-                          aspectRatio: 1,
-                          child: Text('Box 1', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),)),
-                      )
-                    ),
+                    ZikirWidget(patientId: widget.patientId),
                   ],
                 )
               ]
