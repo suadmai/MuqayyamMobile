@@ -26,6 +26,9 @@ class _PrayerWidgetState extends State<PrayerWidget> {
     super.initState();
     print(widget.patientId);
     getPrayerData();
+    setState(() {
+      
+    });
   }
 
    Future <void> getPrayerData() async{
@@ -37,12 +40,11 @@ class _PrayerWidgetState extends State<PrayerWidget> {
                 doc(DateFormat('yyyy-MM-dd').format(DateTime.now())).
                 get();
     print('collected data');
-    subuh = prayerData.data()!['subuh'];
-    zohor = prayerData.data()!['zohor'];
-    asar = prayerData.data()!['asar'];
-    maghrib = prayerData.data()!['maghrib'];
-    isya = prayerData.data()!['isyak'];
-    print(prayerData);
+    subuh = prayerData.data()!['subuh'] == true ? true : false;
+    zohor = prayerData.data()!['zohor'] == true ? true : false;
+    asar = prayerData.data()!['asar'] == true ? true : false;
+    maghrib = prayerData.data()!['maghrib'] == true ? true : false;
+    isya = prayerData.data()!['isyak'] == true ? true : false;
     setState(() {});
 
   }

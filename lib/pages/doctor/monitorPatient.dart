@@ -39,13 +39,6 @@ class _PatientListState extends State<PatientList>{
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-        },
-        child: const Icon(Icons.podcasts), 
-        backgroundColor: Color(0xFF82618B),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       // bottomNavigationBar: BottomAppBar(
       //   color: Color(0xFF82618B),
