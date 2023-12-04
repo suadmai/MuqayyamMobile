@@ -475,7 +475,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                     },
                                     imagePath: 'lib/icons/icons_Read_Quran.png',
                                   ),
-                            
+                                  SizedBox(width: 10),
+
+                                  MenuButton(
+                                    buttonText: 'Tasbih',
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              TasbihPage(),
+                                        ),
+                                      );
+                                    },
+                                    imagePath: 'lib/icons/icons_Track_Prayer.png',
+                                  ),
                                   SizedBox(width: 10),
                             
                                   MenuButton(

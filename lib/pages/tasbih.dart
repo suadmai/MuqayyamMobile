@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class TasbihPage extends StatefulWidget {
@@ -6,7 +9,21 @@ class TasbihPage extends StatefulWidget {
 }
 
 class _TasbihPageState extends State<TasbihPage> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   int _count = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    //_saveCount();
+  }
+
+  @override
+  void dispose() {
+    _saveCount();
+    super.dispose();
+  }
 
   void _incrementCount() {
     setState(() {
@@ -18,6 +35,35 @@ class _TasbihPageState extends State<TasbihPage> {
     setState(() {
       _count = 0;
     });
+  }
+
+  void _saveCount() async {
+    print('saving count');
+    int previousCount = 0;
+
+    await firestore
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tasbih')
+        .doc(DateTime.now().toString())
+        .get()
+        .then((value) {
+      if (value.exists) {
+        previousCount = value.data()!['count'];
+      }
+    });
+
+    print (previousCount);
+
+    await firestore.collection('users')
+      .doc(FirebaseAuth.instance.currentUser!.uid)
+      .collection('tasbih')
+      .doc(DateTime.now().toString())
+      .set({
+        'count': _count+previousCount,
+      });
+
+    // _resetCount();
   }
 
   @override
