@@ -20,19 +20,20 @@ class _ZikirWidgetState extends State<ZikirWidget> {
   void initState() {
     super.initState();
     print(widget.patientId);
-    getScore();
+    getZikir();
   }
 
-   Future <void> getScore() async{
+   Future <void> getZikir() async{
     final DocumentSnapshot<Map<String, dynamic>> 
     userData = await firestore.
                 collection('users').
                 doc(widget.patientId).
+                collection('tasbih').
+                doc(widget.patientId).
                 get();
-    
-    //userScore = userData.data()!['score'];
+   
     setState(() {
-      
+      totalZikir = userData.data()!['count'];
     });
   }
 
@@ -45,7 +46,7 @@ class _ZikirWidgetState extends State<ZikirWidget> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
             ),
-            child: const AspectRatio(
+            child: AspectRatio(
               aspectRatio: 1,
               child: Padding(
                 padding: const EdgeInsets.all(18.0),
@@ -60,7 +61,7 @@ class _ZikirWidgetState extends State<ZikirWidget> {
                     Expanded(
                       child: Center(
                         child: Text(
-                          '200',
+                          '$totalZikir',  
                           style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                         ),
                       ),
