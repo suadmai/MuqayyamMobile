@@ -46,9 +46,12 @@ class _RegisterPageState extends State<RegisterPage> {
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
   final symptomsController = TextEditingController();
+  final surgeryController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
-  final implantController = TextEditingController();
+
+  bool isDoctor = false; // To check if user is a doctor
+  
 
   String selectedRole = 'Pengguna';
 
@@ -73,6 +76,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
   //signup user
   void signUp() async {
+    if (passwordController.text.length < 6) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text("Password should be at least 6 characters."),
+    ),
+  );
+  return;
+}
     if (passwordController.text != passwordConfirmController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -92,8 +103,8 @@ class _RegisterPageState extends State<RegisterPage> {
         phoneController.text,
         addressController.text,
         symptomsController.text,
+        surgeryController.text,
         passwordController.text,
-        implantController.text,
       );
     } catch (e) {
       // ignore: use_build_context_synchronously
@@ -159,11 +170,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       value: selectedRole,
                       onChanged: (newValue) {
                         setState(() {
+                          print("Selected Role: $newValue");
                           selectedRole = newValue!;
                         });
                       },
                       hintText: 'Pilih Peranan',
                     ),
+                    
 
                     const SizedBox(
                       height: 20,
@@ -227,7 +240,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       listType: MultiSelectListType.CHIP,
                       onConfirm: (values) {
                         setState(() {
-                          symptomsController.text = values.toString();
+                          // Extract the names of selected symptoms
+                          List<String> selectedSymptomNames =
+                              values.map((item) => item.name).toList();
+                          // Store the names in symptomsController.text
+                          symptomsController.text =
+                              selectedSymptomNames.join(", ");
                         });
                       },
                     ),
@@ -236,20 +254,23 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 20,
                     ),
 
-                    //surgery multi select
-                    MultiSelectDialogField(
-                      buttonText: const Text("Pilih pembedahan"),
-                      title: const Text("Pembedahan"),
-                      items: _surgeries
-                          .map((e) => MultiSelectItem(e, e.name))
-                          .toList(),
-                      listType: MultiSelectListType.CHIP,
-                      onConfirm: (values) {
-                        setState(() {
-                          implantController.text = values.toString();
-                        });
-                      },
-                    ),
+                    // surgery multi select
+MultiSelectDialogField(
+  buttonText: const Text("Pilih pembedahan"),
+  title: const Text("Pembedahan"),
+  items: _surgeries
+      .map((e) => MultiSelectItem(e, e.name))
+      .toList(),
+  listType: MultiSelectListType.CHIP,
+  onConfirm: (values) {
+    setState(() {
+      // Extract the names of selected surgeries
+      List<String> selectedSurgeryNames = values.map((item) => item.name).toList();
+      // Store the names in implantController.text
+      surgeryController.text = selectedSurgeryNames.join(", ");
+    });
+  },
+),
 
                     const SizedBox(
                       height: 20,
