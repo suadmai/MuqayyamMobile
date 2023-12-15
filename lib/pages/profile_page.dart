@@ -7,7 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:provider/provider.dart';
 
 import '../services/auth_service.dart';
-import 'login_page.dart'; // Replace with the actual login page file
+import 'login_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -18,9 +18,9 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late User _user;
-  late String _name;
-  int? _score;
-  String? _profilePictureUrl; // Add this if you want to display the profile picture
+  late String _name = "";
+  late int _score = 0;
+  late String _profilePictureUrl = ""; // Add this if you want to display the profile picture
 
   // For editing username
   TextEditingController _usernameController = TextEditingController();
@@ -39,8 +39,8 @@ class _ProfilePageState extends State<ProfilePage> {
         .get();
     setState(() {
       _name = userDoc.data()?['username'] as String;
-      _score = userDoc.data()?['score'] as int?;
-      _profilePictureUrl = userDoc.data()?['profilePicture'] as String?; // Add this to load the profile picture URL
+      _score = userDoc.data()?['score'] as int;
+      _profilePictureUrl = userDoc.data()?['profilePicture'] as String; // Add this to load the profile picture URL
     });
   }
 
