@@ -133,82 +133,30 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         ],
       ),
       //floating action button must be center
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            //backgroundColor: Colors.transparent, // Set the background color to transparent
-            barrierColor: Colors.transparent,
-            builder: (BuildContext context) {
-              return SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
-                  ),
-                  child: NewPostTextField(
-                  ), // Create a separate widget for the text field
-                ),
-              );
-            },
-          );
-        },
-        child: const Icon(Icons.add),
-        backgroundColor: Color(0xFF82618B),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        color: Color(0xFF82618B),
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 10.0,
-        child: SizedBox(
-          height: 60.0,
-          child: Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceAround, // Updated alignment
-            children: <Widget>[
-              // Home
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AdminHomeScreen(),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: FloatingActionButton(
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              //backgroundColor: Colors.transparent, // Set the background color to transparent
+              barrierColor: Colors.transparent,
+              builder: (BuildContext context) {
+                return SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
                     ),
-                  );
-                },
-                icon: const Icon(Icons.home),
-                color: Colors.white,
-              ),
-
-              // Search (You can replace this with your desired search functionality)
-              IconButton(
-                onPressed: () {
-                  // Add your search functionality here
-                },
-                icon: const Icon(Icons.search),
-                color: Colors.white,
-              ),
-
-              // Trophy (You can replace this with your desired trophy functionality)
-              IconButton(
-                onPressed: () {
-                  // Add your trophy functionality here
-                },
-                icon: const Icon(Icons.emoji_events),
-                color: Colors.white,
-              ),
-
-              // Settings (You can replace this with your desired settings functionality)
-              IconButton(
-                onPressed: () {
-                  // Add your settings functionality here
-                },
-                icon: const Icon(Icons.settings),
-                color: Colors.white,
-              ),
-            ],
-          ),
+                    child: NewPostTextField(
+                    ), // Create a separate widget for the text field
+                  ),
+                );
+              },
+            );
+          },
+          child: const Icon(Icons.add),
+          backgroundColor: Color(0xFF82618B),
         ),
       ),
       body: Center(
