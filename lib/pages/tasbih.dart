@@ -45,7 +45,7 @@ class _TasbihPageState extends State<TasbihPage> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tasbih')
-        .doc(DateTime.now().toString())
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) {
       if (value.exists) {
@@ -53,17 +53,13 @@ class _TasbihPageState extends State<TasbihPage> {
       }
     });
 
-    print (previousCount);
-
     await firestore.collection('users')
       .doc(FirebaseAuth.instance.currentUser!.uid)
       .collection('tasbih')
-      .doc(DateTime.now().toString())
+      .doc(FirebaseAuth.instance.currentUser!.uid)
       .set({
         'count': _count+previousCount,
       });
-
-    // _resetCount();
   }
 
   @override
@@ -77,29 +73,80 @@ class _TasbihPageState extends State<TasbihPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Count',
-              style: TextStyle(fontSize: 24),
-            ),
-            SizedBox(height: 16),
             Container(
               width: 150, // You can adjust the size as needed
               height: 150, // You can adjust the size as needed
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFF82618B),
-              ),
               child: Center(
                 child: Text(
                   '$_count',
-                  style: TextStyle(fontSize: 48, color: Colors.white),
+                  style: const TextStyle(fontSize: 48, color: Colors.black, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
             SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: _incrementCount,
-              child: Text('Add'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width/3,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width/3,
+                  child: ElevatedButton(
+                    //remove style
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                    ),
+                    onPressed: _incrementCount,
+                    child: Container(
+                      //add circle shape
+                      height: 150,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0xFF82618B),
+                      ),
+                      child: const Center(
+                          child: Icon(
+                            Icons.add,
+                            size: 48,
+                            color: Colors.white,),
+                        ),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width/3,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: ElevatedButton(
+                      //remove style
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                      ),
+                      onPressed: (){
+                        _resetCount();
+                      },
+                      child: Container(
+                        //add circle shape
+                        height: 150,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xFF82618B),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: Icon(
+                            Icons.restart_alt,
+                            size: 24,
+                            color: Colors.white,),
+                      ),
+                    ),
+                                  ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

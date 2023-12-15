@@ -23,7 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late String _profilePictureUrl = ""; // Add this if you want to display the profile picture
 
   // For editing username
-  TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
 
   @override
   void initState() {
