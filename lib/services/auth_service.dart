@@ -39,7 +39,7 @@ class AuthService extends ChangeNotifier {
   //create new user
 
   Future<UserCredential> signUpWithEmailandPassword(
-      String username, String role, String email, String password) async {
+      String username, String role, String email, String password, String age, String address , String phone, String symptoms, String surgery) async {
     try {
 
       //create new user
@@ -57,6 +57,10 @@ class AuthService extends ChangeNotifier {
         "userID" : userCredential.user?.uid,
         "email" : email,
         "score" : 0,
+        "age" : age,
+        "address" : address,
+        "phone" : phone,
+        "symptoms" : symptoms,
       });
 
 
