@@ -51,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final passwordConfirmController = TextEditingController();
 
   bool isDoctor = false; // To check if user is a doctor
-  
+  bool isPatient = true; // To check if user is a patient
 
   String selectedRole = 'Pengguna';
 
@@ -77,13 +77,13 @@ class _RegisterPageState extends State<RegisterPage> {
   //signup user
   void signUp() async {
     if (passwordController.text.length < 6) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-      content: Text("Password should be at least 6 characters."),
-    ),
-  );
-  return;
-}
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Password should be at least 6 characters."),
+        ),
+      );
+      return;
+    }
     if (passwordController.text != passwordConfirmController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -97,7 +97,7 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       await authService.signUpWithEmailandPassword(
         usernameController.text,
-        roleController.text,
+        selectedRole,
         emailController.text,
         ageController.text,
         phoneController.text,
@@ -172,11 +172,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         setState(() {
                           print("Selected Role: $newValue");
                           selectedRole = newValue!;
+                          isDoctor = newValue == 'Doktor';
                         });
                       },
                       hintText: 'Pilih Peranan',
                     ),
-                    
 
                     const SizedBox(
                       height: 20,
@@ -194,16 +194,40 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 20,
                     ),
 
+                    //staff id textfield
+                    Visibility(
+                      visible: isDoctor,
+                      child: MyTextField(
+                        controller: ageController,
+                        hintText: "ID Staf",
+                        maxLines: 1,
+                        obscureText: false,
+                      ),
+                    ),
+
+                    Visibility(
+                      visible:
+                          isDoctor, // Only show the SizedBox when isPatient is true
+                      child: const SizedBox(
+                        height: 20,
+                      ),
+                    ),
+
                     //age textfield
                     MyTextField(
                       controller: ageController,
                       hintText: "Umur",
                       maxLines: 1,
                       obscureText: false,
+                      isVisible: !isDoctor,
                     ),
 
-                    const SizedBox(
-                      height: 20,
+                    Visibility(
+                      visible:
+                          !isDoctor, // Only show the SizedBox when isPatient is true
+                      child: const SizedBox(
+                        height: 20,
+                      ),
                     ),
 
                     //phone textfield
@@ -224,56 +248,77 @@ class _RegisterPageState extends State<RegisterPage> {
                       hintText: "Alamat",
                       maxLines: 1,
                       obscureText: false,
+                      isVisible: !isDoctor,
                     ),
 
-                    const SizedBox(
-                      height: 20,
+                    Visibility(
+                      visible:
+                          !isDoctor, // Only show the SizedBox when isPatient is true
+                      child: const SizedBox(
+                        height: 20,
+                      ),
                     ),
 
                     //symptom multi select
-                    MultiSelectDialogField(
-                      buttonText: const Text("Pilih gejala"),
-                      title: const Text("Gejala"),
-                      items: _symptoms
-                          .map((e) => MultiSelectItem(e, e.name))
-                          .toList(),
-                      listType: MultiSelectListType.CHIP,
-                      onConfirm: (values) {
-                        setState(() {
-                          // Extract the names of selected symptoms
-                          List<String> selectedSymptomNames =
-                              values.map((item) => item.name).toList();
-                          // Store the names in symptomsController.text
-                          symptomsController.text =
-                              selectedSymptomNames.join(", ");
-                        });
-                      },
+
+                    Visibility(
+                      visible: !isDoctor,
+                      child: MultiSelectDialogField(
+                        buttonText: const Text("Pilih gejala"),
+                        title: const Text("Gejala"),
+                        items: _symptoms
+                            .map((e) => MultiSelectItem(e, e.name))
+                            .toList(),
+                        listType: MultiSelectListType.CHIP,
+                        onConfirm: (values) {
+                          setState(() {
+                            // Extract the names of selected symptoms
+                            List<String> selectedSymptomNames =
+                                values.map((item) => item.name).toList();
+                            // Store the names in symptomsController.text
+                            symptomsController.text =
+                                selectedSymptomNames.join(", ");
+                          });
+                        },
+                      ),
                     ),
 
-                    const SizedBox(
-                      height: 20,
+                    Visibility(
+                      visible:
+                          !isDoctor, // Only show the SizedBox when isPatient is true
+                      child: const SizedBox(
+                        height: 20,
+                      ),
                     ),
 
                     // surgery multi select
-MultiSelectDialogField(
-  buttonText: const Text("Pilih pembedahan"),
-  title: const Text("Pembedahan"),
-  items: _surgeries
-      .map((e) => MultiSelectItem(e, e.name))
-      .toList(),
-  listType: MultiSelectListType.CHIP,
-  onConfirm: (values) {
-    setState(() {
-      // Extract the names of selected surgeries
-      List<String> selectedSurgeryNames = values.map((item) => item.name).toList();
-      // Store the names in implantController.text
-      surgeryController.text = selectedSurgeryNames.join(", ");
-    });
-  },
-),
-
-                    const SizedBox(
-                      height: 20,
+                    Visibility(
+                      visible: !isDoctor,
+                      child: MultiSelectDialogField(
+                        buttonText: const Text("Pilih pembedahan"),
+                        title: const Text("Pembedahan"),
+                        items: _surgeries
+                            .map((e) => MultiSelectItem(e, e.name))
+                            .toList(),
+                        listType: MultiSelectListType.CHIP,
+                        onConfirm: (values) {
+                          setState(() {
+                            // Extract the names of selected surgeries
+                            List<String> selectedSurgeryNames =
+                                values.map((item) => item.name).toList();
+                            // Store the names in implantController.text
+                            surgeryController.text =
+                                selectedSurgeryNames.join(", ");
+                          });
+                        },
+                      ),
+                    ),
+                    Visibility(
+                      visible:
+                          !isDoctor, // Only show the SizedBox when isPatient is true
+                      child: const SizedBox(
+                        height: 20,
+                      ),
                     ),
 
                     //password textfield
