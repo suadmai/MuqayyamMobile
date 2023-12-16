@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:wildlifego/pages/register_page.dart';
 
 import '../components/my_button.dart';
 import '../components/my_text_field.dart';
 import '../services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
-  final void Function()? onTap;
-  LoginPage({super.key, required this.onTap});
+  //final void Function()? onTap;
+  LoginPage({super.key,});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -129,13 +130,24 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text("Belum mempunyai akaun?"),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         GestureDetector(
-                          onTap: widget.onTap,
-                          child: const Text(
-                            "Daftar sekarang",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                          onTap: (){
+                            print("register button pressed");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RegisterPage(),
+                              ),
+                            );
+                          },//widget.onTap,
+                          child: const Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Text(
+                              "Daftar sekarang",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),

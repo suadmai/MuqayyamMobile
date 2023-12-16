@@ -74,7 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
       await authService.signOut();
 
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) =>  LoginPage(onTap: () {  },)), // Make sure LoginPage is a constant constructor
+        MaterialPageRoute(builder: (context) =>  LoginPage()), // Make sure LoginPage is a constant constructor
         (Route<dynamic> route) => false,
       );
     }

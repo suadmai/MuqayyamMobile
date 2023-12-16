@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wildlifego/components/my_dropdown.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:wildlifego/pages/login_page.dart';
 
 import '../components/my_button.dart';
 import '../components/my_text_field.dart';
@@ -9,8 +10,8 @@ import '../components/my_text_field.dart';
 import '../services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
-  final void Function()? onTap;
-  const RegisterPage({super.key, required this.onTap});
+  //final void Function()? onTap;
+  const RegisterPage({super.key,});
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
@@ -315,7 +316,14 @@ MultiSelectDialogField(
                             const Text("Sudah mempunyai akaun?"),
                             const SizedBox(width: 4),
                             GestureDetector(
-                              onTap: widget.onTap,
+                              onTap: (){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LoginPage(),
+                                  ),
+                                );
+                              },//widget.onTap,
                               child: const Text(
                                 "Log masuk sekarang",
                                 style: TextStyle(
