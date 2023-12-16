@@ -8,7 +8,7 @@ import '../pages/homeScreen.dart';
 import 'login_or_register.dart';
 
 class AuthGate extends StatelessWidget {
-  const AuthGate({super.key});
+  const AuthGate({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class AuthGate extends StatelessWidget {
                 future: FirebaseFirestore.instance.collection('users').doc(user.uid).get(),
                 builder: (context, roleSnapshot) {
                   if (roleSnapshot.connectionState == ConnectionState.done) {
-                    if (roleSnapshot.hasData) {
+                    if (roleSnapshot.hasData && roleSnapshot.data!.exists) {
                       final userRole = roleSnapshot.data!['role'];
 
                       // Check user role and navigate accordingly
@@ -35,12 +35,21 @@ class AuthGate extends StatelessWidget {
                         return const HomeScreen();
                       }
                     } else {
-                      // Handle error or loading state
-                      return const CircularProgressIndicator(); // Placeholder for loading
+                      // Handle the case where the document is missing or null
+                      return const Center(
+                        child: CircularProgressIndicator(), // Placeholder for loading
+                      );
                     }
+                  } else if (roleSnapshot.connectionState == ConnectionState.waiting) {
+                    // Show a loading indicator while waiting for the data
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   } else {
-                    // Handle error or loading state
-                    return const CircularProgressIndicator(); // Placeholder for loading
+                    // Handle other connection states
+                    return const Center(
+                      child: Text('Error loading data'),
+                    );
                   }
                 },
               );

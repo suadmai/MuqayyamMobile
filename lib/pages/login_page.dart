@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:wildlifego/pages/homeScreen.dart';
 import 'package:wildlifego/pages/register_page.dart';
 
 import '../components/my_button.dart';
@@ -38,9 +39,19 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await authService.signInWithEmailandPassword(
         removeSpace(emailController.text),
-        //emailController.text,
         passwordController.text,
       );
+
+      //Navigate to homescreen upon success
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const HomeScreen(),  // Replace HomeScreen with your actual homepage
+      ),
+    );
+
+    
     } catch (e) {
       
       ScaffoldMessenger.of(context).showSnackBar(
