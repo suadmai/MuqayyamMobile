@@ -17,6 +17,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  late bool _isLoading = false;
   late User _user;
   late String _name = "";
   late int _score = 0;
@@ -32,17 +33,34 @@ class _ProfilePageState extends State<ProfilePage> {
     _loadUserData();
   }
 
-  Future<void> _loadUserData() async {
+Future<void> _loadUserData() async {
+  // Show loading indicator
+  setState(() {
+    _isLoading = true;
+  });
+
+  try {
     final userDoc = await FirebaseFirestore.instance
         .collection('users')
         .doc(_user.uid)
         .get();
+
     setState(() {
       _name = userDoc.data()?['username'] as String;
       _score = userDoc.data()?['score'] as int;
-      _profilePictureUrl = userDoc.data()?['profilePicture'] as String; // Add this to load the profile picture URL
+      _profilePictureUrl = userDoc.data()?['profilePicture'] as String;
+    });
+  } catch (e) {
+    // Handle the error
+    print('Error loading user data: $e');
+  } finally {
+    // Hide loading indicator
+    setState(() {
+      _isLoading = false;
     });
   }
+}
+
 
   void _signOut() async {
     bool confirm = await showDialog(
