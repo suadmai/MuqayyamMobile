@@ -38,6 +38,15 @@ class _TasbihPageState extends State<TasbihPage> {
     });
   }
 
+  void vibrate(){
+    if(_count%10 == 0){
+      Vibration.vibrate(duration: 3, amplitude: 230);
+    }
+    else{
+      Vibration.vibrate(duration: 1, amplitude: 100);
+    }
+  }
+
   void _saveCount() async {
     print('saving count');
     int previousCount = 0;
@@ -101,7 +110,7 @@ class _TasbihPageState extends State<TasbihPage> {
                     ),
                     onPressed: (){
                       _incrementCount();
-                      Vibration.vibrate(duration: 1, amplitude: 150);
+                      vibrate();
                     },
                     child: Container(
                       //add circle shape
