@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:vibration/vibration.dart';
 
 class TasbihPage extends StatefulWidget {
   @override
@@ -98,7 +99,10 @@ class _TasbihPageState extends State<TasbihPage> {
                       backgroundColor: Colors.transparent,
                       shadowColor: Colors.transparent,
                     ),
-                    onPressed: _incrementCount,
+                    onPressed: (){
+                      _incrementCount();
+                      Vibration.vibrate(duration: 1, amplitude: 150);
+                    },
                     child: Container(
                       //add circle shape
                       height: 150,
