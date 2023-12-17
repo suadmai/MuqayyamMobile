@@ -44,11 +44,19 @@ class _LoginPageState extends State<LoginPage> {
 
       //Navigate to homescreen upon success
       // ignore: use_build_context_synchronously
-      Navigator.pushReplacement(
+    //   Navigator.pushReplacement(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => const HomeScreen(),  // Replace HomeScreen with your actual homepage
+    //   ),
+    // );
+
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => const HomeScreen(),  // Replace HomeScreen with your actual homepage
+        builder: (context) => const HomeScreen(),
       ),
+      (route) => false,
     );
 
     
@@ -152,15 +160,12 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             );
                           },//widget.onTap,
-                          child: const Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Text(
+                          child: const Text(
                               "Daftar sekarang",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
                         ),
                       ],
                     )
