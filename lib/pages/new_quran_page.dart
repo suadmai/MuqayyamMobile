@@ -15,9 +15,12 @@ class QuranPage extends StatefulWidget {
 
 class _QuranPageState extends State<QuranPage> {
 
-  
+  @override
+  void initState() {
+    print('quran page created');
+    super.initState();
+  }
 
-  
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
@@ -25,13 +28,13 @@ class _QuranPageState extends State<QuranPage> {
     return Scaffold(
       
       appBar: AppBar(
-  backgroundColor: const Color(0xFF82618B),
-  title: StreamBuilder<DocumentSnapshot>(
-    stream: FirebaseFirestore.instance
+      backgroundColor: const Color(0xFF82618B),
+      title: StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
         .collection('users')
         .doc(_auth.currentUser!.uid) // Assuming user is signed in
         .snapshots(),
-    builder: (context, snapshot) {
+      builder: (context, snapshot) {
       if (snapshot.hasData) {
         final userDoc = snapshot.data!;
         final userScore = userDoc['score'] ?? 0; // Replace 'score' with the actual field name in Firestore

@@ -12,6 +12,8 @@ class TasbihPage extends StatefulWidget {
 class _TasbihPageState extends State<TasbihPage> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  DateTime? lastTap;
+  static const int minTapDuration = 200;
   int _count = 0;
 
   @override
@@ -27,9 +29,36 @@ class _TasbihPageState extends State<TasbihPage> {
   }
 
   void _incrementCount() {
+    DateTime now = DateTime.now();
+      if (lastTap != null && now.difference(lastTap!) < const Duration(milliseconds: minTapDuration)) {
+        // If tapped too quickly, show a message
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Terlalu Laju!'),
+              content: const Text('Pastikan anda berzikir dengan tenang dan khusyuk.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+          barrierDismissible: false,
+        );
+      return;
+    }
+    
     setState(() {
       _count++;
     });
+
+    lastTap = now; // Update the last tap time
+    
   }
 
   void _resetCount() {
@@ -40,10 +69,10 @@ class _TasbihPageState extends State<TasbihPage> {
 
   void vibrate(){
     if(_count%10 == 0){
-      Vibration.vibrate(duration: 3, amplitude: 230);
+      Vibration.vibrate(duration: 5, amplitude: 230);
     }
     else{
-      Vibration.vibrate(duration: 1, amplitude: 100);
+      Vibration.vibrate(duration: 5, amplitude: 100);
     }
   }
 
@@ -70,6 +99,12 @@ class _TasbihPageState extends State<TasbihPage> {
       .set({
         'count': _count+previousCount,
       });
+    
+    await firestore.collection('users')
+    .doc(FirebaseAuth.instance.currentUser!.uid)
+    .update({
+      'score': FieldValue.increment(_count),
+    });
   }
 
   @override
@@ -87,10 +122,22 @@ class _TasbihPageState extends State<TasbihPage> {
               width: 150, // You can adjust the size as needed
               height: 150, // You can adjust the size as needed
               child: Center(
+                child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 150), // Set the duration for the text transition
+                switchInCurve: Curves.easeIn,
+                switchOutCurve: Curves.easeOut,
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return ScaleTransition(
+                    scale: animation,
+                    child: child,
+                  );
+                },
                 child: Text(
                   '$_count',
+                  key: ValueKey<int>(_count),
                   style: const TextStyle(fontSize: 48, color: Colors.black, fontWeight: FontWeight.bold),
                 ),
+              ),
               ),
             ),
             SizedBox(height: 32),
@@ -109,6 +156,8 @@ class _TasbihPageState extends State<TasbihPage> {
                       shadowColor: Colors.transparent,
                     ),
                     onPressed: (){
+                      //check if the user taps too fast
+
                       _incrementCount();
                       vibrate();
                     },

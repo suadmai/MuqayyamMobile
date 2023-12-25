@@ -11,6 +11,7 @@ import 'package:wildlifego/pages/contactExpert.dart';
 import 'package:wildlifego/pages/new_quran_page.dart';
 import 'package:wildlifego/pages/profile_page.dart';
 import 'package:wildlifego/pages/new_rewards_page.dart';
+import 'package:wildlifego/pages/siri.dart';
 import 'package:wildlifego/pages/tasbih.dart';
 import '../components/menu_buttons.dart';
 import '../services/auth_service.dart';
@@ -216,8 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              TrackPrayer(),
+                                          builder: (context) => TrackPrayer(),
                                         ),
                                       );
                                     },
@@ -231,8 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              const QuranPage(), // Pass the userID to the ChatPage
+                                          builder: (context) => const QuranPage(), // Pass the userID to the ChatPage
                                         ),
                                       );
                                     },
@@ -262,7 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              TasbihPage(),
+                                              SiriWave(),
                                         ),
                                       );
                                     },
