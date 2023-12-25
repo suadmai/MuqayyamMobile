@@ -39,36 +39,13 @@ class Prayer{
 }
 
 class TrackPrayer extends StatefulWidget {
-  final Prayer subuh;
-  final Prayer syuruk;
-  final Prayer zohor;
-  final Prayer asar;
-  final Prayer maghrib;
-  final Prayer isyak;
 
   const TrackPrayer(
-    {Key? key,
-    required this.subuh, 
-    required this.syuruk,
-    required this.zohor,
-    required this.asar,
-    required this.maghrib,
-    required this.isyak,
-    }) : super(key: key);
+    {Key? key}) : super(key: key);
   
   @override
   State<TrackPrayer> createState() => _TrackPrayerState();
 }
-
-// Future<void> logout(BuildContext context) async {
-//   await FirebaseAuth.instance.signOut();
-//   Navigator.pushReplacement(
-//     context,
-//     MaterialPageRoute(
-//       builder: (context) => const LoginPage(),
-//     ),
-//   );
-// }
 
 class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin {
 
@@ -83,59 +60,52 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   DateTime lastResetDate = DateTime.now().subtract(Duration(days: 1));
   Prayer currentPrayer = Prayer();
 
-  Prayer subuh = Prayer();
-  Prayer syuruk = Prayer();
-  Prayer zohor = Prayer();
-  Prayer asar = Prayer();
-  Prayer maghrib = Prayer();
-  Prayer isyak = Prayer();
+  Prayer subuh = Prayer()
+                ..prayerName = "subuh"
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+                ..prayed = false
+                ..missed = false
+                ..prayerScore = 5;
 
-  // Prayer subuh = Prayer()
-  //               ..prayerName = "subuh"
-  //               ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-  //               ..prayed = false
-  //               ..missed = false
-  //               ..prayerScore = 5;
+  Prayer syuruk = Prayer()
+                ..prayerName = "syuruk"
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+                ..prayed = true
+                ..missed = false;
 
-  // Prayer syuruk = Prayer()
-  //               ..prayerName = "syuruk"
-  //               ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-  //               ..prayed = true
-  //               ..missed = false;
+  Prayer zohor = Prayer()
+                ..prayerName = "zohor"
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+                ..prayed = false
+                ..missed = false
+                ..prayerScore = 4;
 
-  // Prayer zohor = Prayer()
-  //               ..prayerName = "zohor"
-  //               ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-  //               ..prayed = false
-  //               ..missed = false
-  //               ..prayerScore = 4;
+  Prayer asar = Prayer()
+                ..prayerName = "asar"
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+                ..prayed = false
+                ..missed = false
+                ..prayerScore = 4;
 
-  // Prayer asar = Prayer()
-  //               ..prayerName = "asar"
-  //               ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-  //               ..prayed = false
-  //               ..missed = false
-  //               ..prayerScore = 4;
+  Prayer maghrib = Prayer()
+                ..prayerName = "maghrib"
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+                ..prayed = false
+                ..missed = false
+                ..prayerScore = 3;
 
-  // Prayer maghrib = Prayer()
-  //               ..prayerName = "maghrib"
-  //               ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-  //               ..prayed = false
-  //               ..missed = false
-  //               ..prayerScore = 3;
-
-  // Prayer isyak = Prayer()
-  //               ..prayerName = "isyak"
-  //               ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-  //               ..prayed = false
-  //               ..missed = false
-  //               ..prayerScore = 4;
+  Prayer isyak = Prayer()
+                ..prayerName = "isyak"
+                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+                ..prayed = false
+                ..missed = false
+                ..prayerScore = 4;
 
    @override
     void initState() {
     super.initState();
     initializePage();
-    //checkForMissedPrayers();
+    checkForMissedPrayers();
     _animationController = AnimationController(
       vsync: this,
       duration: animationDuration, // Adjust the duration as needed
@@ -144,10 +114,10 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     _nextPrayerTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       // Call setState to trigger a UI update
       setState(() {});
-      // if(prayerTimesUpdated){
-      //   setCurrentPrayer();
-      //   checkForMissedPrayers();
-      // }
+      if(prayerTimesUpdated){
+        setCurrentPrayer();
+        checkForMissedPrayers();
+      }
     });
 
       _animation = Tween<double>(begin: 0, end: animationDuration.inSeconds.toDouble())
@@ -167,16 +137,10 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   
 
   Future<void> initializePage() async {
-    subuh = widget.subuh;
-    syuruk = widget.syuruk;
-    zohor = widget.zohor;
-    asar = widget.asar;
-    maghrib = widget.maghrib;
-    isyak = widget.isyak;
     setCurrentPrayer();
     checkForMissedPrayers();
-    //fetchPrayerTimes();
-    //await syncPrayerData();
+    fetchPrayerTimes();
+    await syncPrayerData();
   }
 
   Future<void> storePrayerData() async {
@@ -206,80 +170,81 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     print('firebase write from storePrayerData');
   }
 
-  // Future <void> syncPrayerData() async{
-  //   String currentDate;
-  //   try{
-  //     if(DateTime.now().isBefore(subuh.prayerTime)){
-  //       //if the current time is before subuh, set the date to yesterday
-  //       //print('current time is before subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
-  //       currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 1)));
-  //       //print('the date is $currentDate');
-  //     }
-  //     else{
-  //       //print('current time is after subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
-  //       currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-  //       //print('the date is $currentDate');
-  //     }
+  Future <void> syncPrayerData() async{
+    String currentDate;
+    try{
+      if(DateTime.now().isBefore(subuh.prayerTime)){
+        //if the current time is before subuh, set the date to yesterday
+        //print('current time is before subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
+        currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 1)));
+        //print('the date is $currentDate');
+      }
+      else{
+        //print('current time is after subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
+        currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+        //print('the date is $currentDate');
+      }
 
-  //     //read prayer data from firebase of each user
-  //     DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('daily_prayers').doc(currentDate).get();
-  //     print('firebase read from syncPrayerData');
-  //     if(snapshot.exists){
-  //       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-  //       //print(data);
-  //       setState(() {
-  //         subuh.prayed = data['subuh'];
-  //         syuruk.prayed = data['syuruk'];
-  //         zohor.prayed = data['zohor'];
-  //         asar.prayed = data['asar'];
-  //         maghrib.prayed = data['maghrib'];
-  //         isyak.prayed = data['isyak'];
-  //       });
-  //     }
-  //     else{
-  //       print('snapshot does not exist');
-  //       storePrayerData();
-  //     }
-  //   }
-  //   catch(e){
-  //     print(e);
-  //   }
-  // }
+      //read prayer data from firebase of each user
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('daily_prayers').doc(currentDate).get();
+      print('firebase read from syncPrayerData');
+      if(snapshot.exists){
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        //print(data);
+        setState(() {
+          subuh.prayed = data['subuh'];
+          syuruk.prayed = data['syuruk'];
+          zohor.prayed = data['zohor'];
+          asar.prayed = data['asar'];
+          maghrib.prayed = data['maghrib'];
+          isyak.prayed = data['isyak'];
+        });
+      }
+      else{
+        print('snapshot does not exist');
+        storePrayerData();
+      }
+    }
+    catch(e){
+      print(e);
+    }
+  }
 
-//   Future<void> fetchPrayerTimes() async {
-//   final response = await http.get(Uri.parse('https://waktu-solat-api.herokuapp.com/api/v1/prayer_times.json?zon=gombak'));
+  Future<void> fetchPrayerTimes() async {
+  final response = await http.get(Uri.parse('https://waktu-solat-api.herokuapp.com/api/v1/prayer_times.json?zon=gombak'));
 
-//   if (response.statusCode == 200) {
-//     final jsonData = json.decode(response.body);
-//     List<dynamic> dataJson = jsonData['data'][0]['waktu_solat'];
-//     List<Prayer> prayers = [subuh, syuruk, zohor, asar, maghrib, isyak]; // Use the Prayer objects directly
+  if (response.statusCode == 200) {
+    final jsonData = json.decode(response.body);
+    List<dynamic> dataJson = jsonData['data'][0]['waktu_solat'];
+    List<Prayer> prayers = [subuh, syuruk, zohor, asar, maghrib, isyak]; // Use the Prayer objects directly
     
-//     DateTime now = DateTime.now();
+    DateTime now = DateTime.now();
 
-//     for (var waktuSolatJson in dataJson) {
-//       String prayerName = waktuSolatJson['name'];
-//       String prayerTime = waktuSolatJson['time'];
+    for (var waktuSolatJson in dataJson) {
+      String prayerName = waktuSolatJson['name'];
+      String prayerTime = waktuSolatJson['time'];
 
-//       // Parse the prayerTime string and create a new DateTime object
-//       List<int> parsedTime = prayerTime.split(':').map(int.parse).toList();
-//       DateTime updatedDateTime = DateTime(now.year, now.month, now.day, parsedTime[0], parsedTime[1]);
-//       //print('$prayerName : $updatedDateTime');
-//       if (prayerName != "imsak") {
-//         // Find the corresponding Prayer object and update its prayerTime
-//         prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime = updatedDateTime;
-//         //print('updated ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerName} to ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime}');
-//       }
-//     }
+      // Parse the prayerTime string and create a new DateTime object
+      List<int> parsedTime = prayerTime.split(':').map(int.parse).toList();
+      DateTime updatedDateTime = DateTime(now.year, now.month, now.day, parsedTime[0], parsedTime[1]);
+      //print('$prayerName : $updatedDateTime');
+      if (prayerName != "imsak") {
+        // Find the corresponding Prayer object and update its prayerTime
+        prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime = updatedDateTime;
+        //print('updated ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerName} to ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime}');
+      }
+    }
 
-//     // Update the UI or perform any necessary actions after updating prayer times
-//     // setState(() {
-//     //   // ...
-//     // });
-//   } else {
-//     print('Failed to fetch data');
-//   }
-//   prayerTimesUpdated = true;
-// }
+    // Update the UI or perform any necessary actions after updating prayer times
+    setState(() {
+      // ...
+    });
+
+  } else {
+    print('Failed to fetch data');
+  }
+  prayerTimesUpdated = true;
+}
 
   void _startTimer() {
   setState(() {
@@ -320,7 +285,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
       if(now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)){
         currentPrayer = subuh;
-        //fetchPrayerTimes();
+        fetchPrayerTimes();
         resetPrayers();
         storePrayerData();
         //print('current prayer: ${currentPrayer.prayerName}');
@@ -416,7 +381,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).update({'score': FieldValue.increment(currentPrayer.prayerScore)});
     storePrayerData();
     //print("${currentPrayer.prayerName} prayed}");
-    //checkForMissedPrayers();
+    checkForMissedPrayers();
     });
   }
 
@@ -508,28 +473,6 @@ Color getPrayerIconColor(Prayer prayer) {
         ],
       ),
 
-
-      
-      //floating action button must be center
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     //Navigator.push(
-      //       //context,
-      //       //MaterialPageRoute(
-      //         //builder: (context) =>
-      //             //CameraPage(cameraController: _cameraController),
-      //       //),
-      //     //);
-      //   }, 
-      //   backgroundColor: Color(0xFF82618B),
-      //   child: const Icon(Icons.podcasts),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // bottomNavigationBar: MyBottomAppBar(
-      //   
-      // ),
-
-
       body: Stack(
         children: [
           Center(
@@ -546,8 +489,7 @@ Color getPrayerIconColor(Prayer prayer) {
                 } else {
                   _stopTimer();
                   if (!isTimerRunning) {
-                    // Update the prayer status after finishing the current prayer
-                    // performPrayer();
+                    performPrayer();
                   }
                 } 
               }
@@ -577,9 +519,6 @@ Color getPrayerIconColor(Prayer prayer) {
                         padding: const EdgeInsets.all(50.0),
                         child: Text(
                           circleText(),
-                          // isTimerRunning
-                          //     ? displayMinute()
-                          //     : "Mula solat ${currentPrayer()}",
                           style: TextStyle(fontSize: 25, color: Colors.white),
                           textAlign: TextAlign.center,
                         ),

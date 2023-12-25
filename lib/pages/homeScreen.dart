@@ -2,28 +2,19 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:wildlifego/components/layout.dart';
 import 'package:wildlifego/pages/TrackPrayer.dart';
 import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
 import 'package:wildlifego/pages/new_quran_page.dart';
 import 'package:wildlifego/pages/profile_page.dart';
-import 'package:wildlifego/pages/ramadan_page.dart';
-import 'package:wildlifego/pages/ranking_page.dart';
 import 'package:wildlifego/pages/new_rewards_page.dart';
 import 'package:wildlifego/pages/tasbih.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import '../components/bottom_app_bar.dart';
 import '../components/menu_buttons.dart';
 import '../services/auth_service.dart';
 import 'doctor/Admin_HomeScreen.dart';
-import 'leaderboards.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -62,161 +53,18 @@ void checkAppVersion(BuildContext context) {
   });
 }
 
-// Future<void> logout(BuildContext context) async {
-//   await FirebaseAuth.instance.signOut();
-//   Navigator.pushReplacement(
-//     context,
-//     MaterialPageRoute(
-//       builder: (context) => const LoginPage(),
-//     ),
-//   );
-// }
-
 class _HomeScreenState extends State<HomeScreen> {
-  //FOR DETAILED BOTTOM APP BAR (CustomBottomAppBar)
-
-  // int _currentIndex = 0;
-
-  // void _onTabSelected(int index) {
-  //   setState(() {
-  //     _currentIndex = index;
-  //   });
-
-  //     // Handle navigation or other functionality based on the selected tab.
-  // }
 
   String? _profilePictureUrl;
   late User _user;
-  bool prayerTimesUpdated = false;
-  
-  Prayer subuh = Prayer()
-                ..prayerName = "subuh"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-                ..prayed = false
-                ..missed = false
-                ..prayerScore = 5;
-
-  Prayer syuruk = Prayer()
-                ..prayerName = "syuruk"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-                ..prayed = true
-                ..missed = false;
-
-  Prayer zohor = Prayer()
-                ..prayerName = "zohor"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-                ..prayed = false
-                ..missed = false
-                ..prayerScore = 4;
-
-  Prayer asar = Prayer()
-                ..prayerName = "asar"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-                ..prayed = false
-                ..missed = false
-                ..prayerScore = 4;
-
-  Prayer maghrib = Prayer()
-                ..prayerName = "maghrib"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-                ..prayed = false
-                ..missed = false
-                ..prayerScore = 3;
-
-  Prayer isyak = Prayer()
-                ..prayerName = "isyak"
-                ..prayerTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-                ..prayed = false
-                ..missed = false
-                ..prayerScore = 4;
 
   @override
   void initState() {
     super.initState();
+    didChangeDependencies();
     checkAppVersion(context);
-    initializePage();
     _user = FirebaseAuth.instance.currentUser!;
     _loadUserData();
-  }
-  
-  Future<void> fetchPrayerTimes() async {
-  final response = await http.get(Uri.parse('https://waktu-solat-api.herokuapp.com/api/v1/prayer_times.json?zon=gombak'));
-
-  if (response.statusCode == 200) {
-    final jsonData = json.decode(response.body);
-    List<dynamic> dataJson = jsonData['data'][0]['waktu_solat'];
-    List<Prayer> prayers = [subuh, syuruk, zohor, asar, maghrib, isyak]; // Use the Prayer objects directly
-    
-    DateTime now = DateTime.now();
-
-    for (var waktuSolatJson in dataJson) {
-      String prayerName = waktuSolatJson['name'];
-      String prayerTime = waktuSolatJson['time'];
-
-      // Parse the prayerTime string and create a new DateTime object
-      List<int> parsedTime = prayerTime.split(':').map(int.parse).toList();
-      DateTime updatedDateTime = DateTime(now.year, now.month, now.day, parsedTime[0], parsedTime[1]);
-      //print('$prayerName : $updatedDateTime');
-      if (prayerName != "imsak") {
-        // Find the corresponding Prayer object and update its prayerTime
-        prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime = updatedDateTime;
-        //print('updated ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerName} to ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime}');
-      }
-    }
-
-    // Update the UI or perform any necessary actions after updating prayer times
-    setState(() {
-      // ...
-    });
-  } else {
-    print('Failed to fetch data');
-  }
-    prayerTimesUpdated = true;
-  }
-
-  Future <void> syncPrayerData() async{
-    String currentDate;
-    try{
-      if(DateTime.now().isBefore(subuh.prayerTime)){
-        //if the current time is before subuh, set the date to yesterday
-        //print('current time is before subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
-        currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 1)));
-        //print('the date is $currentDate');
-      }
-      else{
-        //print('current time is after subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
-        currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-        //print('the date is $currentDate');
-      }
-
-      //read prayer data from firebase of each user
-      DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('daily_prayers').doc(currentDate).get();
-      print('firebase read from syncPrayerData');
-      if(snapshot.exists){
-        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-          subuh.prayed = data['subuh'];
-          syuruk.prayed = data['syuruk'];
-          zohor.prayed = data['zohor'];
-          asar.prayed = data['asar'];
-          maghrib.prayed = data['maghrib'];
-          isyak.prayed = data['isyak'];
-        print(data);
-        setState(() {
-        });
-      }
-      else{
-        print('snapshot does not exist');
-        //storePrayerData();
-      }
-    }
-    catch(e){
-      print(e);
-    }
-  }
-
-  Future<void> initializePage() async {
-    await fetchPrayerTimes();
-    syncPrayerData();
   }
 
   Future<void> _loadUserData() async {
@@ -369,14 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              TrackPrayer(
-                                                subuh: subuh,
-                                                syuruk: syuruk,
-                                                zohor: zohor,
-                                                asar: asar,
-                                                maghrib: maghrib,
-                                                isyak: isyak,
-                                              ), // Pass the userID to the ChatPage
+                                              TrackPrayer(),
                                         ),
                                       );
                                     },
@@ -410,7 +251,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       );
                                     },
-                                    imagePath: 'lib/icons/icons_Track_Prayer.png',
+                                    imagePath: 'lib/icons/icons_Tasbih.png',
+                                  ),
+                                  SizedBox(width: 10),
+
+                                  MenuButton(
+                                    buttonText: 'Jejak Puasa',
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              TasbihPage(),
+                                        ),
+                                      );
+                                    },
+                                    imagePath: 'lib/icons/icons_Ramadhan.png',
                                   ),
                                   SizedBox(width: 10),
                             
