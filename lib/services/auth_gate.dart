@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 import 'package:wildlifego/pages/register_page.dart';
+import 'package:wildlifego/pages/login_page.dart';
 
 import '../pages/doctor/Admin_HomeScreen.dart';
 import '../pages/homeScreen.dart';
@@ -57,7 +58,7 @@ class AuthGate extends StatelessWidget {
           }
 
           // User is NOT logged in
-          return const RegisterPage();
+          return LoginPage();
         },
       ),
     );
