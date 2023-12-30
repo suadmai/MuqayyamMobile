@@ -17,7 +17,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
   //text controllers
+  final emailKey = GlobalKey<FormState>();
+  final passwordKey = GlobalKey<FormState>();
+
   
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -51,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
     //   ),
     // );
 
+    // ignore: use_build_context_synchronously
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
@@ -73,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
         backgroundColor: Colors.grey[100],
         body: SafeArea(
           // below notch
@@ -112,11 +118,23 @@ class _LoginPageState extends State<LoginPage> {
                       height: 20,
                     ),
           
-                    MyTextField(
-                      controller: emailController,
-                      hintText: "Alamat emel",
-                      maxLines: 1,
-                      obscureText: false,
+                    Form(
+                      key: emailKey,
+                      child: TextFormField(
+                        controller: emailController,
+                        decoration: const InputDecoration(
+                          hintText: "Emel",
+                          border: OutlineInputBorder(),
+                        ),
+                        maxLines: 1,
+                        obscureText: false,
+                        validator:(value) {
+                          if (value!.isEmpty) {
+                            return 'Sila masukkan emel';
+                          }
+                          return null;
+                        }, 
+                      ),
                     ),
           
                     const SizedBox(
@@ -124,11 +142,23 @@ class _LoginPageState extends State<LoginPage> {
                     ),
           
                     //password textfield
-                    MyTextField(
-                      controller: passwordController,
-                      hintText: "Kata laluan",
-                      maxLines: 1,
-                      obscureText: true, //see what u typed
+                    Form(
+                      key: passwordKey,
+                      child: TextFormField(
+                        controller: passwordController,
+                        decoration: const InputDecoration(
+                          hintText: "Kata Laluan",
+                          border: OutlineInputBorder(),
+                        ),
+                        maxLines: 1,
+                        obscureText: true, //see what u typed
+                        validator:(value) {
+                          if (value!.isEmpty) {
+                            return 'Sila masukkan kata laluan';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
           
                     const SizedBox(
@@ -136,9 +166,17 @@ class _LoginPageState extends State<LoginPage> {
                     ),
           
                     //sign in button
-                    MyButton(
-                    onTap: signIn,
-                    text: "Log masuk"),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (emailKey.currentState!.validate() &&
+                            passwordKey.currentState!.validate()) {
+                          signIn();
+                        }
+                      },
+                      child: const Text("Log Masuk"),
+                    ),
+
+                    
           
                     const SizedBox(
                       height: 20,
