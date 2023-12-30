@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:wildlifego/components/my_form_field.dart';
 import 'package:wildlifego/pages/homeScreen.dart';
 import 'package:wildlifego/pages/register_page.dart';
 
@@ -18,14 +19,15 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-  //text controllers
+  //key for form
   final emailKey = GlobalKey<FormState>();
   final passwordKey = GlobalKey<FormState>();
 
-  
+  //text editing controller
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  //remove space from email
   String removeSpace(final emailController) {
   var newEmail = emailController.split('');
   newEmail.removeWhere((element) => element == ' ');
@@ -34,6 +36,13 @@ class _LoginPageState extends State<LoginPage> {
   print("""the new email is '$newEmailString'""");
   return newEmailString;
 }
+
+// Validate email format using a regular expression
+  bool isEmailValid(String email) {
+    final emailRegex =
+        RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+    return emailRegex.hasMatch(email);
+  }
 
   //signup user
   void signIn() async {
@@ -120,17 +129,16 @@ class _LoginPageState extends State<LoginPage> {
           
                     Form(
                       key: emailKey,
-                      child: TextFormField(
+                      child: MyFormField(
                         controller: emailController,
-                        decoration: const InputDecoration(
-                          hintText: "Emel",
-                          border: OutlineInputBorder(),
-                        ),
+                        hintText: "Emel",
                         maxLines: 1,
-                        obscureText: false,
                         validator:(value) {
                           if (value!.isEmpty) {
                             return 'Sila masukkan emel';
+                          }
+                          else if (!isEmailValid(value)) {
+                            return 'Sila masukkan emel yang sah';
                           }
                           return null;
                         }, 
@@ -144,14 +152,11 @@ class _LoginPageState extends State<LoginPage> {
                     //password textfield
                     Form(
                       key: passwordKey,
-                      child: TextFormField(
+                      child: MyFormField(
                         controller: passwordController,
-                        decoration: const InputDecoration(
-                          hintText: "Kata Laluan",
-                          border: OutlineInputBorder(),
-                        ),
+                        hintText: "Kata Laluan",
                         maxLines: 1,
-                        obscureText: true, //see what u typed
+                        
                         validator:(value) {
                           if (value!.isEmpty) {
                             return 'Sila masukkan kata laluan';

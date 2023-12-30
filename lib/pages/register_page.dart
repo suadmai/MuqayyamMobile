@@ -51,6 +51,18 @@ class _RegisterPageState extends State<RegisterPage> {
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
 
+  //setting up form keys
+  final usernameKey = GlobalKey<FormState>();
+  final roleKey = GlobalKey<FormState>();
+  final emailKey = GlobalKey<FormState>();
+  final ageKey = GlobalKey<FormState>();
+  final phoneKey = GlobalKey<FormState>();
+  final addressKey = GlobalKey<FormState>();
+  final symptomsKey = GlobalKey<FormState>();
+  final surgeryKey = GlobalKey<FormState>();
+  final passwordKey = GlobalKey<FormState>();
+  final passwordConfirmKey = GlobalKey<FormState>();
+
   bool isDoctor = false; // To check if user is a doctor
   bool isPatient = true; // To check if user is a patient
 
@@ -123,265 +135,267 @@ class _RegisterPageState extends State<RegisterPage> {
         backgroundColor: Colors.grey[100],
         body: SafeArea(
           // below notch
-          child: SingleChildScrollView(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    //logo
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    Image.asset(
-                      "images/icon_transparent.png",
-                      height: 150,
-                    ),
-
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    //welcome back
-                    const Text(
-                      "Daftar Akaun",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
+          child: Form(
+            child: SingleChildScrollView(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      //logo
+                      const SizedBox(
+                        height: 20,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    //username textfield
-                    MyTextField(
-                      controller: usernameController,
-                      hintText: "Nama pengguna",
-                      maxLines: 1,
-                      obscureText: false,
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    MyDropdownButton(
-                      items: roles,
-                      value: selectedRole,
-                      onChanged: (newValue) {
-                        setState(() {
-                          print("Selected Role: $newValue");
-                          selectedRole = newValue!;
-                          isDoctor = newValue == 'Doktor';
-                        });
-                      },
-                      hintText: 'Pilih Peranan',
-                    ),
-
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    //email textfield
-                    MyTextField(
-                      controller: emailController,
-                      hintText: "Alamat emel",
-                      maxLines: 1,
-                      obscureText: false,
-                    ),
-
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    //staff id textfield
-                    Visibility(
-                      visible: isDoctor,
-                      child: MyTextField(
-                        controller: ageController,
-                        hintText: "ID Staf",
+            
+                      Image.asset(
+                        "images/icon_transparent.png",
+                        height: 150,
+                      ),
+            
+                      const SizedBox(
+                        height: 20,
+                      ),
+            
+                      //welcome back
+                      const Text(
+                        "Daftar Akaun",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+            
+                      //username textfield
+                      MyTextField(
+                        controller: usernameController,
+                        hintText: "Nama pengguna",
                         maxLines: 1,
                         obscureText: false,
                       ),
-                    ),
-
-                    Visibility(
-                      visible:
-                          isDoctor, // Only show the SizedBox when isPatient is true
-                      child: const SizedBox(
-                        height: 20,
-                      ),
-                    ),
-
-                    //age textfield
-                    MyTextField(
-                      controller: ageController,
-                      hintText: "Umur",
-                      maxLines: 1,
-                      obscureText: false,
-                      isVisible: !isDoctor,
-                    ),
-
-                    Visibility(
-                      visible:
-                          !isDoctor, // Only show the SizedBox when isPatient is true
-                      child: const SizedBox(
-                        height: 20,
-                      ),
-                    ),
-
-                    //phone textfield
-                    MyTextField(
-                      controller: phoneController,
-                      hintText: "Nombor telefon",
-                      maxLines: 1,
-                      obscureText: false,
-                    ),
-
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    //address textfield
-                    MyTextField(
-                      controller: addressController,
-                      hintText: "Alamat",
-                      maxLines: 1,
-                      obscureText: false,
-                      isVisible: !isDoctor,
-                    ),
-
-                    Visibility(
-                      visible:
-                          !isDoctor, // Only show the SizedBox when isPatient is true
-                      child: const SizedBox(
-                        height: 20,
-                      ),
-                    ),
-
-                    //symptom multi select
-
-                    Visibility(
-                      visible: !isDoctor,
-                      child: MultiSelectDialogField(
-                        buttonText: const Text("Pilih gejala"),
-                        title: const Text("Gejala"),
-                        items: _symptoms
-                            .map((e) => MultiSelectItem(e, e.name))
-                            .toList(),
-                        listType: MultiSelectListType.CHIP,
-                        onConfirm: (values) {
+            
+                      const SizedBox(height: 20),
+            
+                      MyDropdownButton(
+                        items: roles,
+                        value: selectedRole,
+                        onChanged: (newValue) {
                           setState(() {
-                            // Extract the names of selected symptoms
-                            List<String> selectedSymptomNames =
-                                values.map((item) => item.name).toList();
-                            // Store the names in symptomsController.text
-                            symptomsController.text =
-                                selectedSymptomNames.join(", ");
+                            print("Selected Role: $newValue");
+                            selectedRole = newValue!;
+                            isDoctor = newValue == 'Doktor';
                           });
                         },
+                        hintText: 'Pilih Peranan',
                       ),
-                    ),
-
-                    Visibility(
-                      visible:
-                          !isDoctor, // Only show the SizedBox when isPatient is true
-                      child: const SizedBox(
+            
+                      const SizedBox(
                         height: 20,
                       ),
-                    ),
-
-                    // surgery multi select
-                    Visibility(
-                      visible: !isDoctor,
-                      child: MultiSelectDialogField(
-                        buttonText: const Text("Pilih pembedahan"),
-                        title: const Text("Pembedahan"),
-                        items: _surgeries
-                            .map((e) => MultiSelectItem(e, e.name))
-                            .toList(),
-                        listType: MultiSelectListType.CHIP,
-                        onConfirm: (values) {
-                          setState(() {
-                            // Extract the names of selected surgeries
-                            List<String> selectedSurgeryNames =
-                                values.map((item) => item.name).toList();
-                            // Store the names in implantController.text
-                            surgeryController.text =
-                                selectedSurgeryNames.join(", ");
-                          });
-                        },
+            
+                      //email textfield
+                      MyTextField(
+                        controller: emailController,
+                        hintText: "Alamat emel",
+                        maxLines: 1,
+                        obscureText: false,
                       ),
-                    ),
-                    Visibility(
-                      visible:
-                          !isDoctor, // Only show the SizedBox when isPatient is true
-                      child: const SizedBox(
+            
+                      const SizedBox(
                         height: 20,
                       ),
-                    ),
-
-                    //password textfield
-                    MyTextField(
-                      controller: passwordController,
-                      hintText: "Kata laluan",
-                      maxLines: 1,
-                      obscureText: true, //see what u typed
-                    ),
-
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    //password confirm textfield
-                    MyTextField(
-                      controller: passwordConfirmController,
-                      hintText: "Sahkan kata laluan",
-                      maxLines: 1,
-                      obscureText: true, //see what u typed
-                    ),
-
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    //sign in button
-                    MyButton(onTap: signUp, text: "Daftar"),
-
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    //not member? register
-                    SizedBox(
-                      width: double.infinity,
-                      child: FittedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("Sudah mempunyai akaun?"),
-                            const SizedBox(width: 4),
-                            GestureDetector(
-                              onTap: (){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => LoginPage(),
-                                  ),
-                                );
-                              },//widget.onTap,
-                              child: const Text(
-                                "Log masuk sekarang",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
+            
+                      //staff id textfield
+                      Visibility(
+                        visible: isDoctor,
+                        child: MyTextField(
+                          controller: ageController,
+                          hintText: "ID Staf",
+                          maxLines: 1,
+                          obscureText: false,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 30),
-                  ],
+            
+                      Visibility(
+                        visible:
+                            isDoctor, // Only show the SizedBox when isPatient is true
+                        child: const SizedBox(
+                          height: 20,
+                        ),
+                      ),
+            
+                      //age textfield
+                      MyTextField(
+                        controller: ageController,
+                        hintText: "Umur",
+                        maxLines: 1,
+                        obscureText: false,
+                        isVisible: !isDoctor,
+                      ),
+            
+                      Visibility(
+                        visible:
+                            !isDoctor, // Only show the SizedBox when isPatient is true
+                        child: const SizedBox(
+                          height: 20,
+                        ),
+                      ),
+            
+                      //phone textfield
+                      MyTextField(
+                        controller: phoneController,
+                        hintText: "Nombor telefon",
+                        maxLines: 1,
+                        obscureText: false,
+                      ),
+            
+                      const SizedBox(
+                        height: 20,
+                      ),
+            
+                      //address textfield
+                      MyTextField(
+                        controller: addressController,
+                        hintText: "Alamat",
+                        maxLines: 1,
+                        obscureText: false,
+                        isVisible: !isDoctor,
+                      ),
+            
+                      Visibility(
+                        visible:
+                            !isDoctor, // Only show the SizedBox when isPatient is true
+                        child: const SizedBox(
+                          height: 20,
+                        ),
+                      ),
+            
+                      //symptom multi select
+            
+                      Visibility(
+                        visible: !isDoctor,
+                        child: MultiSelectDialogField(
+                          buttonText: const Text("Pilih gejala"),
+                          title: const Text("Gejala"),
+                          items: _symptoms
+                              .map((e) => MultiSelectItem(e, e.name))
+                              .toList(),
+                          listType: MultiSelectListType.CHIP,
+                          onConfirm: (values) {
+                            setState(() {
+                              // Extract the names of selected symptoms
+                              List<String> selectedSymptomNames =
+                                  values.map((item) => item.name).toList();
+                              // Store the names in symptomsController.text
+                              symptomsController.text =
+                                  selectedSymptomNames.join(", ");
+                            });
+                          },
+                        ),
+                      ),
+            
+                      Visibility(
+                        visible:
+                            !isDoctor, // Only show the SizedBox when isPatient is true
+                        child: const SizedBox(
+                          height: 20,
+                        ),
+                      ),
+            
+                      // surgery multi select
+                      Visibility(
+                        visible: !isDoctor,
+                        child: MultiSelectDialogField(
+                          buttonText: const Text("Pilih pembedahan"),
+                          title: const Text("Pembedahan"),
+                          items: _surgeries
+                              .map((e) => MultiSelectItem(e, e.name))
+                              .toList(),
+                          listType: MultiSelectListType.CHIP,
+                          onConfirm: (values) {
+                            setState(() {
+                              // Extract the names of selected surgeries
+                              List<String> selectedSurgeryNames =
+                                  values.map((item) => item.name).toList();
+                              // Store the names in implantController.text
+                              surgeryController.text =
+                                  selectedSurgeryNames.join(", ");
+                            });
+                          },
+                        ),
+                      ),
+                      Visibility(
+                        visible:
+                            !isDoctor, // Only show the SizedBox when isPatient is true
+                        child: const SizedBox(
+                          height: 20,
+                        ),
+                      ),
+            
+                      //password textfield
+                      MyTextField(
+                        controller: passwordController,
+                        hintText: "Kata laluan",
+                        maxLines: 1,
+                        obscureText: true, //see what u typed
+                      ),
+            
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      //password confirm textfield
+                      MyTextField(
+                        controller: passwordConfirmController,
+                        hintText: "Sahkan kata laluan",
+                        maxLines: 1,
+                        obscureText: true, //see what u typed
+                      ),
+            
+                      const SizedBox(
+                        height: 20,
+                      ),
+            
+                      //sign in button
+                      MyButton(onTap: signUp, text: "Daftar"),
+            
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      //not member? register
+                      SizedBox(
+                        width: double.infinity,
+                        child: FittedBox(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("Sudah mempunyai akaun?"),
+                              const SizedBox(width: 4),
+                              GestureDetector(
+                                onTap: (){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LoginPage(),
+                                    ),
+                                  );
+                                },//widget.onTap,
+                                child: const Text(
+                                  "Log masuk sekarang",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                    ],
+                  ),
                 ),
               ),
             ),
