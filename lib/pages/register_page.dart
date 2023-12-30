@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wildlifego/components/my_dropdown.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:wildlifego/components/my_form_field.dart';
 import 'package:wildlifego/pages/login_page.dart';
 
 import '../components/my_button.dart';
@@ -52,16 +53,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final passwordConfirmController = TextEditingController();
 
   //setting up form keys
-  final usernameKey = GlobalKey<FormState>();
-  final roleKey = GlobalKey<FormState>();
-  final emailKey = GlobalKey<FormState>();
-  final ageKey = GlobalKey<FormState>();
-  final phoneKey = GlobalKey<FormState>();
-  final addressKey = GlobalKey<FormState>();
-  final symptomsKey = GlobalKey<FormState>();
-  final surgeryKey = GlobalKey<FormState>();
-  final passwordKey = GlobalKey<FormState>();
-  final passwordConfirmKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   bool isDoctor = false; // To check if user is a doctor
   bool isPatient = true; // To check if user is a patient
@@ -135,11 +127,12 @@ class _RegisterPageState extends State<RegisterPage> {
         backgroundColor: Colors.grey[100],
         body: SafeArea(
           // below notch
-          child: Form(
-            child: SingleChildScrollView(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
+          child: SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: Form(
+                  key: formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -147,16 +140,16 @@ class _RegisterPageState extends State<RegisterPage> {
                       const SizedBox(
                         height: 20,
                       ),
-            
+                  
                       Image.asset(
                         "images/icon_transparent.png",
                         height: 150,
                       ),
-            
+                  
                       const SizedBox(
                         height: 20,
                       ),
-            
+                  
                       //welcome back
                       const Text(
                         "Daftar Akaun",
@@ -168,17 +161,23 @@ class _RegisterPageState extends State<RegisterPage> {
                       const SizedBox(
                         height: 20,
                       ),
-            
+                  
                       //username textfield
-                      MyTextField(
+                      MyFormField(
                         controller: usernameController,
                         hintText: "Nama pengguna",
                         maxLines: 1,
                         obscureText: false,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Sila masukkan nama pengguna";
+                          }
+                          return null;
+                        },
                       ),
-            
+                  
                       const SizedBox(height: 20),
-            
+                  
                       MyDropdownButton(
                         items: roles,
                         value: selectedRole,
@@ -191,34 +190,46 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         hintText: 'Pilih Peranan',
                       ),
-            
+                  
                       const SizedBox(
                         height: 20,
                       ),
-            
+                  
                       //email textfield
-                      MyTextField(
+                      MyFormField(
                         controller: emailController,
                         hintText: "Alamat emel",
                         maxLines: 1,
                         obscureText: false,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Sila masukkan alamat emel";
+                          }
+                          return null;
+                        },
                       ),
-            
+                  
                       const SizedBox(
                         height: 20,
                       ),
-            
+                  
                       //staff id textfield
                       Visibility(
                         visible: isDoctor,
-                        child: MyTextField(
+                        child: MyFormField(
                           controller: ageController,
                           hintText: "ID Staf",
                           maxLines: 1,
                           obscureText: false,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Sila masukkan ID Staf";
+                            }
+                            return null;
+                          },
                         ),
                       ),
-            
+                  
                       Visibility(
                         visible:
                             isDoctor, // Only show the SizedBox when isPatient is true
@@ -226,16 +237,22 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                       ),
-            
+                  
                       //age textfield
-                      MyTextField(
+                      MyFormField(
                         controller: ageController,
                         hintText: "Umur",
                         maxLines: 1,
                         obscureText: false,
                         isVisible: !isDoctor,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Sila masukkan umur";
+                          }
+                          return null;
+                        },
                       ),
-            
+                  
                       Visibility(
                         visible:
                             !isDoctor, // Only show the SizedBox when isPatient is true
@@ -243,28 +260,40 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                       ),
-            
+                  
                       //phone textfield
-                      MyTextField(
+                      MyFormField(
                         controller: phoneController,
                         hintText: "Nombor telefon",
                         maxLines: 1,
                         obscureText: false,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Sila masukkan nombor telefon";
+                          }
+                          return null;
+                        },
                       ),
-            
+                  
                       const SizedBox(
                         height: 20,
                       ),
-            
+                  
                       //address textfield
-                      MyTextField(
+                      MyFormField(
                         controller: addressController,
                         hintText: "Alamat",
                         maxLines: 1,
                         obscureText: false,
                         isVisible: !isDoctor,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Sila masukkan alamat";
+                          }
+                          return null;
+                        },
                       ),
-            
+                  
                       Visibility(
                         visible:
                             !isDoctor, // Only show the SizedBox when isPatient is true
@@ -272,9 +301,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                       ),
-            
+                  
                       //symptom multi select
-            
+                  
                       Visibility(
                         visible: !isDoctor,
                         child: MultiSelectDialogField(
@@ -296,7 +325,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           },
                         ),
                       ),
-            
+                  
                       Visibility(
                         visible:
                             !isDoctor, // Only show the SizedBox when isPatient is true
@@ -304,7 +333,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                       ),
-            
+                  
                       // surgery multi select
                       Visibility(
                         visible: !isDoctor,
@@ -334,33 +363,53 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                       ),
-            
+                  
                       //password textfield
-                      MyTextField(
+                      MyFormField(
                         controller: passwordController,
                         hintText: "Kata laluan",
                         maxLines: 1,
                         obscureText: true, //see what u typed
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Sila masukkan kata laluan";
+                          }
+                          return null;
+                        },
                       ),
-            
+                  
                       const SizedBox(
                         height: 20,
                       ),
                       //password confirm textfield
-                      MyTextField(
+                      MyFormField(
                         controller: passwordConfirmController,
                         hintText: "Sahkan kata laluan",
                         maxLines: 1,
                         obscureText: true, //see what u typed
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Sila masukkan kata laluan";
+                          }
+                          return null;
+                        },
                       ),
-            
+                  
                       const SizedBox(
                         height: 20,
                       ),
-            
+                  
                       //sign in button
-                      MyButton(onTap: signUp, text: "Daftar"),
-            
+                      ElevatedButton(
+                        
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            signUp();
+                          }
+                        },
+                        child: const Text("Daftar"),
+                      ),
+                  
                       const SizedBox(
                         height: 20,
                       ),
