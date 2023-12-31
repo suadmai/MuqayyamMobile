@@ -18,6 +18,7 @@ import 'dart:io';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:video_player/video_player.dart';
 import 'package:image_picker/image_picker.dart';
+import '../profile_page.dart';
 import '/services/auth_service.dart';
 
 class AdminHomeScreen extends StatefulWidget {
@@ -26,21 +27,27 @@ class AdminHomeScreen extends StatefulWidget {
   State<AdminHomeScreen> createState() => _AdminHomeScreenState();
 }
 
-// Future<void> logout(BuildContext context) async {
-//   await FirebaseAuth.instance.signOut();
-//   Navigator.pushReplacement(
-//     context,
-//     MaterialPageRoute(
-//       builder: (context) => const LoginPage(),
-//     ),
-//   );
-// }
-
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
+
+  String? _profilePictureUrl;
+  late User _user;
   
   @override
   void initState() {
     super.initState();
+    _user = FirebaseAuth.instance.currentUser!;
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_user.uid)
+        .get();
+    setState(() {
+      _profilePictureUrl = userDoc.data()?['profilePicture']
+          as String?;
+    });
   }
 
   bool containsNumber(String text) {
@@ -115,19 +122,30 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Admin Home Screen"),
+        title: const Text("Nusantara"),
         actions: [
-          IconButton(
-            onPressed: signOut,
-            icon: const Icon(Icons.logout),
-          ),
           IconButton(
             onPressed: () {
               //go to profile page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      const ProfilePage(), // Pass the userID to the ChatPage
+                ),
+              );
             },
-            icon: const Icon(
-              Icons.account_circle,
-              size: 30,
+            icon: CircleAvatar(
+              backgroundColor: Colors.white70,
+              child: CircleAvatar(
+                radius: 50.0,
+                backgroundImage: _profilePictureUrl != null
+                    ? NetworkImage(_profilePictureUrl!)
+                    : null, // Display the profile picture if available
+                child: _profilePictureUrl == null
+                    ? const Icon(Icons.person, color: Colors.white)
+                    : null, // Show an icon if no profile picture is available
+              ),
             ),
           )
         ],
@@ -285,7 +303,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                           itemCount: posts.length,
                           itemBuilder: (context, index) {
                             final post = posts[index].data();
-                            final userID = post['userID'] as String?;
+                            final pfpURL = post['pfpURL'] as String?;
                             final username =
                                 post['username'] as String?;
                             final title =
@@ -353,16 +371,25 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            CircleAvatar(
+                                            Container(
+                                          child: pfpURL != null
+                                          ? CircleAvatar(
                                               radius: 12,
-                                              backgroundColor: Colors
-                                                  .blue, // Set the profile image's background color
-                                              child: Icon(
-                                                Icons.person,
-                                                size: 16,
-                                                color: Colors.white,
-                                              ),
+                                              backgroundImage:
+                                                  NetworkImage(pfpURL),
+                                            )
+                                          :
+                                          CircleAvatar(
+                                            radius: 12,
+                                            backgroundColor: Colors
+                                                .blue, // Set the profile image's background color
+                                            child: Icon(
+                                              Icons.person,
+                                              size: 16,
+                                              color: Colors.white,
                                             ),
+                                          ),
+                                        ),
                                             SizedBox(
                                                 width:
                                                     8), // Add some space between the profile image and the name
@@ -539,7 +566,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         return 'text';
       }
 
-      // TODO: Compress the image before uploading to Firebase Storage
       Future compressVideo(File selectedImage) async {
 
         if(selectedImage.path.endsWith('.mp4') || selectedImage.path.endsWith('.mov')){
@@ -556,6 +582,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         const folderPath = 'AllPosts/';
 
         final userID = FirebaseAuth.instance.currentUser!.uid;
+        final pfpURL = await FirebaseFirestore.instance.collection('users').doc(userID).get().then((value) => value.data()!['profilePicture'].toString());
         final usernameDocument = await FirebaseFirestore.instance.collection('users').doc(userID).get();
         final username = usernameDocument.data()!['username'].toString();
         final date = (DateTime.now()).toString();
@@ -584,6 +611,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           .doc(postID)
           .set({
           'postID': postID,
+          'pfpURL': pfpURL,
           'userID': userID,
           'username': username,
           'title': title,

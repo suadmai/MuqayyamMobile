@@ -16,15 +16,6 @@ class ContactExpert extends StatefulWidget {
   State<ContactExpert> createState() => _ContactExpertState();
 }
 
-// Future<void> logout(BuildContext context) async {
-//   await FirebaseAuth.instance.signOut();
-//   Navigator.pushReplacement(
-//     context,
-//     MaterialPageRoute(
-//       builder: (context) => const LoginPage(),
-//     ),
-//   );
-// }
 
 class _ContactExpertState extends State<ContactExpert> with SingleTickerProviderStateMixin{
   late final TabController _tabController;
@@ -42,17 +33,6 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Hubungi pakar"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              //go to profile page
-            },
-            icon: const Icon(
-              Icons.account_circle,
-              size: 30,
-            ),
-          )
-        ],
         bottom: TabBar(
           controller: _tabController,
           tabs: [
@@ -62,34 +42,11 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
         ),
       ),
 
-
-
-      // //floating action button must be center
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     //Navigator.push(
-      //       //context,
-      //       //MaterialPageRoute(
-      //         //builder: (context) =>
-      //             //CameraPage(cameraController: _cameraController),
-      //       //),
-      //     //);
-      //   },
-      //   child: const Icon(Icons.podcasts), 
-      //   backgroundColor: Color(0xFF82618B),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // bottomNavigationBar: MyBottomAppBar(),
-
-
       body:
       TabBarView(
         controller: _tabController,
         children: [
-          // First Tab: Senarai Pakar
           _buildSenaraiPakarTab(),
-
-          // Second Tab: Perbualan
           _buildPerbualanTab(),
         ],
       ),

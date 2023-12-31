@@ -36,38 +36,8 @@ class _LeaderboardPageState extends State<LeaderboardPage>{
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Papan markah"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              //go to profile page
-            },
-            icon: const Icon(
-              Icons.account_circle,
-              size: 30,
-            ),
-          )
-        ],
       ),
 
-
-
-      //floating action button must be center
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     //Navigator.push(
-      //       //context,
-      //       //MaterialPageRoute(
-      //         //builder: (context) =>
-      //             //CameraPage(cameraController: _cameraController),
-      //       //),
-      //     //);
-      //   },
-      //   child: const Icon(Icons.podcasts), 
-      //   backgroundColor: Color(0xFF82618B),
-      // ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
-      // bottomNavigationBar: MyBottomAppBar(),
 
       body:
        Center(
@@ -78,7 +48,7 @@ class _LeaderboardPageState extends State<LeaderboardPage>{
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('users')
-                    //.where('role', isEqualTo: 'patient') //todo: uncomment this line
+                    .where('role', isEqualTo: 'Pengguna') //todo: uncomment this line
                     .orderBy('score', descending: true)
                     .snapshots(),
                   builder: (context, snapshot) {
@@ -122,7 +92,7 @@ class _LeaderboardPageState extends State<LeaderboardPage>{
                                   Text(
                                   ds['username'],
                                   style: const TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

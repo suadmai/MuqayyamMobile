@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .get();
     setState(() {
       _profilePictureUrl = userDoc.data()?['profilePicture']
-          as String?; // Add this to load the profile picture URL
+          as String?;
     });
   }
 
@@ -165,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Nusantara™"),
+        title: const Text("Nusantara"),
         actions : <Widget>[
 
           IconButton(
