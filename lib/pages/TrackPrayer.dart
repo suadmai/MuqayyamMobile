@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
-import 'package:wildlifego/components/bottom_app_bar.dart';
 
 extension StringExtensions on String {
   String capitalizeFirst() {
@@ -45,25 +44,13 @@ class TrackPrayer extends StatefulWidget {
   State<TrackPrayer> createState() => _TrackPrayerState();
 }
 
-// Future<void> logout(BuildContext context) async {
-//   await FirebaseAuth.instance.signOut();
-//   Navigator.pushReplacement(
-//     context,
-//     MaterialPageRoute(
-//       builder: (context) => const LoginPage(),
-//     ),
-//   );
-// }
-
-class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin {
-
-
+class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin, WidgetsBindingObserver{
 
   late AnimationController _animationController;
   late Animation<double> _animation;
   bool isTimerRunning = false;
   int _timerSeconds = 0;
-  final Duration animationDuration = Duration(seconds: 5);
+  final Duration animationDuration = Duration(seconds: 10);
   late Timer _nextPrayerTimer;
   bool prayersReset = false;
   bool prayerTimesUpdated = false;
@@ -115,14 +102,14 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     void initState() {
     super.initState();
     initializePage();
-    //checkForMissedPrayers();
+    WidgetsBinding.instance.addObserver(this);
     _animationController = AnimationController(
       vsync: this,
-      duration: animationDuration, // Adjust the duration as needed
+      duration: animationDuration,
     );
     
+    
     _nextPrayerTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      // Call setState to trigger a UI update
       setState(() {});
       if(prayerTimesUpdated){
         setCurrentPrayer();
@@ -137,7 +124,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
             _timerSeconds = _animation.value.toInt();
           });
 
-          if (_animation.isDismissed) {
+          if (_animation.isCompleted) {
             isTimerRunning = false;
             _stopTimer();
             performPrayer();
@@ -162,19 +149,17 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     String currentDate;
 
     if(DateTime.now().isBefore(subuh.prayerTime)){
-      //if the current time is before subuh, set the date to yesterday
-      //print('current time is before subuh');
       currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 1)));
     }
     else{
-      //print('current time is after subuh');
       currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     }
 
-    //store prayer data for each user
-    await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('daily_prayers').doc(currentDate).set(prayerData);
-    //await FirebaseFirestore.instance.collection('daily_prayers').doc(currentDate).set(prayerData);
-    print('firebase write from storePrayerData');
+    await FirebaseFirestore.instance.collection('users')
+    .doc(FirebaseAuth.instance.currentUser!.uid)
+    .collection('daily_prayers')
+    .doc(currentDate)
+    .set(prayerData);
   }
 
   Future <void> syncPrayerData() async{
@@ -244,7 +229,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
     // Update the UI or perform any necessary actions after updating prayer times
     setState(() {
-      // ...
+
     });
   } else {
     print('Failed to fetch data');
@@ -255,13 +240,13 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
   void _startTimer() {
   setState(() {
-    _animationController.reverse(from: animationDuration.inSeconds.toDouble());
+    _animationController.forward();
   });
 }
 
   void _stopTimer() {
     setState(() {
-      _animationController.stop();
+      _animationController.reset();
     });
   }
 
@@ -442,13 +427,15 @@ Color getPrayerIconColor(Prayer prayer) {
 }
 
   String displayMinute(){
-    int minute = _timerSeconds ~/ 60;
-    int second = _timerSeconds % 60;
-    String minuteStr = minute.toString().padLeft(2, '0');
-    String secondStr = second.toString().padLeft(2, '0');
-    return '$minuteStr:$secondStr';
-  }
+  int remainingSeconds = (_animationController.duration!.inSeconds - _timerSeconds).clamp(0, _animationController.duration!.inSeconds);
+  int remainingMinutes = remainingSeconds ~/ 60;
+  int remainingSecondsDisplay = remainingSeconds % 60;
 
+  String remainingMinutesStr = remainingMinutes.toString().padLeft(2, '0');
+  String remainingSecondsStr = remainingSecondsDisplay.toString().padLeft(2, '0');
+
+  return '$remainingMinutesStr:$remainingSecondsStr';
+}
   double calculateProgress() {
     return 1 - (_animation.value / animationDuration.inSeconds.toDouble());
   }
@@ -457,7 +444,38 @@ Color getPrayerIconColor(Prayer prayer) {
   void dispose() {
     _nextPrayerTimer.cancel();
     _animationController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+    void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      if (isTimerRunning) {
+        _stopTimer();
+        _animationController.value = 0.0;
+      }
+    } else if (state == AppLifecycleState.resumed) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Jejak Solat Dihentikan'),
+          content: Text('Pastikan anda berada di paparan ini sepanjang pemasa berjalan'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+      if (isTimerRunning) {
+        isTimerRunning = false;
+        _stopTimer();
+      }
+    }
   }
 
   @override
@@ -467,40 +485,7 @@ Color getPrayerIconColor(Prayer prayer) {
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Jejak solat"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              //go to profile page
-            },
-            icon: const Icon(
-              Icons.account_circle,
-              size: 30,
-            ),
-          )
-        ],
       ),
-
-
-      
-      //floating action button must be center
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     //Navigator.push(
-      //       //context,
-      //       //MaterialPageRoute(
-      //         //builder: (context) =>
-      //             //CameraPage(cameraController: _cameraController),
-      //       //),
-      //     //);
-      //   }, 
-      //   backgroundColor: Color(0xFF82618B),
-      //   child: const Icon(Icons.podcasts),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // bottomNavigationBar: MyBottomAppBar(
-      //   
-      // ),
-
 
       body: Stack(
         children: [
@@ -517,10 +502,6 @@ Color getPrayerIconColor(Prayer prayer) {
                   _startTimer();
                 } else {
                   _stopTimer();
-                  if (!isTimerRunning) {
-                    // Update the prayer status after finishing the current prayer
-                    // performPrayer();
-                  }
                 } 
               }
             });
@@ -551,9 +532,6 @@ Color getPrayerIconColor(Prayer prayer) {
                         padding: const EdgeInsets.all(50.0),
                         child: Text(
                           circleText(),
-                          // isTimerRunning
-                          //     ? displayMinute()
-                          //     : "Mula solat ${currentPrayer()}",
                           style: TextStyle(fontSize: 25, color: Colors.white),
                           textAlign: TextAlign.center,
                         ),
@@ -565,10 +543,11 @@ Color getPrayerIconColor(Prayer prayer) {
                       height: 270,
                       width: 270,
                       child: CircularProgressIndicator(
-                        value: isTimerRunning ? calculateProgress() : 0.0,
-                        backgroundColor: Colors.white,
+                        value: isTimerRunning ? calculateProgress() : 1,
+                        backgroundColor: Colors.lightBlueAccent,
                         valueColor:
-                            AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
+                        AlwaysStoppedAnimation<Color>(Colors.white),
+
                         strokeWidth: 10,
                       ),
                     ),
@@ -694,5 +673,4 @@ Color getPrayerIconColor(Prayer prayer) {
       )
     );
   }
-  //THE HENTAM WAY
 }
