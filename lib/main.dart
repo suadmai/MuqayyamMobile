@@ -17,7 +17,6 @@ import 'package:wildlifego/pages/TrackPrayer.dart';
 
 List<Widget> imageWidgets = [];
 
-
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();

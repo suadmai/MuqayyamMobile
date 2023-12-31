@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'package:flutter_svg/flutter_svg.dart';
+
 class SiriWave extends StatefulWidget {
   @override
   _SiriWaveState createState() => _SiriWaveState();
@@ -36,12 +38,13 @@ class _SiriWaveState extends State<SiriWave> with SingleTickerProviderStateMixin
         child: SizedBox(
           width: 200,
           height: 200,
-          child: CustomPaint(
-            painter: SiriWavePainter(animation: _animation),
+          child: SvgPicture.asset(
+            'lib/icons/icons_Track_Prayer.svg',
+            fit: BoxFit.contain,
+          ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -83,8 +86,3 @@ class SiriWavePainter extends CustomPainter {
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: SiriWave(),
-  ));
-}

@@ -59,12 +59,26 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _profilePictureUrl;
   late User _user;
 
+  final String trackPrayerIcon = 'lib/icons/icons_Track_Prayer.png';
+  final String readQuranIcon = 'lib/icons/icons_Read_Quran.png';
+  final String tasbihIcon = 'lib/icons/icons_Tasbih.png';
+  final String ramadhanIcon = 'lib/icons/icons_Ramadhan.png';
+  final String leaderboardsIcon = 'lib/icons/icons_Leaderboards.png';
+  final String contactExpertIcon = 'lib/icons/icons_Contact_Expert.png';
+  final String rewardsIcon = 'lib/icons/icons_Rewards.png';
+
   @override
   void initState() {
     super.initState();
     didChangeDependencies();
     checkAppVersion(context);
     _user = FirebaseAuth.instance.currentUser!;
+    _loadUserData();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _loadUserData();
   }
 
@@ -153,11 +167,6 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Nusantara™"),
         actions : <Widget>[
-          //SIGN OUT NOT USED HERE
-          // IconButton(
-          //   onPressed: signOut,
-          //   icon: const Icon(Icons.logout),
-          // ),
 
           IconButton(
             onPressed: () {
@@ -172,14 +181,13 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             icon: CircleAvatar(
               backgroundColor: Colors.white70,
-              minRadius: 60.0,
               child: CircleAvatar(
                 radius: 50.0,
                 backgroundImage: _profilePictureUrl != null
                     ? NetworkImage(_profilePictureUrl!)
                     : null, // Display the profile picture if available
                 child: _profilePictureUrl == null
-                    ? const Icon(Icons.person, size: 50, color: Colors.white70)
+                    ? const Icon(Icons.person, color: Colors.white)
                     : null, // Show an icon if no profile picture is available
               ),
             ),
@@ -221,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       );
                                     },
-                                    imagePath: 'lib/icons/icons_Track_Prayer.png',
+                                    imagePath: trackPrayerIcon,
                                   ),
                                   SizedBox(width: 10),
                             
@@ -235,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       );
                                     },
-                                    imagePath: 'lib/icons/icons_Read_Quran.png',
+                                    imagePath: readQuranIcon,
                                   ),
                                   SizedBox(width: 10),
 
@@ -250,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       );
                                     },
-                                    imagePath: 'lib/icons/icons_Tasbih.png',
+                                    imagePath: tasbihIcon,
                                   ),
                                   SizedBox(width: 10),
 
@@ -265,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       );
                                     },
-                                    imagePath: 'lib/icons/icons_Ramadhan.png',
+                                    imagePath: ramadhanIcon,
                                   ),
                                   SizedBox(width: 10),
                             
@@ -280,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       );
                                     },
-                                    imagePath: 'lib/icons/icons_Leaderboards.png',
+                                    imagePath: leaderboardsIcon,
                                   ),
                             
                                   SizedBox(width: 10),
@@ -296,7 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       );
                                     },
-                                    imagePath: 'lib/icons/icons_Contact_Expert.png',
+                                    imagePath: contactExpertIcon,
                                   ),
                             
                                   SizedBox(width: 10),
@@ -312,7 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       );
                                     },
-                                    imagePath: 'lib/icons/icons_Rewards.png',
+                                    imagePath: rewardsIcon,
                                   ),
                                 ],
                               ),
@@ -475,5 +483,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-//VIEW ONLY

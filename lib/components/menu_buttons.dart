@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MenuButton extends StatelessWidget {
   final String buttonText;
@@ -45,7 +46,7 @@ class MenuButton extends StatelessWidget {
                   SizedBox(
                     height: 48, // Set a fixed height for the image
                     child: Image(
-                      image: AssetImage(imagePath),
+                      image: Image.asset(imagePath).image,
                       fit: BoxFit.contain, // Adjust the image fit
                     ),
                   ),
