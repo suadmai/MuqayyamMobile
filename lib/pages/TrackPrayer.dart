@@ -50,7 +50,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   late Animation<double> _animation;
   bool isTimerRunning = false;
   int _timerSeconds = 0;
-  final Duration animationDuration = Duration(seconds: 10);
+  final Duration animationDuration = Duration(minutes: 5);
   late Timer _nextPrayerTimer;
   bool prayersReset = false;
   bool prayerTimesUpdated = false;

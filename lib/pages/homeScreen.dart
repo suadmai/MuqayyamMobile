@@ -352,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: posts.length,
                         itemBuilder: (context, index) {
                           final post = posts[index].data();
-                          final userID = post['userID'] as String?;
+                          final pfpURL = post['pfpURL'] as String?;
                           final username = post['username'] as String?;
                           final title = post['title'] as String?;
                           final description = post['description'] as String?;
@@ -375,14 +375,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        CircleAvatar(
-                                          radius: 12,
-                                          backgroundColor: Colors
-                                              .blue, // Set the profile image's background color
-                                          child: Icon(
-                                            Icons.person,
-                                            size: 16,
-                                            color: Colors.white,
+                                        Container(
+                                          child: pfpURL != null
+                                          ? CircleAvatar(
+                                              radius: 12,
+                                              backgroundImage:
+                                                  NetworkImage(pfpURL),
+                                            )
+                                          :
+                                          CircleAvatar(
+                                            radius: 12,
+                                            backgroundColor: Colors
+                                                .blue, // Set the profile image's background color
+                                            child: Icon(
+                                              Icons.person,
+                                              size: 16,
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                         SizedBox(
