@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:wildlifego/components/bottom_app_bar.dart';
 
 extension StringExtensions on String {
   String capitalizeFirst() {
@@ -54,17 +55,9 @@ class TrackPrayer extends StatefulWidget {
 //   );
 // }
 
-class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin<TrackPrayer>{
+class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin {
 
-  @override
-  bool get wantKeepAlive => true;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    print('didChangeDependencies() called');
-    syncPrayerData();
-  }
 
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -188,13 +181,15 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     String currentDate;
     try{
       if(DateTime.now().isBefore(subuh.prayerTime)){
+        //if the current time is before subuh, set the date to yesterday
+        //print('current time is before subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
         currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(Duration(days: 1)));
-        print('the time is before subuh');
+        //print('the date is $currentDate');
       }
       else{
         //print('current time is after subuh\nThe time now is ${DateTime.now()} and subuh is ${subuh.prayerTime}');
         currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-        print(currentDate + subuh.prayerTime.toString());
+        //print('the date is $currentDate');
       }
 
       //read prayer data from firebase of each user
@@ -223,47 +218,40 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   }
 
   Future<void> fetchPrayerTimes() async {
-  try {
-    final response = await http.get(Uri.parse('https://waktu-solat-api.herokuapp.com/api/v1/prayer_times.json?zon=gombak'));
-    print('prayer times fetched');
-    if (response.statusCode == 200) {
-      
-      final jsonData = json.decode(response.body);
-      List<dynamic> dataJson = jsonData['data'][0]['waktu_solat'];
+  final response = await http.get(Uri.parse('https://waktu-solat-api.herokuapp.com/api/v1/prayer_times.json?zon=gombak'));
 
-      DateTime now = DateTime.now();
+  if (response.statusCode == 200) {
+    final jsonData = json.decode(response.body);
+    List<dynamic> dataJson = jsonData['data'][0]['waktu_solat'];
+    List<Prayer> prayers = [subuh, syuruk, zohor, asar, maghrib, isyak]; // Use the Prayer objects directly
+    
+    DateTime now = DateTime.now();
 
-      Map<String, Prayer> prayerMap = {
-        'subuh': subuh,
-        'syuruk': syuruk,
-        'zohor': zohor,
-        'asar': asar,
-        'maghrib': maghrib,
-        'isyak': isyak,
-      };
+    for (var waktuSolatJson in dataJson) {
+      String prayerName = waktuSolatJson['name'];
+      String prayerTime = waktuSolatJson['time'];
 
-      dataJson.forEach((waktuSolatJson) {
-        String prayerName = waktuSolatJson['name'];
-        String prayerTime = waktuSolatJson['time'];
-
-        if (prayerName != "imsak" && prayerMap.containsKey(prayerName)) {
-          List<int> parsedTime = prayerTime.split(':').map(int.parse).toList();
-          DateTime updatedDateTime = DateTime(now.year, now.month, now.day, parsedTime[0], parsedTime[1]);
-
-          prayerMap[prayerName]!.prayerTime = updatedDateTime;
-        }
-        checkForMissedPrayers();
-      });
-
-      prayerTimesUpdated = true;
-    } else {
-      print('Failed to fetch data');
+      // Parse the prayerTime string and create a new DateTime object
+      List<int> parsedTime = prayerTime.split(':').map(int.parse).toList();
+      DateTime updatedDateTime = DateTime(now.year, now.month, now.day, parsedTime[0], parsedTime[1]);
+      //print('$prayerName : $updatedDateTime');
+      if (prayerName != "imsak") {
+        // Find the corresponding Prayer object and update its prayerTime
+        prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime = updatedDateTime;
+        //print('updated ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerName} to ${prayers.firstWhere((prayer) => prayer.prayerName == prayerName).prayerTime}');
+      }
     }
-  } catch (e) {
-    print('Error fetching prayer times: $e');
-  }
-}
 
+    // Update the UI or perform any necessary actions after updating prayer times
+    setState(() {
+      // ...
+    });
+  } else {
+    print('Failed to fetch data');
+  }
+
+  prayerTimesUpdated = true;
+}
 
   void _startTimer() {
   setState(() {
@@ -298,12 +286,16 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
 
   void setCurrentPrayer(){
     setState(() {
+      //List prayers = [subuh, syuruk, zohor, asar, maghrib, isyak];
+      //currentPrayer = prayers[0];//for testing purposes, set to subuh
       DateTime now = DateTime.now();
 
       if(now.isAfter(subuh.prayerTime) && now.isBefore(syuruk.prayerTime)){
         currentPrayer = subuh;
+        //fetchPrayerTimes();
         resetPrayers();
         storePrayerData();
+        //print('current prayer: ${currentPrayer.prayerName}');
       }
       else if(now.isAfter(syuruk.prayerTime) && now.isBefore(zohor.prayerTime)){
         currentPrayer = syuruk;
@@ -475,7 +467,40 @@ Color getPrayerIconColor(Prayer prayer) {
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Jejak solat"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              //go to profile page
+            },
+            icon: const Icon(
+              Icons.account_circle,
+              size: 30,
+            ),
+          )
+        ],
       ),
+
+
+      
+      //floating action button must be center
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     //Navigator.push(
+      //       //context,
+      //       //MaterialPageRoute(
+      //         //builder: (context) =>
+      //             //CameraPage(cameraController: _cameraController),
+      //       //),
+      //     //);
+      //   }, 
+      //   backgroundColor: Color(0xFF82618B),
+      //   child: const Icon(Icons.podcasts),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // bottomNavigationBar: MyBottomAppBar(
+      //   
+      // ),
+
 
       body: Stack(
         children: [
@@ -669,4 +694,5 @@ Color getPrayerIconColor(Prayer prayer) {
       )
     );
   }
+  //THE HENTAM WAY
 }
