@@ -113,7 +113,7 @@ class _PatientListState extends State<PatientList>{
             
         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: firestore.collection('users')
-        .where('role', isEqualTo: '')
+        .where('role', isEqualTo: 'Pengguna')
         .where('userID', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)//taknak tunjuk diri sendiri
         .snapshots(),
         builder: (context, snapshot) {
@@ -126,6 +126,7 @@ class _PatientListState extends State<PatientList>{
             itemBuilder: (context, index) {
               final doctor = doctors[index].data();
               final userID = doctor['userID'] as String?;
+              final pfpURL = doctor['profilePicture'] as String?;
               final userEmail = doctor['email'] as String?;
               final username = doctor['username'] as String?;
 
@@ -145,13 +146,24 @@ class _PatientListState extends State<PatientList>{
             child: Column(
                 children: [
                   ListTile(
-                    leading: CircleAvatar(
-                      radius: 24,
-                      backgroundColor: Colors.blue,
-                      child: Icon(
-                        Icons.person,
-                        size: 24,
-                        color: Colors.white,
+                    leading: 
+                    Container(
+                      child: pfpURL != null
+                      ? CircleAvatar(
+                          radius: 24,
+                          backgroundImage:
+                              NetworkImage(pfpURL),
+                        )
+                      :
+                      CircleAvatar(
+                        radius: 24,
+                        backgroundColor: Colors
+                            .blue, // Set the profile image's background color
+                        child: Icon(
+                          Icons.person,
+                          size: 24,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     title: Text(

@@ -58,13 +58,19 @@ class _ZikirWidgetState extends State<ZikirWidget> {
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,),
                       textAlign: TextAlign.center,
                     ),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          '$totalZikir',  
-                          style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                    TweenAnimationBuilder(
+                      tween: IntTween(begin: 0, end: totalZikir),
+                      duration: const Duration(seconds: 1),
+                      builder: (context, int value, child) {
+                        return Expanded(
+                          child: Center(
+                            child: Text(
+                              value.toString(),
+                              style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

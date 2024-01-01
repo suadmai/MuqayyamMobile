@@ -16,6 +16,8 @@ import 'package:wildlifego/pages/tasbih.dart';
 import '../components/menu_buttons.dart';
 import '../services/auth_service.dart';
 import 'doctor/Admin_HomeScreen.dart';
+import 'package:shimmer/shimmer.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -378,13 +380,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                         Container(
                                           child: pfpURL != null
                                           ? CircleAvatar(
-                                              radius: 12,
+                                              radius: 24,
                                               backgroundImage:
                                                   NetworkImage(pfpURL),
                                             )
                                           :
                                           CircleAvatar(
-                                            radius: 12,
+                                            radius: 24,
                                             backgroundColor: Colors
                                                 .blue, // Set the profile image's background color
                                             child: Icon(
@@ -480,7 +482,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     } else if (snapshot.hasError) {
                       return ErrorWidget(snapshot.error!);
                     } else {
-                      return const CircularProgressIndicator();
+                      return Center(
+                        child: Text('Loading...'),
+                      );
+                      //shimmer effect here
                     }
                   },
                 ),

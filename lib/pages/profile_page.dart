@@ -20,6 +20,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late bool _isLoading = false;
   late User _user;
   late String _name = "";
+  late String _role = "";
   late int _score = 0;
   late String _profilePictureUrl = ""; // Add this if you want to display the profile picture
 
@@ -47,6 +48,7 @@ Future<void> _loadUserData() async {
 
     setState(() {
       _name = userDoc.data()?['username'] as String;
+      _role = userDoc.data()?['role'] as String;
       _score = userDoc.data()?['score'] as int;
       _profilePictureUrl = userDoc.data()?['profilePicture'] as String;
     });
@@ -241,34 +243,37 @@ Future<void> _loadUserData() async {
               ],
             ),
           ),
-          Container(
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    color: const Color(0xFF82618B),
-                    child: ListTile(
-                      title: Text(
-                        _score?.toString() ?? '',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                          color: Colors.white,
+          Visibility(
+            visible: _role == 'Pengguna',
+            child: Container(
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      color: const Color(0xFF82618B),
+                      child: ListTile(
+                        title: Text(
+                          _score?.toString() ?? '',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      subtitle: const Text(
-                        'Markah',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white70,
+                        subtitle: const Text(
+                          'Markah',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white70,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Container(
