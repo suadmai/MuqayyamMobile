@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wildlifego/components/my_dropdown.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:wildlifego/components/my_form_field.dart';
+import 'package:wildlifego/pages/doctor/Admin_HomeScreen.dart';
+import 'package:wildlifego/pages/homeScreen.dart';
 import 'package:wildlifego/pages/login_page.dart';
 
 import '../components/my_button.dart';
@@ -12,7 +15,9 @@ import '../services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   //final void Function()? onTap;
-  const RegisterPage({super.key,});
+  const RegisterPage({
+    super.key,
+  });
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
@@ -99,6 +104,20 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     //get auth service
     final authService = Provider.of<AuthService>(context, listen: false);
+    final userRole = await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: emailController.text)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        return value.docs[0]['role'];
+      } else {
+        // Handle the case where there are no documents
+        return null; // or any default value
+      }
+    });
+    print(userRole);
+
     try {
       await authService.signUpWithEmailandPassword(
         usernameController.text,
@@ -117,6 +136,26 @@ class _RegisterPageState extends State<RegisterPage> {
         SnackBar(
           content: Text(e.toString()),
         ),
+      );
+    }
+
+    if (userRole == 'Doktor') {
+      // ignore: use_build_context_synchronously
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AdminHomeScreen(),
+        ),
+        (route) => false,
+      );
+    } else {
+      // ignore: use_build_context_synchronously
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+        (route) => false,
       );
     }
   }
@@ -140,16 +179,16 @@ class _RegisterPageState extends State<RegisterPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                  
+
                       Image.asset(
                         "images/icon_transparent.png",
                         height: 150,
                       ),
-                  
+
                       const SizedBox(
                         height: 20,
                       ),
-                  
+
                       //welcome back
                       const Text(
                         "Daftar Akaun",
@@ -161,7 +200,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                  
+
                       //username textfield
                       MyFormField(
                         controller: usernameController,
@@ -175,9 +214,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           return null;
                         },
                       ),
-                  
+
                       const SizedBox(height: 20),
-                  
+
                       MyDropdownButton(
                         items: roles,
                         value: selectedRole,
@@ -190,11 +229,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         hintText: 'Pilih Peranan',
                       ),
-                  
+
                       const SizedBox(
                         height: 20,
                       ),
-                  
+
                       //email textfield
                       MyFormField(
                         controller: emailController,
@@ -208,11 +247,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           return null;
                         },
                       ),
-                  
+
                       const SizedBox(
                         height: 20,
                       ),
-                  
+
                       //staff id textfield
                       Visibility(
                         visible: isDoctor,
@@ -229,7 +268,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           },
                         ),
                       ),
-                  
+
                       Visibility(
                         visible:
                             isDoctor, // Only show the SizedBox when isPatient is true
@@ -237,7 +276,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                       ),
-                  
+
                       //age textfield
                       MyFormField(
                         controller: ageController,
@@ -252,7 +291,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           return null;
                         },
                       ),
-                  
+
                       Visibility(
                         visible:
                             !isDoctor, // Only show the SizedBox when isPatient is true
@@ -260,7 +299,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                       ),
-                  
+
                       //phone textfield
                       MyFormField(
                         controller: phoneController,
@@ -274,11 +313,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           return null;
                         },
                       ),
-                  
+
                       const SizedBox(
                         height: 20,
                       ),
-                  
+
                       //address textfield
                       MyFormField(
                         controller: addressController,
@@ -293,7 +332,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           return null;
                         },
                       ),
-                  
+
                       Visibility(
                         visible:
                             !isDoctor, // Only show the SizedBox when isPatient is true
@@ -301,9 +340,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                       ),
-                  
+
                       //symptom multi select
-                  
+
                       Visibility(
                         visible: !isDoctor,
                         child: MultiSelectDialogField(
@@ -325,7 +364,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           },
                         ),
                       ),
-                  
+
                       Visibility(
                         visible:
                             !isDoctor, // Only show the SizedBox when isPatient is true
@@ -333,7 +372,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                       ),
-                  
+
                       // surgery multi select
                       Visibility(
                         visible: !isDoctor,
@@ -363,13 +402,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 20,
                         ),
                       ),
-                  
+
                       //password textfield
                       MyFormField(
                         controller: passwordController,
                         hintText: "Kata laluan",
                         maxLines: 1,
-                        obscureText: true, //see what u typed
+                        obscureText: false, //see what u typed
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Sila masukkan kata laluan";
@@ -377,7 +416,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           return null;
                         },
                       ),
-                  
+
                       const SizedBox(
                         height: 20,
                       ),
@@ -386,7 +425,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: passwordConfirmController,
                         hintText: "Sahkan kata laluan",
                         maxLines: 1,
-                        obscureText: true, //see what u typed
+                        obscureText: false, //see what u typed
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Sila masukkan kata laluan";
@@ -394,14 +433,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           return null;
                         },
                       ),
-                  
+
                       const SizedBox(
                         height: 20,
                       ),
-                  
+
                       //sign in button
                       ElevatedButton(
-                        
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             signUp();
@@ -409,7 +447,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         child: const Text("Daftar"),
                       ),
-                  
+
                       const SizedBox(
                         height: 20,
                       ),
@@ -423,14 +461,14 @@ class _RegisterPageState extends State<RegisterPage> {
                               const Text("Sudah mempunyai akaun?"),
                               const SizedBox(width: 4),
                               GestureDetector(
-                                onTap: (){
+                                onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => LoginPage(),
                                     ),
                                   );
-                                },//widget.onTap,
+                                }, //widget.onTap,
                                 child: const Text(
                                   "Log masuk sekarang",
                                   style: TextStyle(
