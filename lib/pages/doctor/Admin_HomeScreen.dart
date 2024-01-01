@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 //other pages
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -179,7 +181,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       ),
       body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(6.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -354,7 +356,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                 );
                                 }
                               },
-
                               child: Card(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -362,7 +363,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                 color: Colors.white,
                                 elevation: 3,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
+                                  padding: const EdgeInsets.all(12.0),
                                   child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -805,6 +806,8 @@ class VideoPlayerWidget extends StatefulWidget {
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late VideoPlayerController _videoController;
+  bool showControls = false;
+  double _sliderValue = 0.0;
 
   @override
   void initState() {
@@ -815,6 +818,38 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           setState(() {});
         }
       });
+
+      Timer.periodic(Duration(milliseconds: 500), (timer) {
+      if (_videoController.value.isPlaying) {
+      setState(() {
+      // Update slider value to match video position
+      _sliderValue = _videoController.value.position.inSeconds.toDouble();
+        });
+      }
+    });
+  }
+
+  Icon displayIcon(){
+    if (_videoController.value.isPlaying) {
+      return Icon(
+        Icons.pause,
+        size: 28,
+        color: Colors.white,
+      );
+    } else if(_videoController.value.position == _videoController.value.duration){
+      return Icon(
+        Icons.replay,
+        size: 28,
+        color: Colors.white,
+      );
+    }
+    else {
+      return Icon(
+        Icons.play_arrow_rounded,
+        size: 28,
+        color: Colors.white,
+      );
+    }
   }
 
   @override
@@ -822,59 +857,225 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     return _videoController.value.isInitialized
         ? Column(
             children: [
-              //give it a fixed height so it doesn't take up too much space when minimized
-              //give it a rounded border
               Align(
                 alignment: Alignment.centerLeft,
                 child: 
-                Stack(
-                  children: [
-                    ClipRRect(
-                        borderRadius: BorderRadius.circular(16), // Adjust the radius as needed
-                        child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: Container(
-                            color: Colors.black, // Set the background color to black
-                            child: Center(
-                              child: AspectRatio(
-                                aspectRatio: _videoController.value.aspectRatio,
-                                child: VideoPlayer(_videoController),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      showControls = !showControls;
+                    });
+                  },
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                          borderRadius: BorderRadius.circular(16), // Adjust the radius as needed
+                          child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: Container(
+                              color: Colors.black, // Set the background color to black
+                              child: Center(
+                                child: AspectRatio(
+                                  aspectRatio: _videoController.value.aspectRatio,
+                                  child: VideoPlayer(_videoController),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      ),
-                    Positioned.fill(
-                      child: Center(
-                        child: IconButton(
-                          iconSize: 28,
-                          color: Colors.white,
-                          icon: Icon(
-                            //give icons shadow
-                            _videoController.value.isPlaying
-                                ? Icons.pause
-                                : Icons.play_arrow_rounded,
+                        ),
+                      Visibility(
+                        visible: showControls,
+                        child: Positioned(
+                          left: 1,
+                          right: 1,
+                          bottom: 1,
+                          child: Column(
+                            children: [
+                              Center(
+                                child: IconButton(
+                                  iconSize: 28,
+                                  color: Colors.white,
+                                  icon: Icon(
+                                    displayIcon().icon,
+                                  ),
+                                  onPressed: () {
+                                    if (_videoController.value.isPlaying) {
+                                      _videoController.pause();
+                                    } else if(_videoController.value.position == _videoController.value.duration){
+                                      _videoController.seekTo(Duration.zero);
+                                      _videoController.play();
+                                    }
+                                    else {
+                                      _videoController.play();
+                                    }
+                                    setState(() {});
+                                  },
+                                ),
+                              ),
+                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                 children:[
+                                 Container(
+                                  width: MediaQuery.of(context).size.width * 0.6,
+                                   child: Slider(
+                                      activeColor: Colors.white,
+                                      inactiveColor: Colors.grey,
+                                      min: 0.0,
+                                      max: _videoController.value.duration.inSeconds.toDouble(),
+                                      value: _videoController.value.position.inSeconds.toDouble(),
+                                      onChanged: (double value) {
+                                        setState(() {
+                                        // Seek to the specified position
+                                        _videoController.seekTo(Duration(seconds: value.toInt()));
+                                        _sliderValue = value; // Update slider value
+                                      });
+                                    }
+                                    ),
+                                 ),
+                                  IconButton(
+                                    onPressed: (){
+                                      //change to fullscreen
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => 
+                                          Scaffold(
+                                            appBar: AppBar(
+                                              backgroundColor: Colors.black,
+                                              leading: IconButton(
+                                                onPressed: (){
+                                                  Navigator.pop(context);
+                                                }, 
+                                                icon: Icon(
+                                                  Icons.arrow_back,
+                                                  color: Colors.white,
+                                                )
+                                              ),
+                                            ),
+                                            backgroundColor: Colors.black,
+                                            body: Stack(
+                                              children:[
+                                                Center(
+                                                child: AspectRatio(
+                                                  aspectRatio: _videoController.value.aspectRatio,
+                                                  child: VideoPlayer(_videoController),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                left: 1,
+                                                right: 1,
+                                                bottom: 1,
+                                                child: Column(
+                                                  children: [
+                                                    Center(
+                                                      child: IconButton(
+                                                        iconSize: 28,
+                                                        color: Colors.white,
+                                                        icon: Icon(
+                                                          displayIcon().icon,
+                                                        ),
+                                                        onPressed: () {
+                                                          if (_videoController.value.isPlaying) {
+                                                            _videoController.pause();
+                                                          } else if(_videoController.value.position == _videoController.value.duration){
+                                                            _videoController.seekTo(Duration.zero);
+                                                            _videoController.play();
+                                                          }
+                                                          else {
+                                                            _videoController.play();
+                                                          }
+                                                          setState(() {});
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children:[
+                                                        Container(
+                                                          width: MediaQuery.of(context).size.width * 0.6,
+                                                          child: Slider(
+                                                            activeColor: Colors.white,
+                                                            inactiveColor: Colors.grey,
+                                                            min: 0.0,
+                                                            max: _videoController.value.duration.inSeconds.toDouble(),
+                                                            value: _videoController.value.position.inSeconds.toDouble(),
+                                                            onChanged: (double value) {
+                                                              setState(() {
+                                                              // Seek to the specified position
+                                                              _videoController.seekTo(Duration(seconds: value.toInt()));
+                                                              _sliderValue = value; // Update slider value
+                                                            });
+                                                          }
+                                                          ),
+                                                        ),
+                                                        IconButton(
+                                                          onPressed: (){
+                                                            //change to fullscreen
+                                                            Navigator.pop(context);
+                                                          }, 
+                                                          icon: Icon(
+                                                            Icons.fullscreen_exit,
+                                                            size: 28,
+                                                            color: Colors.white,
+                                                          )
+                                                        ),
+                                                      ]
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              ]
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }, 
+                                    icon: Icon(
+                                      Icons.fullscreen,
+                                      size: 28,
+                                      color: Colors.white,
+                                    )),
+                                 ]
+                               ),
+                            ],
                           ),
-                          onPressed: () {
-                            if (_videoController.value.isPlaying) {
-                              _videoController.pause();
-                            } else {
-                              _videoController.play();
-                            }
-                            setState(() {});
-                          },
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],
           )
-        : CircularProgressIndicator(); // Show a loading indicator while initializing
+        : ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Align(
+          alignment: Alignment.centerLeft,
+          child: AspectRatio(
+            aspectRatio: 16 / 9,
+            child: Container(
+              color: Colors.black,
+              child: Center(
+                child: AspectRatio(
+                  aspectRatio: _videoController.value.aspectRatio,
+                  child: //loading indicator
+                  Transform.scale(
+                    scale: 0.2,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 10,
+                      color: //use the app bar color
+                      Color(0xFF82618B),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        ); // Show a loading indicator while initializing
   }
 
   @override
