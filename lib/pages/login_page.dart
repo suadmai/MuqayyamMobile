@@ -50,13 +50,16 @@ class _LoginPageState extends State<LoginPage> {
   void signIn() async {
     //get auth service
     final authService = Provider.of<AuthService>(context, listen: false);
-    final userRole = await FirebaseFirestore.instance
-        .collection('users')
-        .where('email', isEqualTo: emailController.text)
-        .get()
-        .then((value) => value.docs[0]['role']);
-    print(userRole);
+
     try {
+      final userRole = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: emailController.text)
+          .get()
+          .then((value) => value.docs[0]['role']);
+      print(userRole);
+      
+
       await authService.signInWithEmailandPassword(
         removeSpace(emailController.text),
         passwordController.text,
@@ -84,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString()),
+          content: Text("Email atau kata laluan salah"),
         ),
       );
     }
