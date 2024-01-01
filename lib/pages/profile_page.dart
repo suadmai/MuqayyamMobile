@@ -71,13 +71,13 @@ Future<void> _loadUserData() async {
           content: const Text('Anda pasti anda mahu log keluar?'),
           actions: <Widget>[
             ElevatedButton(
-              child: const Text('Cancel'),
+              child: const Text('Batal'),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             ElevatedButton(
-              child: const Text('Sign Out'),
+              child: const Text('Log Keluar'),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -103,20 +103,20 @@ Future<void> _loadUserData() async {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Change Username'),
+          title: const Text('Ubah Nama Pengguna'),
           content: TextField(
             controller: _usernameController,
-            decoration: const InputDecoration(labelText: 'New Username'),
+            decoration: const InputDecoration(labelText: 'Nama Pengguna Baharu'),
           ),
           actions: <Widget>[
             ElevatedButton(
-              child: const Text('Cancel'),
+              child: const Text('Batal'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              child: const Text('Save'),
+              child: const Text('Simpan'),
               onPressed: () {
                 _updateUsername(_usernameController.text);
                 Navigator.of(context).pop();
@@ -140,12 +140,12 @@ Future<void> _loadUserData() async {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Username updated successfully!')),
+        SnackBar(content: Text('Nama pengguna berjaya dikemaskini!')),
       );
     } catch (error) {
       print('Error updating username: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update username. Please try again.')),
+        SnackBar(content: Text('Gagal mengemaskini nama pengguna. Sila cuba lagi.')),
       );
     }
   }
@@ -179,11 +179,11 @@ Future<void> _loadUserData() async {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Profile picture updated successfully!')),
+        SnackBar(content: Text('Gambar profil berjaya dikemaskini!')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update profile picture. Please try again.')),
+        SnackBar(content: Text('Gagal mengemaskini gambar profil. Sila cuba lagi.')),
       );
     }
   }
@@ -195,8 +195,7 @@ Future<void> _loadUserData() async {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: const Text('Profile'),
-        centerTitle: true,
+        title: const Text('Akaun Saya'),
       ),
       body: ListView(
         children: <Widget>[
@@ -234,7 +233,7 @@ Future<void> _loadUserData() async {
                 Text(
                   _name ?? '',
                   style: const TextStyle(
-                    fontSize: 35,
+                    fontSize: 25,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -254,7 +253,7 @@ Future<void> _loadUserData() async {
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 30,
+                          fontSize: 25,
                           color: Colors.white,
                         ),
                       ),
@@ -262,7 +261,7 @@ Future<void> _loadUserData() async {
                         'Markah',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 18,
                           color: Colors.white70,
                         ),
                       ),
@@ -277,7 +276,7 @@ Future<void> _loadUserData() async {
               children: <Widget>[
                 ListTile(
                   title: Text(
-                    'Tukar Username',
+                    'Tukar Nama Pengguna',
                     style: TextStyle(
                       color: Color(0xFF82618B),
                       fontSize: 20,
@@ -285,15 +284,15 @@ Future<void> _loadUserData() async {
                     ),
                   ),
                   subtitle: const Text(
-                    'Tukar username anda',
-                    style: TextStyle(fontSize: 18),
+                    'Tukar nama pengguna anda',
+                    style: TextStyle(fontSize: 16),
                   ),
                   onTap: _changeUsername,
                 ),
                 const Divider(),
                 ListTile(
                   title: Text(
-                    'Tukar Gambar Profile',
+                    'Tukar Gambar Profil',
                     style: TextStyle(
                       color: Color(0xFF82618B),
                       fontSize: 20,
@@ -301,8 +300,8 @@ Future<void> _loadUserData() async {
                     ),
                   ),
                   subtitle: const Text(
-                    'Tukar gambar profile anda',
-                    style: TextStyle(fontSize: 18),
+                    'Tukar gambar profil anda',
+                    style: TextStyle(fontSize: 16),
                   ),
                   onTap: uploadProfilePicture,
                 ),
@@ -318,7 +317,7 @@ Future<void> _loadUserData() async {
                   ),
                   subtitle: const Text(
                     'Log keluar dari akaun anda',
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 16),
                   ),
                   onTap: _signOut,
                 ),

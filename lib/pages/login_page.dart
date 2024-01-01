@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import 'package:wildlifego/components/my_form_field.dart';
+import 'package:wildlifego/pages/doctor/Admin_HomeScreen.dart';
 import 'package:wildlifego/pages/homeScreen.dart';
 import 'package:wildlifego/pages/register_page.dart';
 
@@ -48,31 +50,34 @@ class _LoginPageState extends State<LoginPage> {
   void signIn() async {
     //get auth service
     final authService = Provider.of<AuthService>(context, listen: false);
-
+    final userRole = await FirebaseFirestore.instance.collection('users').where('email',isEqualTo: emailController.text).get().then((value) => value.docs[0]['role']);
+    print(userRole);
     try {
       await authService.signInWithEmailandPassword(
         removeSpace(emailController.text),
         passwordController.text,
       );
 
-      //Navigate to homescreen upon success
+    if(userRole == 'Doktor'){
       // ignore: use_build_context_synchronously
-    //   Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => const HomeScreen(),  // Replace HomeScreen with your actual homepage
-    //   ),
-    // );
-
-    // ignore: use_build_context_synchronously
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const HomeScreen(),
-      ),
-      (route) => false,
-    );
-
+        Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AdminHomeScreen(),
+        ),
+        (route) => false,
+      );
+    }
+    else{
+      // ignore: use_build_context_synchronously
+        Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ),
+        (route) => false,
+      );
+    }
     
     } catch (e) {
       
