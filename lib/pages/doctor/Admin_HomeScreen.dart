@@ -806,7 +806,7 @@ class VideoPlayerWidget extends StatefulWidget {
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late VideoPlayerController _videoController;
-  bool showControls = false;
+  bool showControls = true;
   double _sliderValue = 0.0;
 
   @override
