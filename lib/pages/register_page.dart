@@ -109,7 +109,9 @@ class _RegisterPageState extends State<RegisterPage> {
         .where('email', isEqualTo: emailController.text)
         .get()
         .then((value) {
-      if (value.docs.isNotEmpty) {
+          // Check if the document exists
+          
+      if (value.docs.isNotEmpty) { //
         return value.docs[0]['role'];
       } else {
         // Handle the case where there are no documents
