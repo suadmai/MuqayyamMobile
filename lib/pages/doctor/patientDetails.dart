@@ -66,7 +66,7 @@ class _PatientDetailsState extends State<PatientDetails>{
                   builder: (context, snapshot) {
           
                   final patient = snapshot.data!.docs.first.data();
-                  String? _profilePictureUrl = patient['profilePicture'] as String?;
+                  String? pfpURL = patient['profilePicture'] as String?;
                   String? patientName = patient['username'] as String?;
                   String? patientAge = "";
                   String? patientGender = "";
@@ -86,10 +86,25 @@ class _PatientDetailsState extends State<PatientDetails>{
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  const CircleAvatar(
-                                    radius: 30,
-                                    child: Icon(Icons.person, size: 40,),
-                                  ),
+                                   Container(
+                                          child: pfpURL != null
+                                          ? CircleAvatar(
+                                              radius: 30,
+                                              backgroundImage:
+                                                  NetworkImage(pfpURL),
+                                            )
+                                          :
+                                          const CircleAvatar(
+                                            radius: 30,
+                                            backgroundColor: Colors
+                                                .blue, // Set the profile image's background color
+                                            child: Icon(
+                                              Icons.person,
+                                              size: 30,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
                                   const SizedBox(width: 20),
                                   Text(
                                     patientName.toString(),

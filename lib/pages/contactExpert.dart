@@ -92,6 +92,7 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                   itemCount: doctors.length,
                   itemBuilder: (context, index) {
                     final doctor = doctors[index].data();
+                    final pfpURL = doctor['profilePicture'] as String?;
                     final userID = doctor['userID'] as String?;
                     final userEmail = doctor['email'] as String?;
                     final username = doctor['username'] as String?;
@@ -111,14 +112,14 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                             child: Column(
                                 children: [
                                   ListTile(
-                                    leading: CircleAvatar(
-                                      radius: 24,
-                                      backgroundColor: Colors.blue,
-                                      child: Icon(
-                                        Icons.person,
-                                        size: 24,
-                                        color: Colors.white,
-                                      ),
+                                    leading: 
+                                    CircleAvatar(
+                                      backgroundImage: pfpURL != null
+                                          ? NetworkImage(pfpURL)
+                                          : null, // Display the profile picture if available
+                                      child: pfpURL == null
+                                          ? const Icon(Icons.person, color: Colors.white)
+                                          : null, // Show an icon if no profile picture is available
                                     ),
                                     title: Text(
                                       '$username',
@@ -186,6 +187,7 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                   itemBuilder: (context, index) {
                     final chat = chats[index].data();
                     final members = chat['members'] as dynamic;
+                    final receiverPfpURL = FirebaseFirestore.instance.collection('users').doc(members.firstWhere((element) => element != _firebaseAuth.currentUser!.uid)).get().then((value) => value.data()!['profilePicture'] as String?);
                     final lastMessage = chat['last_message'] as String?;
                     final chatRoomId = chat['chat_room_id'] as String?;
                     //final read = chatService.getUnreadMessagesCount(chatRoomId!);
@@ -220,23 +222,17 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                                 ),
                               );
                             },
-
-                            onLongPress: () {
-                              
-                            },
-
                             child: Column(
                                 children: [
                                   ListTile(
                                     leading: CircleAvatar(
-                                      radius: 24,
-                                      backgroundColor: Colors.blue,
-                                      child: Icon(
-                                        Icons.person,
-                                        size: 24,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                    backgroundImage: receiverPfpURL != null
+                                        ? NetworkImage(receiverPfpURL as String)
+                                        : null, // Display the profile picture if available
+                                    child: receiverPfpURL == null
+                                        ? const Icon(Icons.person, color: Colors.white)
+                                        : null, // Show an icon if no profile picture is available
+                                  ),
                                     title: Text(
                                       '$receiverUsername',
                                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

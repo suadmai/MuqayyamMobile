@@ -72,14 +72,20 @@ class _QuranWidgetState extends State<QuranWidget> {
                       style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,),
                       textAlign: TextAlign.center,
                     ),
-                    Expanded(
+                    TweenAnimationBuilder(
+                      tween: IntTween(begin: 0, end: readCount),
+                    duration: const Duration(seconds: 1),
+                    builder: (context, int value, child){
+                      return Expanded(
                       child: Center(
                         child: Text(
                           readCount.toString(),
                           style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                         ),
                       ),
-                    ),
+                    );
+                    }),
+                    
                   ],
                 ),
               ),
