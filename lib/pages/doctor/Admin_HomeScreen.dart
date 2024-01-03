@@ -1,6 +1,14 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 //other pages
+
+//Report:
+// The development of the app started on August 2023 using Flutter framework and Dart programming language.
+// The developers utilised GitHub as the version control system to manage the source code of the app and to keep track of the changes made to the codes
+/*
+The app is mainly developed using the Flutter framework and Dart programming language. The developers utilised the Github version control system to manage the source code of the app and to keep track of the changes made to the codes. The developers have divided themselves into equally distributed tasks to speed up development. This is made possible with Github branching and merging feature which allows multiple versions of the app to be developed and tested at the same time. 
+Additionally, since the app includes an interactive graphical user interface, the 
+*/
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';

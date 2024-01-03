@@ -408,13 +408,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                         Container(
                                           child: pfpURL != null
                                           ? CircleAvatar(
-                                              radius: 24,
+                                              radius: 16,
                                               backgroundImage:
                                                   NetworkImage(pfpURL),
                                             )
                                           :
                                           CircleAvatar(
-                                            radius: 24,
+                                            radius: 16,
                                             backgroundColor: Colors
                                                 .blue, // Set the profile image's background color
                                             child: Icon(

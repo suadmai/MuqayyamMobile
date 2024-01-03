@@ -178,6 +178,8 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
           .where('members', arrayContains: _firebaseAuth.currentUser!.uid)
           .snapshots(),
           builder: (context, snapshot) {
+
+            
           if (snapshot.hasData) {
             final chats = snapshot.data!.docs;
             return 
@@ -187,7 +189,6 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                   itemBuilder: (context, index) {
                     final chat = chats[index].data();
                     final members = chat['members'] as dynamic;
-                    final receiverPfpURL = FirebaseFirestore.instance.collection('users').doc(members.firstWhere((element) => element != _firebaseAuth.currentUser!.uid)).get().then((value) => value.data()!['profilePicture'] as String?);
                     final lastMessage = chat['last_message'] as String?;
                     final chatRoomId = chat['chat_room_id'] as String?;
                     //final read = chatService.getUnreadMessagesCount(chatRoomId!);
@@ -225,13 +226,8 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                             child: Column(
                                 children: [
                                   ListTile(
-                                    leading: CircleAvatar(
-                                    backgroundImage: receiverPfpURL != null
-                                        ? NetworkImage(receiverPfpURL as String)
-                                        : null, // Display the profile picture if available
-                                    child: receiverPfpURL == null
-                                        ? const Icon(Icons.person, color: Colors.white)
-                                        : null, // Show an icon if no profile picture is available
+                                    leading: CircleAvatar( 
+                                    child: const Icon(Icons.person, color: Colors.white)
                                   ),
                                     title: Text(
                                       '$receiverUsername',
