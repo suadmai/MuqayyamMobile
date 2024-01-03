@@ -33,7 +33,7 @@ class AuthGate extends StatelessWidget {
                       if (userRole == 'Doktor') {
                         return const AdminHomeScreen();
                       } else {
-                        return const HomeScreen();
+                        return  HomeScreen();
                       }
                     } else {
                       // Handle the case where the document is missing or null

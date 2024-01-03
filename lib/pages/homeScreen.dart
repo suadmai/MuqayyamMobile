@@ -11,6 +11,7 @@ import 'package:wildlifego/pages/contactExpert.dart';
 import 'package:wildlifego/pages/new_quran_page.dart';
 import 'package:wildlifego/pages/profile_page.dart';
 import 'package:wildlifego/pages/new_rewards_page.dart';
+import 'package:wildlifego/pages/ramadan_page.dart';
 import 'package:wildlifego/pages/siri.dart';
 import 'package:wildlifego/pages/tasbih.dart';
 import '../components/menu_buttons.dart';
@@ -20,7 +21,10 @@ import 'package:shimmer/shimmer.dart';
 
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+   HomeScreen({Key? key}) : super(key: key);
+
+  //date for ramadhan
+  final DateTime ramadhanDate = DateTime(2024, 3, 12);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -267,13 +271,37 @@ class _HomeScreenState extends State<HomeScreen> {
                                   MenuButton(
                                     buttonText: 'Jejak Puasa',
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              SiriWave(),
-                                        ),
-                                      );
+
+                                      //cannot open until ramadan
+                                        if (DateTime.now().isBefore(widget.ramadhanDate)) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: Text('Ramadan belum tiba'),
+                                                content: Text('Ramadan akan tiba pada 12 Mac 2024'),
+                                                actions: <Widget>[
+                                                  ElevatedButton(
+                                                    child: Text('OK'),
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        } else {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RamadanPage(), // Pass the userID to the ChatPage
+                                            ),
+                                          );
+                                        }
+
+                                      
                                     },
                                     imagePath: ramadhanIcon,
                                   ),

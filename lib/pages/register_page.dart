@@ -155,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
+          builder: (context) =>  HomeScreen(),
         ),
         (route) => false,
       );
