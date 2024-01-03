@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:wildlifego/pages/doctor/patientDetails.dart';
+import 'package:wildlifego/pages/register_page.dart';
 import '../../firebase/firebase_config.dart';
 
 class PatientList extends StatefulWidget {
@@ -27,68 +28,7 @@ class _PatientListState extends State<PatientList>{
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
         title: const Text("Pantau pesakit"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              //go to profile page
-            },
-            icon: const Icon(
-              Icons.account_circle,
-              size: 30,
-            ),
-          )
-        ],
       ),
-
-      // bottomNavigationBar: BottomAppBar(
-      //   color: Color(0xFF82618B),
-      //   shape: const CircularNotchedRectangle(),
-      //   notchMargin: 10.0,
-      //   child: SizedBox(
-      //     height: 60.0,
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceAround, // Updated alignment
-      //       children: <Widget>[
-      //         // Home
-      //         IconButton(
-      //           onPressed: () {
-                  
-      //           },
-      //           icon: const Icon(Icons.home),
-      //           color: Colors.white,
-      //         ),
-
-      //         // Search (You can replace this with your desired search functionality)
-      //         IconButton(
-      //           onPressed: () {
-      //             // Add your search functionality here
-      //           },
-      //           icon: const Icon(Icons.search),
-      //           color: Colors.white,
-      //         ),
-
-      //         // Trophy (You can replace this with your desired trophy functionality)
-      //         IconButton(
-      //           onPressed: () {
-      //             // Add your trophy functionality here
-      //           },
-      //           icon: const Icon(Icons.emoji_events),
-      //           color: Colors.white,
-      //         ),
-
-      //         // Settings (You can replace this with your desired settings functionality)
-      //         IconButton(
-      //           onPressed: () {
-      //             // Add your settings functionality here
-      //           },
-      //           icon: const Icon(Icons.settings),
-      //           color: Colors.white,
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
-
       
       body:Center(
         child: Padding(
@@ -104,7 +44,7 @@ class _PatientListState extends State<PatientList>{
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Text(
-                "Senarai pesakit",
+                "Senarai Pengguna",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
@@ -118,17 +58,16 @@ class _PatientListState extends State<PatientList>{
         .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            final doctors = snapshot.data!.docs;
+            final users = snapshot.data!.docs;
             return 
           Expanded(
             child: ListView.builder(
-            itemCount: doctors.length,
+            itemCount: users.length,
             itemBuilder: (context, index) {
-              final doctor = doctors[index].data();
-              final userID = doctor['userID'] as String?;
-              final pfpURL = doctor['profilePicture'] as String?;
-              final userEmail = doctor['email'] as String?;
-              final username = doctor['username'] as String?;
+              final user = users[index].data();
+              final userID = user['userID'] as String?;
+              final pfpURL = user['profilePicture'] as String?;
+              final username = user['username'] as String?;
 
         return InkWell(
 

@@ -27,7 +27,7 @@ class _PatientDetailsState extends State<PatientDetails>{
   String userID = "";
   String username = "";
   String userEmail = "";
-  bool bookmarked = false;
+  bool showMore = false;
 
   @override
   void initState() {
@@ -50,13 +50,14 @@ class _PatientDetailsState extends State<PatientDetails>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const TopAppBar(title: "Pantau Pesakit"),
-
-      // bottomNavigationBar: const MyBottomAppBar(),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF82618B),
+        title: const Text("Maklumat Pengguna"),
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
+          child: ListView(
               children: [
                 StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                   stream: firestore.collection("users")
@@ -68,10 +69,13 @@ class _PatientDetailsState extends State<PatientDetails>{
                   final patient = snapshot.data!.docs.first.data();
                   String? pfpURL = patient['profilePicture'] as String?;
                   String? patientName = patient['username'] as String?;
-                  String? patientAge = "";
-                  String? patientGender = "";
+                  String? patientAge = patient['age'] as String?;
+                  String? patientAddress = patient['address'] as String?;
+                  String? patientPhone = patient['phone'] as String;
+                  String? patientSurgery = patient['surgery'] as String?;
+                  String? patientSymptoms = patient['symptoms'] as String?;
                   String? patientEmail = patient['email'] as String?;
-                  String? healthInfo = "";
+                  final redemptions = snapshot.data!.docs.first.reference.collection('redemptions').snapshots();
           
                     return Card(
                       elevation: 3,
@@ -81,6 +85,7 @@ class _PatientDetailsState extends State<PatientDetails>{
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -116,28 +121,18 @@ class _PatientDetailsState extends State<PatientDetails>{
                                 ],
                               ),
                               const SizedBox(height: 20),
+                              
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                  children: [
-                                    RichText(text: const TextSpan(
-                                      text: 'Jantina: ',
-                                      style: TextStyle(fontSize: 14, color: Colors.black),
-                                      children: <TextSpan>[
-                                        TextSpan(text: 'lelaki', style: TextStyle(fontWeight: FontWeight.bold)),
-                                      ],
-                                    )),
-                                    const SizedBox(width: 20),
-                                    RichText(text: const TextSpan(
+                                RichText(text: TextSpan(
                                       text: 'Umur: ',
-                                      style: TextStyle(fontSize: 14, color: Colors.black),
+                                      style: const TextStyle(fontSize: 14, color: Colors.black),
                                       children: <TextSpan>[
-                                        TextSpan(text: '30', style: TextStyle(fontWeight: FontWeight.bold)),
+                                        TextSpan(text: patientAge, style: TextStyle(fontWeight: FontWeight.bold)),
                                       ],
                                     )),
-                                  ],
-                                ),
+
                                 const SizedBox(height: 12),
                                 RichText(text: TextSpan(
                                       text: 'Alamat Emel: ',
@@ -146,14 +141,61 @@ class _PatientDetailsState extends State<PatientDetails>{
                                         TextSpan(text: patientEmail.toString(), style: TextStyle(fontWeight: FontWeight.bold)),
                                       ],
                                     )),
+
                                 const SizedBox(height: 12),
-                                RichText(text: const TextSpan(
-                                      text: 'Masalah kesihatan: ',
-                                      style: TextStyle(fontSize: 14, color: Colors.black),
+                                RichText(text: TextSpan(
+                                      text: 'Nombor Telefon: ',
+                                      style: const TextStyle(fontSize: 14, color: Colors.black),
                                       children: <TextSpan>[
-                                        TextSpan(text: 'tiada', style: TextStyle(fontWeight: FontWeight.bold)),
+                                        TextSpan(text: patientPhone, style: const TextStyle(fontWeight: FontWeight.bold)),
                                       ],
                                     )),
+                                Visibility(
+                                  visible: showMore,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children:[
+                                  const SizedBox(height: 12),
+                                      RichText(
+                                        maxLines: 3,
+                                        text: TextSpan(      
+                                        text: 'Alamat: ',
+                                        style: const TextStyle(fontSize: 14, color: Colors.black),
+                                        children: <TextSpan>[
+                                          TextSpan(text: patientAddress, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                        ],
+                                      )),
+                                  const SizedBox(height: 12),
+                                  RichText(text: TextSpan(
+                                        text: 'Pembedahan: ',
+                                        style: const TextStyle(fontSize: 14, color: Colors.black),
+                                        children: <TextSpan>[
+                                          TextSpan(text: patientSurgery ?? 'tiada', style: const TextStyle(fontWeight: FontWeight.bold)),
+                                        ],
+                                      )),
+                                  const SizedBox(height: 12),
+                                  RichText(text: TextSpan(
+                                        text: 'Simptom: ',
+                                        style: const TextStyle(fontSize: 14, color: Colors.black),
+                                        children: <TextSpan>[
+                                          TextSpan(text: patientSymptoms ?? 'tiada', style: const TextStyle(fontWeight: FontWeight.bold)),
+                                        ],
+                                      )),
+                                    ]
+                                  )
+                                ),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                    IconButton(
+                                      onPressed: (){
+                                        setState(() {
+                                          showMore = !showMore;
+                                        });
+                                      },
+                                      icon: showMore? const Icon(Icons.expand_less, color: Colors.black,) :
+                                      const Icon(Icons.expand_more, color: Colors.black,),)
+                                  ],),
                                 ],
                               ),
                             ],
@@ -170,29 +212,26 @@ class _PatientDetailsState extends State<PatientDetails>{
                           Expanded(
                             child: ElevatedButton.icon(
                             onPressed: () {
-                              final snackBar = SnackBar(content: Text(bookmarked? 'Penanda berjaya ditambah' : 'Penanda berjaya dibuang'));
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                              setState(() {
-                                bookmarked = !bookmarked;
-                              });
-                              print(bookmarked);
+                              final redemptions = firestore.collection('users').doc(widget.patientId).collection('redemptions').snapshots();
+     
+                              showDialog(
+                                context: context, 
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Senarai kod unik'),
+                                    content: Text(redemptions.toString()),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        }, 
+                                        child: const Text('Tutup')
+                                      ),
+                                    ],
+                                  );
+                                }
+                              );
                             },
-                            icon: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              transitionBuilder: (Widget child, Animation<double> animation) {
-                                return ScaleTransition(child: child, scale: animation);
-                              },
-                              child: Icon(
-                                bookmarked ? Icons.bookmark_add_outlined : Icons.bookmark,
-                                color: Colors.black,
-                                key: ValueKey<bool>(bookmarked),
-                              ),
-                            ),
-                            label: Text(
-                                bookmarked ? 'Tambah Penanda' : 'Buang Penanda',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.black),
-                              ),
                             style: ButtonStyle(
                               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -202,6 +241,12 @@ class _PatientDetailsState extends State<PatientDetails>{
                               backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
                               padding: MaterialStateProperty.all<EdgeInsetsGeometry>(const EdgeInsets.symmetric(vertical: 20)),
                             ),
+                            icon: const Icon(Icons.card_giftcard_rounded, color: Colors.black,),
+                            label: const Text(
+                                'Ganjaran',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.black),
+                              ),
                           ),
                           ),
                           const SizedBox(width: 8),

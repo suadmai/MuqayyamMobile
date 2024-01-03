@@ -65,7 +65,7 @@ class _PrayerWidgetState extends State<PrayerWidget> {
                       crossAxisAlignment: CrossAxisAlignment.center, // Align title to the start (left)
                       children: [
                         const Text(
-                          'Solat Harian',
+                          'Solat Hari Ini',
                           style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,),
                           textAlign: TextAlign.center,
                         ),
