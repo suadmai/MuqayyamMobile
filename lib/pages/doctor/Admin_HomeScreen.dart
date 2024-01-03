@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:video_compress/video_compress.dart';
+import 'package:wildlifego/components/videoPlayer.dart';
 import 'package:wildlifego/pages/doctor/monitorPatient.dart';
 import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
@@ -28,6 +29,7 @@ import 'dart:io';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:video_player/video_player.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../components/menu_buttons.dart';
 import '../profile_page.dart';
 import '/services/auth_service.dart';
 
@@ -41,6 +43,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   String? _profilePictureUrl;
   late User _user;
+  String monitorIcon = 'lib/icons/icons_Monitor.png';
+  String leaderboardsIcon= 'lib/icons/icons_Leaderboards.png';
+  String chatIcon = 'lib/icons/icons_Contact_Expert.png';
   
   @override
   void initState() {
@@ -183,8 +188,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
               },
             );
           },
-          child: const Icon(Icons.add),
           backgroundColor: Color(0xFF82618B),
+          child: const Icon(Icons.add),
         ),
       ),
       body: Center(
@@ -193,100 +198,63 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2), // Shadow color
-                            offset: Offset(0, 3), // Changes position of shadow
-                            blurRadius: 6, // Increases the blur of the shadow
-                            spreadRadius: 0, // Increases the size of the shadow
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                SizedBox(
+                  height: 150,
+                  child: Center(
+                        child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  //make it scrollable
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const PatientList(),
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.monitor_heart,
-                                          size: 32,
-                                        )),
-                                    Text(
-                                      "Pantau Pesakit",
-                                      style: TextStyle(fontSize: 12),
+                                    MenuButton(
+                                      buttonText: 'Pantau Peserta',
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => PatientList(),
+                                          ),
+                                        );
+                                      },
+                                      imagePath: monitorIcon,
+                                    ),
+                                    SizedBox(width: 10),
+                              
+                                    MenuButton(
+                                      buttonText: 'Papan Markah',
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => const LeaderboardPage(), // Pass the userID to the ChatPage
+                                          ),
+                                        );
+                                      },
+                                      imagePath: leaderboardsIcon,
+                                    ),
+                                    SizedBox(width: 10),
+                      
+                                    MenuButton(
+                                      buttonText: 'Bual',
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ContactExpert(),
+                                          ),
+                                        );
+                                      },
+                                      imagePath: chatIcon,
                                     ),
                                   ],
                                 ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const LeaderboardPage(), // Pass the userID to the ChatPage
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.view_list_sharp,
-                                          size: 32,
-                                        )),
-                                    Text(
-                                      "Papan Markah",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const ContactExpert(), // Pass the userID to the ChatPage
-                                            ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.chat,
-                                          size: 32,
-                                        )),
-                                    Text(
-                                      "Perbualan",
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
-                      )),
+                              ),
+                            )
+                                          ),
                 ),
                 SizedBox(height: 10),
                 Align(
@@ -803,292 +771,3 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     }
 }
 
-class VideoPlayerWidget extends StatefulWidget {
-  final String videoUrl;
-
-  VideoPlayerWidget({required this.videoUrl});
-
-  @override
-  _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
-}
-
-class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
-  late VideoPlayerController _videoController;
-  bool showControls = true;
-  double _sliderValue = 0.0;
-
-  @override
-  void initState() {
-    super.initState();
-    _videoController = VideoPlayerController.network(widget.videoUrl)
-      ..initialize().then((_) {
-        if (mounted) {
-          setState(() {});
-        }
-      });
-
-      Timer.periodic(Duration(milliseconds: 500), (timer) {
-      if (_videoController.value.isPlaying) {
-      setState(() {
-      // Update slider value to match video position
-      _sliderValue = _videoController.value.position.inSeconds.toDouble();
-        });
-      }
-    });
-  }
-
-  Icon displayIcon(){
-    if (_videoController.value.isPlaying) {
-      return Icon(
-        Icons.pause,
-        size: 28,
-        color: Colors.white,
-      );
-    } else if(_videoController.value.position == _videoController.value.duration){
-      return Icon(
-        Icons.replay,
-        size: 28,
-        color: Colors.white,
-      );
-    }
-    else {
-      return Icon(
-        Icons.play_arrow_rounded,
-        size: 28,
-        color: Colors.white,
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _videoController.value.isInitialized
-        ? Column(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: 
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      showControls = !showControls;
-                    });
-                  },
-                  child: Stack(
-                    children: [
-                      ClipRRect(
-                          borderRadius: BorderRadius.circular(16), // Adjust the radius as needed
-                          child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: Container(
-                              color: Colors.black, // Set the background color to black
-                              child: Center(
-                                child: AspectRatio(
-                                  aspectRatio: _videoController.value.aspectRatio,
-                                  child: VideoPlayer(_videoController),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        ),
-                      Visibility(
-                        visible: showControls,
-                        child: Positioned(
-                          left: 1,
-                          right: 1,
-                          bottom: 1,
-                          child: Column(
-                            children: [
-                              Center(
-                                child: IconButton(
-                                  iconSize: 28,
-                                  color: Colors.white,
-                                  icon: Icon(
-                                    displayIcon().icon,
-                                  ),
-                                  onPressed: () {
-                                    if (_videoController.value.isPlaying) {
-                                      _videoController.pause();
-                                    } else if(_videoController.value.position == _videoController.value.duration){
-                                      _videoController.seekTo(Duration.zero);
-                                      _videoController.play();
-                                    }
-                                    else {
-                                      _videoController.play();
-                                    }
-                                    setState(() {});
-                                  },
-                                ),
-                              ),
-                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                 children:[
-                                 Container(
-                                  width: MediaQuery.of(context).size.width * 0.6,
-                                   child: Slider(
-                                      activeColor: Colors.white,
-                                      inactiveColor: Colors.grey,
-                                      min: 0.0,
-                                      max: _videoController.value.duration.inSeconds.toDouble(),
-                                      value: _videoController.value.position.inSeconds.toDouble(),
-                                      onChanged: (double value) {
-                                        setState(() {
-                                        // Seek to the specified position
-                                        _videoController.seekTo(Duration(seconds: value.toInt()));
-                                        _sliderValue = value; // Update slider value
-                                      });
-                                    }
-                                    ),
-                                 ),
-                                  IconButton(
-                                    onPressed: (){
-                                      //change to fullscreen
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => 
-                                          Scaffold(
-                                            appBar: AppBar(
-                                              backgroundColor: Colors.black,
-                                              leading: IconButton(
-                                                onPressed: (){
-                                                  Navigator.pop(context);
-                                                }, 
-                                                icon: Icon(
-                                                  Icons.arrow_back,
-                                                  color: Colors.white,
-                                                )
-                                              ),
-                                            ),
-                                            backgroundColor: Colors.black,
-                                            body: Stack(
-                                              children:[
-                                                Center(
-                                                child: AspectRatio(
-                                                  aspectRatio: _videoController.value.aspectRatio,
-                                                  child: VideoPlayer(_videoController),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 1,
-                                                right: 1,
-                                                bottom: 1,
-                                                child: Column(
-                                                  children: [
-                                                    Center(
-                                                      child: IconButton(
-                                                        iconSize: 28,
-                                                        color: Colors.white,
-                                                        icon: Icon(
-                                                          displayIcon().icon,
-                                                        ),
-                                                        onPressed: () {
-                                                          if (_videoController.value.isPlaying) {
-                                                            _videoController.pause();
-                                                          } else if(_videoController.value.position == _videoController.value.duration){
-                                                            _videoController.seekTo(Duration.zero);
-                                                            _videoController.play();
-                                                          }
-                                                          else {
-                                                            _videoController.play();
-                                                          }
-                                                          setState(() {});
-                                                        },
-                                                      ),
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children:[
-                                                        Container(
-                                                          width: MediaQuery.of(context).size.width * 0.6,
-                                                          child: Slider(
-                                                            activeColor: Colors.white,
-                                                            inactiveColor: Colors.grey,
-                                                            min: 0.0,
-                                                            max: _videoController.value.duration.inSeconds.toDouble(),
-                                                            value: _videoController.value.position.inSeconds.toDouble(),
-                                                            onChanged: (double value) {
-                                                              setState(() {
-                                                              // Seek to the specified position
-                                                              _videoController.seekTo(Duration(seconds: value.toInt()));
-                                                              _sliderValue = value; // Update slider value
-                                                            });
-                                                          }
-                                                          ),
-                                                        ),
-                                                        IconButton(
-                                                          onPressed: (){
-                                                            //change to fullscreen
-                                                            Navigator.pop(context);
-                                                          }, 
-                                                          icon: Icon(
-                                                            Icons.fullscreen_exit,
-                                                            size: 28,
-                                                            color: Colors.white,
-                                                          )
-                                                        ),
-                                                      ]
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              ]
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }, 
-                                    icon: Icon(
-                                      Icons.fullscreen,
-                                      size: 28,
-                                      color: Colors.white,
-                                    )),
-                                 ]
-                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          )
-        : ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Align(
-          alignment: Alignment.centerLeft,
-          child: AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Container(
-              color: Colors.black,
-              child: Center(
-                child: AspectRatio(
-                  aspectRatio: _videoController.value.aspectRatio,
-                  child: //loading indicator
-                  Transform.scale(
-                    scale: 0.2,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 10,
-                      color: //use the app bar color
-                      Color(0xFF82618B),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        ); // Show a loading indicator while initializing
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _videoController.dispose();
-  }
-}

@@ -17,7 +17,7 @@ class MenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
           width: 110, // Set a fixed width
-          height: 120, // Set a fixed height
+          height: 110, // Set a fixed height
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12.0),
             boxShadow: [

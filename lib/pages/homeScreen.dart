@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:wildlifego/components/videoPlayer.dart';
 import 'package:wildlifego/pages/TrackPrayer.dart';
 import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
@@ -209,13 +210,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Container(
+              SizedBox(
                 //adjust height to fit the content
                 height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.grey[200],
-                    ),
+                    
                     child: Center(
                       child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
@@ -513,7 +511,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Center(
                         child: Text('Loading...'),
                       );
-                      //shimmer effect here
                     }
                   },
                 ),
