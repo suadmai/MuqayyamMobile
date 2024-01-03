@@ -55,6 +55,7 @@ class _QuranPageState extends State<QuranPage> {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
+            
             children: <Widget>[
               StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: FirebaseFirestore.instance.collection('quran').snapshots(),
@@ -64,7 +65,9 @@ class _QuranPageState extends State<QuranPage> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
                         const SizedBox(height: 12),
+
                         const Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Text(
@@ -75,8 +78,9 @@ class _QuranPageState extends State<QuranPage> {
                             ),
                           ),
                         ),
+
                         SizedBox(
-                          height: 500,
+                          height: 600,
                           child: ListView.builder(
                             itemCount: levels.length,
                             itemBuilder: (context, index) {
@@ -269,6 +273,7 @@ class _QuranPageState extends State<QuranPage> {
                             },
                           ),
                         ),
+                        
                       ],
                     );
                   } else if (snapshot.hasError) {
