@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wildlifego/firebase/firebase_config.dart';
 
+import 'prayerWidgetPlus.dart';
+
 
 class PrayerWidget extends StatefulWidget {
   final String patientId;
@@ -52,79 +54,92 @@ class _PrayerWidgetState extends State<PrayerWidget> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-          child: Card(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
-              ),
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center, // Align title to the start (left)
-                      children: [
-                        const Text(
-                          'Solat Hari Ini',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,),
-                          textAlign: TextAlign.center,
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Center(
-                               child: Column(
-                                children: [
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                      const Text('Subuh', style: TextStyle(fontSize: 13)),
-                                      Icon(subuh ? Icons.circle : Icons.circle, color: subuh ? Colors.greenAccent : Colors.grey, size: 15),
-                                    ]),
-                                  ),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                      const Text('Zuhur', style: TextStyle(fontSize: 13)),
-                                      Icon(zohor ? Icons.circle : Icons.circle, color: zohor ? Colors.greenAccent : Colors.grey, size: 15),
-                                    ]),
-                                  ),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                      const Text('Asar', style: TextStyle(fontSize: 13)),
-                                      Icon(asar ? Icons.circle : Icons.circle, color: asar ? Colors.greenAccent : Colors.grey, size: 15),
-                                    ]),
-                                  ),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                      const Text('Maghrib', style: TextStyle(fontSize: 13)),
-                                      Icon(maghrib ? Icons.circle : Icons.circle, color: maghrib ? Colors.greenAccent : Colors.grey, size: 15),
-                                    ]),
-                                  ),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                      const Text('Isya', style: TextStyle(fontSize: 13)),
-                                      Icon(isya ? Icons.circle : Icons.circle, color: isya ? Colors.greenAccent : Colors.grey, size: 15),
-                                    ]),
-                                  ),
-                                ],
-                               ),
+          child: GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context, 
+                builder: ((context) {
+                  return AlertDialog(
+                    backgroundColor: Colors.transparent,
+                    content: PrayerWidgetPlus(patientId: widget.patientId),
+                  );
+                })
+                );
+            },
+            child: Card(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
+                ),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center, // Align title to the start (left)
+                        children: [
+                          const Text(
+                            'Solat Hari Ini',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,),
+                            textAlign: TextAlign.center,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                 child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                        const Text('Subuh', style: TextStyle(fontSize: 13)),
+                                        Icon(subuh ? Icons.circle : Icons.circle, color: subuh ? Colors.greenAccent : Colors.grey, size: 15),
+                                      ]),
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                        const Text('Zuhur', style: TextStyle(fontSize: 13)),
+                                        Icon(zohor ? Icons.circle : Icons.circle, color: zohor ? Colors.greenAccent : Colors.grey, size: 15),
+                                      ]),
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                        const Text('Asar', style: TextStyle(fontSize: 13)),
+                                        Icon(asar ? Icons.circle : Icons.circle, color: asar ? Colors.greenAccent : Colors.grey, size: 15),
+                                      ]),
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                        const Text('Maghrib', style: TextStyle(fontSize: 13)),
+                                        Icon(maghrib ? Icons.circle : Icons.circle, color: maghrib ? Colors.greenAccent : Colors.grey, size: 15),
+                                      ]),
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                        const Text('Isya', style: TextStyle(fontSize: 13)),
+                                        Icon(isya ? Icons.circle : Icons.circle, color: isya ? Colors.greenAccent : Colors.grey, size: 15),
+                                      ]),
+                                    ),
+                                  ],
+                                 ),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                  ),
                 ),
               ),
-            ),
+          ),
         );
 }
 }

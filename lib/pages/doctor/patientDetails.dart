@@ -12,6 +12,7 @@ import 'package:wildlifego/main.dart';
 import 'package:wildlifego/pages/chat.dart';
 
 import '../../components/layout.dart';
+import '../../components/rewardswidget.dart';
 
 class PatientDetails extends StatefulWidget {
   final String patientId;
@@ -67,6 +68,7 @@ class _PatientDetailsState extends State<PatientDetails>{
                   builder: (context, snapshot) {
           
                   final patient = snapshot.data!.docs.first.data();
+                  
                   String? pfpURL = patient['profilePicture'] as String?;
                   String? patientName = patient['username'] as String?;
                   String? patientAge = patient['age'] as String?;
@@ -75,7 +77,6 @@ class _PatientDetailsState extends State<PatientDetails>{
                   String? patientSurgery = patient['surgery'] as String?;
                   String? patientSymptoms = patient['symptoms'] as String?;
                   String? patientEmail = patient['email'] as String?;
-                  final redemptions = snapshot.data!.docs.first.reference.collection('redemptions').snapshots();
           
                     return Card(
                       elevation: 3,
@@ -129,7 +130,7 @@ class _PatientDetailsState extends State<PatientDetails>{
                                       text: 'Umur: ',
                                       style: const TextStyle(fontSize: 14, color: Colors.black),
                                       children: <TextSpan>[
-                                        TextSpan(text: patientAge, style: TextStyle(fontWeight: FontWeight.bold)),
+                                        TextSpan(text: patientAge ?? '', style: TextStyle(fontWeight: FontWeight.bold)),
                                       ],
                                     )),
 
@@ -138,7 +139,7 @@ class _PatientDetailsState extends State<PatientDetails>{
                                       text: 'Alamat Emel: ',
                                       style: const TextStyle(fontSize: 14, color: Colors.black),
                                       children: <TextSpan>[
-                                        TextSpan(text: patientEmail.toString(), style: TextStyle(fontWeight: FontWeight.bold)),
+                                        TextSpan(text: patientEmail.toString() ?? '', style: TextStyle(fontWeight: FontWeight.bold)),
                                       ],
                                     )),
 
@@ -147,7 +148,7 @@ class _PatientDetailsState extends State<PatientDetails>{
                                       text: 'Nombor Telefon: ',
                                       style: const TextStyle(fontSize: 14, color: Colors.black),
                                       children: <TextSpan>[
-                                        TextSpan(text: patientPhone, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                        TextSpan(text: patientPhone ?? '', style: const TextStyle(fontWeight: FontWeight.bold)),
                                       ],
                                     )),
                                 Visibility(
@@ -162,7 +163,7 @@ class _PatientDetailsState extends State<PatientDetails>{
                                         text: 'Alamat: ',
                                         style: const TextStyle(fontSize: 14, color: Colors.black),
                                         children: <TextSpan>[
-                                          TextSpan(text: patientAddress, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                          TextSpan(text: patientAddress ?? '', style: const TextStyle(fontWeight: FontWeight.bold)),
                                         ],
                                       )),
                                   const SizedBox(height: 12),
@@ -212,24 +213,14 @@ class _PatientDetailsState extends State<PatientDetails>{
                           Expanded(
                             child: ElevatedButton.icon(
                             onPressed: () {
-                              final redemptions = firestore.collection('users').doc(widget.patientId).collection('redemptions').snapshots();
-     
                               showDialog(
-                                context: context, 
-                                builder: (BuildContext context) {
+                                context: context,
+                                builder: (context) {
                                   return AlertDialog(
-                                    title: const Text('Senarai kod unik'),
-                                    content: Text(redemptions.toString()),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        }, 
-                                        child: const Text('Tutup')
-                                      ),
-                                    ],
+                                    backgroundColor: Colors.transparent,
+                                    content: RewardsWidget(patientId: widget.patientId),
                                   );
-                                }
+                                },
                               );
                             },
                             style: ButtonStyle(
@@ -239,15 +230,22 @@ class _PatientDetailsState extends State<PatientDetails>{
                                 ),
                               ),
                               backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                              padding: MaterialStateProperty.all<EdgeInsetsGeometry>(const EdgeInsets.symmetric(vertical: 20)),
+                              padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                                const EdgeInsets.symmetric(vertical: 20),
+                              ),
                             ),
-                            icon: const Icon(Icons.card_giftcard_rounded, color: Colors.black,),
-                            label: const Text(
-                                'Ganjaran',
+                            icon: const Icon(Icons.card_giftcard_rounded, color: Colors.black),
+                            label: const FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Semak Kod Tebusan',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(color: Colors.black),
                               ),
+                            ),
                           ),
+
                           ),
                           const SizedBox(width: 8),
                           Expanded(
