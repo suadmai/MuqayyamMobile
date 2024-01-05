@@ -57,6 +57,22 @@ class _RegisterPageState extends State<RegisterPage> {
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
 
+  //remove space from email
+  String removeSpace(final emailController) {
+    var newEmail = emailController.split('');
+    newEmail.removeWhere((element) => element == ' ');
+    String newEmailString = newEmail.join();
+    print(newEmailString is String);
+    print("""the new email is '$newEmailString'""");
+    return newEmailString;
+  }
+
+// Validate email format using a regular expression
+  bool isEmailValid(String email) {
+    final emailRegex = RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+    return emailRegex.hasMatch(email);
+  }
+
   //setting up form keys
   final formKey = GlobalKey<FormState>();
 
@@ -240,12 +256,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       //email textfield
                       MyFormField(
                         controller: emailController,
-                        hintText: "Alamat emel",
+                        hintText: "Emel",
                         maxLines: 1,
-                        obscureText: false,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Sila masukkan alamat emel";
+                          if (value!.isEmpty) {
+                            return 'Sila masukkan emel';
+                          } else if (!isEmailValid(value)) {
+                            return 'Sila masukkan emel yang sah';
                           }
                           return null;
                         },
