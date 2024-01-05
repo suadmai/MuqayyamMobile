@@ -13,16 +13,122 @@ import '../components/my_text_field.dart';
 
 import '../services/auth_service.dart';
 
+class TermsAndConditionsPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Borang Persetujuan Nusantara'),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Gambaran Keseluruhan:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Terima kasih kerana memilih Nusantara. Sebelum anda meneruskan untuk mencipta akaun, sila ambil masa sejenak untuk membaca dan memahami terma dan syarat berikut.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Terma dan Syarat:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              '1. Maklumat Peribadi:\n'
+              '   - Nusantara mengumpul dan memproses maklumat peribadi, termasuk tetapi tidak terhad kepada, nama anda, alamat emel, umur, nombor telefon, dan alamat.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              '2. Tujuan Pengumpulan:\n'
+              '   - Maklumat yang dikumpul digunakan untuk tujuan mencipta dan mengekalkan akaun pengguna anda, menyediakan perkhidmatan yang dipersonalisasi, dan meningkatkan keseluruhan pengalaman pengguna.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              '3. Maklumat Kesihatan (jika berkenaan):\n'
+              '   - Jika anda seorang pesakit, anda mungkin diminta untuk memberikan maklumat mengenai gejala dan pembedahan. Maklumat ini digunakan untuk menawarkan perkhidmatan berkaitan kesihatan yang dipersonalisasi.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              '4. Keselamatan:\n'
+              '   - Kami mengambil serius mengenai keselamatan data anda. Nusantara menggunakan langkah-langkah piawai industri untuk melindungi maklumat peribadi anda daripada akses, pendedahan, pengubahan, dan pemusnahan yang tidak dibenarkan.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              '5. Persetujuan untuk Pemprosesan:\n'
+              '   - Dengan menekan "Daftar," anda bersetuju untuk pemprosesan maklumat peribadi anda seperti yang diterangkan dalam borang persetujuan ini.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              '6. Terma Perkhidmatan dan Dasar Privasi:\n'
+              '   - Anda digalakkan untuk membaca dan memahami Terma Perkhidmatan Kami dan Dasar Privasi Kami untuk memahami sepenuhnya hak anda dan amalan pemprosesan data kami.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              '7. PDPA (Akta Perlindungan Data Peribadi):\n'
+              '   - Dengan menggunakan Nusantara, anda mengakui dan bersetuju bahawa pemprosesan maklumat peribadi anda akan tertakluk kepada peruntukan Akta Perlindungan Data Peribadi (PDPA) dan dasar-dasar privasi kami.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              '8. Had Umur:\n'
+              '   - Aplikasi ini ditujukan untuk pengguna yang berumur 18 ke atas. Jika anda berada di bawah umur ini, harap untuk tidak menggunakan aplikasi ini.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Saya telah membaca dan memahami terma dan syarat yang dinyatakan dalam Borang Persetujuan Nusantara. Dengan menekan "Daftar," saya dengan ini memberikan persetujuan untuk pemprosesan maklumat peribadi saya sebagaimana yang diterangkan.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            // Add any other relevant information or terms and conditions content
+
+            // Confirmation buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context, true); // Pass true for confirmation
+                  },
+                  child: Text('Agree'),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context, false); // Pass false for rejection
+                  },
+                  child: Text('Disagree'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class RegisterPage extends StatefulWidget {
-  //final void Function()? onTap;
   const RegisterPage({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
+
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
-
-//Create Class for Symptom options
 
 class Symptom {
   final int id;
@@ -45,7 +151,6 @@ class Surgery {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  //setting up text controllers
   final usernameController = TextEditingController();
   final roleController = TextEditingController();
   final emailController = TextEditingController();
@@ -57,7 +162,9 @@ class _RegisterPageState extends State<RegisterPage> {
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
 
-  //remove space from email
+  final formKey = GlobalKey<FormState>();
+
+   //remove space from email
   String removeSpace(final emailController) {
     var newEmail = emailController.split('');
     newEmail.removeWhere((element) => element == ' ');
@@ -73,17 +180,13 @@ class _RegisterPageState extends State<RegisterPage> {
     return emailRegex.hasMatch(email);
   }
 
-  //setting up form keys
-  final formKey = GlobalKey<FormState>();
-
-  bool isDoctor = false; // To check if user is a doctor
-  bool isPatient = true; // To check if user is a patient
+  bool isDoctor = false;
+  bool isPatient = true;
 
   String selectedRole = 'Pengguna';
 
   final roles = ['Pengguna', 'Doktor'];
 
-  //Symptom options
   static final List<Symptom> _symptoms = [
     Symptom(id: 1, name: "HIV"),
     Symptom(id: 2, name: "Gangguan mental"),
@@ -93,14 +196,12 @@ class _RegisterPageState extends State<RegisterPage> {
     Symptom(id: 6, name: "Hilang deria bau"),
   ];
 
-  //Surgery options
   static final List<Surgery> _surgeries = [
     Surgery(id: 0, name: "Tiada"),
     Surgery(id: 1, name: "Implant Payudara"),
     Surgery(id: 2, name: "Kastrasi(Buang zakar)"),
   ];
 
-  //signup user
   void signUp() async {
     if (passwordController.text.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -118,63 +219,68 @@ class _RegisterPageState extends State<RegisterPage> {
       );
       return;
     }
-    //get auth service
+
     final authService = Provider.of<AuthService>(context, listen: false);
     final userRole = await FirebaseFirestore.instance
         .collection('users')
         .where('email', isEqualTo: emailController.text)
         .get()
         .then((value) {
-      // Check if the document exists
-
       if (value.docs.isNotEmpty) {
-        //
         return value.docs[0]['role'];
       } else {
-        // Handle the case where there are no documents
-        return null; // or any default value
+        return null;
       }
     });
-    print(userRole);
 
-    try {
-      await authService.signUpWithEmailandPassword(
-        usernameController.text,
-        selectedRole,
-        emailController.text,
-        ageController.text,
-        phoneController.text,
-        addressController.text,
-        symptomsController.text,
-        surgeryController.text,
-        passwordController.text,
-      );
-    } catch (e) {
-      // ignore: use_build_context_synchronously
+    final confirmed = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => TermsAndConditionsPage()),
+    );
+
+    if (confirmed == true) {
+      try {
+        await authService.signUpWithEmailandPassword(
+          usernameController.text,
+          selectedRole,
+          emailController.text,
+          ageController.text,
+          phoneController.text,
+          addressController.text,
+          symptomsController.text,
+          surgeryController.text,
+          passwordController.text,
+        );
+
+        if (userRole == 'Doktor') {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AdminHomeScreen(),
+            ),
+            (route) => false,
+          );
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeScreen(),
+            ),
+            (route) => false,
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+          ),
+        );
+      }
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString()),
+          content: Text("Anda mesti bersetuju dengan terma dan syarat dahulu."),
         ),
-      );
-    }
-
-    if (userRole == 'Doktor') {
-      // ignore: use_build_context_synchronously
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const AdminHomeScreen(),
-        ),
-        (route) => false,
-      );
-    } else {
-      // ignore: use_build_context_synchronously
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(),
-        ),
-        (route) => false,
       );
     }
   }
@@ -182,79 +288,66 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[100],
-        body: SafeArea(
-          // below notch
-          child: SingleChildScrollView(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      //logo
-                      const SizedBox(
-                        height: 20,
+      backgroundColor: Colors.grey[100],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Image.asset(
+                      "images/icon_transparent.png",
+                      height: 150,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text(
+                      "Daftar Akaun",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
                       ),
-
-                      Image.asset(
-                        "images/icon_transparent.png",
-                        height: 150,
-                      ),
-
-                      const SizedBox(
-                        height: 20,
-                      ),
-
-                      //welcome back
-                      const Text(
-                        "Daftar Akaun",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-
-                      //username textfield
-                      MyFormField(
-                        controller: usernameController,
-                        hintText: "Nama pengguna",
-                        maxLines: 1,
-                        obscureText: false,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Sila masukkan nama pengguna";
-                          }
-                          return null;
-                        },
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      MyDropdownButton(
-                        items: roles,
-                        value: selectedRole,
-                        onChanged: (newValue) {
-                          setState(() {
-                            print("Selected Role: $newValue");
-                            selectedRole = newValue!;
-                            isDoctor = newValue == 'Doktor';
-                          });
-                        },
-                        hintText: 'Pilih Peranan',
-                      ),
-
-                      const SizedBox(
-                        height: 20,
-                      ),
-
-                      //email textfield
-                      MyFormField(
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    MyFormField(
+                      controller: usernameController,
+                      hintText: "Nama pengguna",
+                      maxLines: 1,
+                      obscureText: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Sila masukkan nama pengguna";
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    MyDropdownButton(
+                      items: roles,
+                      value: selectedRole,
+                      onChanged: (newValue) {
+                        setState(() {
+                          print("Selected Role: $newValue");
+                          selectedRole = newValue!;
+                          isDoctor = newValue == 'Doktor';
+                        });
+                      },
+                      hintText: 'Pilih Peranan',
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    MyFormField(
                         controller: emailController,
                         hintText: "Emel",
                         maxLines: 1,
@@ -267,246 +360,227 @@ class _RegisterPageState extends State<RegisterPage> {
                           return null;
                         },
                       ),
-
-                      const SizedBox(
-                        height: 20,
-                      ),
-
-                      //staff id textfield
-                      Visibility(
-                        visible: isDoctor,
-                        child: MyFormField(
-                          controller: ageController,
-                          hintText: "ID Staf",
-                          maxLines: 1,
-                          obscureText: false,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return "Sila masukkan ID Staf";
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-
-                      Visibility(
-                        visible:
-                            isDoctor, // Only show the SizedBox when isPatient is true
-                        child: const SizedBox(
-                          height: 20,
-                        ),
-                      ),
-
-                      //age textfield
-                      MyFormField(
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Visibility(
+                      visible: isDoctor,
+                      child: MyFormField(
                         controller: ageController,
-                        hintText: "Umur",
-                        maxLines: 1,
-                        obscureText: false,
-                        isVisible: !isDoctor,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Sila masukkan umur";
-                          }
-                          return null;
-                        },
-                      ),
-
-                      Visibility(
-                        visible:
-                            !isDoctor, // Only show the SizedBox when isPatient is true
-                        child: const SizedBox(
-                          height: 20,
-                        ),
-                      ),
-
-                      //phone textfield
-                      MyFormField(
-                        controller: phoneController,
-                        hintText: "Nombor telefon",
+                        hintText: "ID Staf",
                         maxLines: 1,
                         obscureText: false,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Sila masukkan nombor telefon";
+                            return "Sila masukkan ID Staf";
                           }
                           return null;
                         },
                       ),
-
-                      const SizedBox(
+                    ),
+                    Visibility(
+                      visible: isDoctor,
+                      child: const SizedBox(
                         height: 20,
                       ),
-
-                      //address textfield
-                      MyFormField(
-                        controller: addressController,
-                        hintText: "Alamat",
-                        maxLines: 1,
-                        obscureText: false,
-                        isVisible: !isDoctor,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Sila masukkan alamat";
-                          }
-                          return null;
-                        },
-                      ),
-
-                      Visibility(
-                        visible:
-                            !isDoctor, // Only show the SizedBox when isPatient is true
-                        child: const SizedBox(
-                          height: 20,
-                        ),
-                      ),
-
-                      //symptom multi select
-
-                      Visibility(
-                        visible: !isDoctor,
-                        child: MultiSelectDialogField(
-                          buttonText: const Text("Pilih gejala"),
-                          title: const Text("Gejala"),
-                          items: _symptoms
-                              .map((e) => MultiSelectItem(e, e.name))
-                              .toList(),
-                          listType: MultiSelectListType.CHIP,
-                          onConfirm: (values) {
-                            setState(() {
-                              // Extract the names of selected symptoms
-                              List<String> selectedSymptomNames =
-                                  values.map((item) => item.name).toList();
-                              // Store the names in symptomsController.text
-                              symptomsController.text =
-                                  selectedSymptomNames.join(", ");
-                            });
-                          },
-                        ),
-                      ),
-
-                      Visibility(
-                        visible:
-                            !isDoctor, // Only show the SizedBox when isPatient is true
-                        child: const SizedBox(
-                          height: 20,
-                        ),
-                      ),
-
-                      // surgery multi select
-                      Visibility(
-                        visible: !isDoctor,
-                        child: MultiSelectDialogField(
-                          buttonText: const Text("Pilih pembedahan"),
-                          title: const Text("Pembedahan"),
-                          items: _surgeries
-                              .map((e) => MultiSelectItem(e, e.name))
-                              .toList(),
-                          listType: MultiSelectListType.CHIP,
-                          onConfirm: (values) {
-                            setState(() {
-                              // Extract the names of selected surgeries
-                              List<String> selectedSurgeryNames =
-                                  values.map((item) => item.name).toList();
-                              // Store the names in implantController.text
-                              surgeryController.text =
-                                  selectedSurgeryNames.join(", ");
-                            });
-                          },
-                        ),
-                      ),
-                      Visibility(
-                        visible:
-                            !isDoctor, // Only show the SizedBox when isPatient is true
-                        child: const SizedBox(
-                          height: 20,
-                        ),
-                      ),
-
-                      //password textfield
-                      MyFormField(
-                        controller: passwordController,
-                        hintText: "Kata laluan",
-                        maxLines: 1,
-                        obscureText: false, //see what u typed
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Sila masukkan kata laluan";
-                          }
-                          return null;
-                        },
-                      ),
-
-                      const SizedBox(
+                    ),
+                    MyFormField(
+                      controller: ageController,
+                      hintText: "Umur",
+                      maxLines: 1,
+                      obscureText: false,
+                      isVisible: !isDoctor,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Sila masukkan umur";
+                        }
+                        return null;
+                      },
+                    ),
+                    Visibility(
+                      visible: !isDoctor,
+                      child: const SizedBox(
                         height: 20,
                       ),
-                      //password confirm textfield
-                      MyFormField(
-                        controller: passwordConfirmController,
-                        hintText: "Sahkan kata laluan",
-                        maxLines: 1,
-                        obscureText: false, //see what u typed
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Sila masukkan kata laluan";
-                          }
-                          return null;
-                        },
-                      ),
-
-                      const SizedBox(
+                    ),
+                    MyFormField(
+                      controller: phoneController,
+                      hintText: "Nombor telefon",
+                      maxLines: 1,
+                      obscureText: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Sila masukkan nombor telefon";
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    MyFormField(
+                      controller: addressController,
+                      hintText: "Alamat",
+                      maxLines: 1,
+                      obscureText: false,
+                      isVisible: !isDoctor,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Sila masukkan alamat";
+                        }
+                        return null;
+                      },
+                    ),
+                    Visibility(
+                      visible: !isDoctor,
+                      child: const SizedBox(
                         height: 20,
                       ),
-
-                      //sign in button
-                      ElevatedButton(
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            signUp();
-                          }
+                    ),
+                    Visibility(
+                      visible: !isDoctor,
+                      child: MultiSelectDialogField(
+                        buttonText: const Text("Pilih gejala"),
+                        title: const Text("Gejala"),
+                        items: _symptoms
+                            .map((e) => MultiSelectItem(e, e.name))
+                            .toList(),
+                        listType: MultiSelectListType.CHIP,
+                        onConfirm: (values) {
+                          setState(() {
+                            List<String> selectedSymptomNames =
+                                values.map((item) => item.name).toList();
+                            symptomsController.text =
+                                selectedSymptomNames.join(", ");
+                          });
                         },
-                        child: const Text("Daftar"),
                       ),
-
-                      const SizedBox(
+                    ),
+                    Visibility(
+                      visible: !isDoctor,
+                      child: const SizedBox(
                         height: 20,
                       ),
-                      //not member? register
-                      SizedBox(
-                        width: double.infinity,
-                        child: FittedBox(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text("Sudah mempunyai akaun?"),
-                              const SizedBox(width: 4),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => LoginPage(),
-                                    ),
-                                  );
-                                }, //widget.onTap,
-                                child: const Text(
-                                  "Log masuk sekarang",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
+                    ),
+                    Visibility(
+                      visible: !isDoctor,
+                      child: MultiSelectDialogField(
+                        buttonText: const Text("Pilih pembedahan"),
+                        title: const Text("Pembedahan"),
+                        items: _surgeries
+                            .map((e) => MultiSelectItem(e, e.name))
+                            .toList(),
+                        listType: MultiSelectListType.CHIP,
+                        onConfirm: (values) {
+                          setState(() {
+                            List<String> selectedSurgeryNames =
+                                values.map((item) => item.name).toList();
+                            surgeryController.text =
+                                selectedSurgeryNames.join(", ");
+                          });
+                        },
+                      ),
+                    ),
+                    Visibility(
+                      visible: !isDoctor,
+                      child: const SizedBox(
+                        height: 20,
+                      ),
+                    ),
+                    MyFormField(
+                      controller: passwordController,
+                      hintText: "Kata laluan",
+                      maxLines: 1,
+                      obscureText: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Sila masukkan kata laluan";
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    MyFormField(
+                      controller: passwordConfirmController,
+                      hintText: "Sahkan kata laluan",
+                      maxLines: 1,
+                      obscureText: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Sila masukkan kata laluan";
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          signUp();
+                        }
+                      },
+                      child: const Text("Daftar"),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FittedBox(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Sudah mempunyai akaun?"),
+                            const SizedBox(width: 4),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LoginPage(),
                                   ),
+                                );
+                              },
+                              child: const Text(
+                                "Log masuk sekarang",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 30),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 30),
+                  ],
                 ),
               ),
             ),
           ),
-        ));
+        ),
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Your App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: RegisterPage(),
+    );
   }
 }
