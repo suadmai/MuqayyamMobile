@@ -137,7 +137,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Nusantara"),
+        title: const Text("Nusantara", style: TextStyle(color: Colors.white)),
         actions: [
           IconButton(
             onPressed: () {
@@ -173,7 +173,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             showModalBottomSheet(
               context: context,
               isScrollControlled: true,
-              //backgroundColor: Colors.transparent, // Set the background color to transparent
+              backgroundColor: Colors.transparent, // Set the background color to transparent
               barrierColor: Colors.transparent,
               builder: (BuildContext context) {
                 return SingleChildScrollView(
@@ -189,7 +189,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             );
           },
           backgroundColor: Color(0xFF82618B),
-          child: const Icon(Icons.add),
+          child: const Icon(Icons.add, color: Colors.white),
         ),
       ),
       body: Center(
@@ -671,7 +671,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                     
                     Navigator.of(context).pop();
                   },
-                  child: Text('Hantar'),
+                  child: Text('Hantar', style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),

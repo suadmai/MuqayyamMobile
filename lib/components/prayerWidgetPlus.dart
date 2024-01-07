@@ -72,8 +72,9 @@ class _PrayerWidgetPlusState extends State<PrayerWidgetPlus> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-          child: Card(
-              elevation: 3,
+          child: 
+          Card(
+              elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10), // Adjust the value to make the corners rounder
               ),
@@ -92,7 +93,7 @@ class _PrayerWidgetPlusState extends State<PrayerWidgetPlus> {
                                 backDate();
                                 getPrayerData();
                               }, 
-                              icon: const Icon(Icons.arrow_back_ios_rounded, size: 15,),
+                              icon: const Icon(Icons.arrow_back_ios_rounded, size: 15, color: Colors.black,),
                               ),
                             Text(
                               dateToString(selectedDate),
@@ -104,7 +105,7 @@ class _PrayerWidgetPlusState extends State<PrayerWidgetPlus> {
                                 forwardDate();
                                 getPrayerData();
                               }, 
-                              icon: const Icon(Icons.arrow_forward_ios_rounded, size: 15,),
+                              icon: const Icon(Icons.arrow_forward_ios_rounded, size: 15, color: Colors.black,),
                               ),
                           ],
                         ),

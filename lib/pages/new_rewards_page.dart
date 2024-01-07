@@ -45,8 +45,9 @@ class _RewardsPageState extends State<RewardsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF82618B),
-        title: const Text('Ganjaran'),
+        title: const Text('Ganjaran', style: TextStyle(color: Colors.white)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -284,7 +285,7 @@ class RewardItem extends StatelessWidget {
                       ? const Color(0xFF82618B)
                       : Colors.grey,
                 ),
-                child: const Text('Tebus'),
+                child: const Text('Tebus', style: TextStyle(color: Colors.white)),
               ),
             ],
           ),

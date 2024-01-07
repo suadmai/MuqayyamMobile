@@ -61,6 +61,7 @@ class _PrayerWidgetState extends State<PrayerWidget> {
                 builder: ((context) {
                   return AlertDialog(
                     backgroundColor: Colors.transparent,
+                    surfaceTintColor: Colors.transparent,
                     content: PrayerWidgetPlus(patientId: widget.patientId),
                   );
                 })

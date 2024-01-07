@@ -23,6 +23,14 @@ class PatientDetails extends StatefulWidget {
   
 }
 
+String displayNone(String text){
+  if(text == ""){
+    return "Tiada";
+  }else{
+    return text;
+  }
+}
+
 class _PatientDetailsState extends State<PatientDetails>{
   FirebaseFirestore firestore = FirebaseConfig.firestore;
   String userID = "";
@@ -52,8 +60,9 @@ class _PatientDetailsState extends State<PatientDetails>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Maklumat Pengguna"),
+        title: const Text("Maklumat Pengguna", style: TextStyle(color: Colors.white),),
       ),
       body: Center(
         child: Padding(
@@ -66,9 +75,12 @@ class _PatientDetailsState extends State<PatientDetails>{
                         .snapshots(),
                   
                   builder: (context, snapshot) {
-          
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
                   final patient = snapshot.data!.docs.first.data();
-                  
                   String? pfpURL = patient['profilePicture'] as String?;
                   String? patientName = patient['username'] as String?;
                   String? patientAge = patient['age'] as String?;
@@ -171,7 +183,7 @@ class _PatientDetailsState extends State<PatientDetails>{
                                         text: 'Pembedahan: ',
                                         style: const TextStyle(fontSize: 14, color: Colors.black),
                                         children: <TextSpan>[
-                                          TextSpan(text: patientSurgery ?? 'tiada', style: const TextStyle(fontWeight: FontWeight.bold)),
+                                          TextSpan(text: displayNone(patientSurgery.toString()), style: const TextStyle(fontWeight: FontWeight.bold)),
                                         ],
                                       )),
                                   const SizedBox(height: 12),
@@ -179,7 +191,7 @@ class _PatientDetailsState extends State<PatientDetails>{
                                         text: 'Simptom: ',
                                         style: const TextStyle(fontSize: 14, color: Colors.black),
                                         children: <TextSpan>[
-                                          TextSpan(text: patientSymptoms ?? 'tiada', style: const TextStyle(fontWeight: FontWeight.bold)),
+                                          TextSpan(text: displayNone(patientSymptoms.toString()), style: const TextStyle(fontWeight: FontWeight.bold)),
                                         ],
                                       )),
                                     ]
@@ -218,6 +230,7 @@ class _PatientDetailsState extends State<PatientDetails>{
                                 builder: (context) {
                                   return AlertDialog(
                                     backgroundColor: Colors.transparent,
+                                    surfaceTintColor: Colors.transparent,
                                     content: RewardsWidget(patientId: widget.patientId),
                                   );
                                 },

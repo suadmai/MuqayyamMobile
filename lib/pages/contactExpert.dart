@@ -31,9 +31,14 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
     return Scaffold(
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Hubungi pakar"),
+        title: const Text("Hubungi pakar", style: TextStyle(color: Colors.white)),
         bottom: TabBar(
+          //change the colour of the selected tab indicator
+          indicatorColor: Colors.white,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white,
           controller: _tabController,
           tabs: [
             Tab(child: Text('Senarai Pakar', style: TextStyle(fontSize: 18),)),
@@ -114,6 +119,7 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                                   ListTile(
                                     leading: 
                                     CircleAvatar(
+                                      backgroundColor: Colors.blue,
                                       backgroundImage: pfpURL != null
                                           ? NetworkImage(pfpURL)
                                           : null, // Display the profile picture if available
@@ -227,6 +233,7 @@ class _ContactExpertState extends State<ContactExpert> with SingleTickerProvider
                                 children: [
                                   ListTile(
                                     leading: CircleAvatar( 
+                                    backgroundColor: Colors.blue,
                                     child: const Icon(Icons.person, color: Colors.white)
                                   ),
                                     title: Text(

@@ -55,11 +55,12 @@ class _ChatState extends State<Chat> {
     return Scaffold(
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF82618B),
         title: Align(
           alignment: Alignment.centerLeft,
           child: 
-              Text(widget.receiverUserName),
+              Text(widget.receiverUserName, style: const TextStyle(color: Colors.white)),
           ),
         ),
       // Rest of your content here

@@ -12,16 +12,6 @@ class LeaderboardPage extends StatefulWidget {
   State<LeaderboardPage> createState() => _LeaderboardPageState();
 }
 
-// Future<void> logout(BuildContext context) async {
-//   await FirebaseAuth.instance.signOut();
-//   Navigator.pushReplacement(
-//     context,
-//     MaterialPageRoute(
-//       builder: (context) => const LoginPage(),
-//     ),
-//   );
-// }
-
 class _LeaderboardPageState extends State<LeaderboardPage>{
 
   @override
@@ -29,43 +19,61 @@ class _LeaderboardPageState extends State<LeaderboardPage>{
     super.initState();
   }
 
+  Color getBorderColor(String userID){
+    if(FirebaseAuth.instance.currentUser!.uid == userID){
+      return Colors.blue;
+    }
+    else{
+      return Colors.transparent;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Papan markah"),
+        title: const Text("Papan markah", style: TextStyle(color: Colors.white)),
       ),
-
-
       body:
        Center(
         child: Column(
           children: [
             const SizedBox(height: 16),
             Expanded(
-              child: StreamBuilder<QuerySnapshot>(
+              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: FirebaseFirestore.instance
                     .collection('users')
-                    .where('role', isEqualTo: 'Pengguna') //todo: uncomment this line
+                    .where('role', isEqualTo: 'Pengguna')
                     .orderBy('score', descending: true)
                     .snapshots(),
                   builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    final data = snapshot.data!.docs;
                     return ListView.builder(
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
-                        DocumentSnapshot ds = snapshot.data!.docs[index];
+                        final user = data[index].data();
+                        final username = user['username'] as String?;
+                        final score = user['score'] as int?;
+                        final userID = user['userID'] as String?;
+                        final profilePicture = user['profilePicture'] as String?;
+                        
                         return Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
-                            boxShadow: const [
+                            border: Border.all(
+                              color: getBorderColor(userID!),
+                              width: 2,
+                            ),
+                            boxShadow: const[
                               BoxShadow(
                                 color: Colors.black12,
                                 blurRadius: 5,
-                                offset: Offset(0, 2),
+                                offset:  Offset(0, 2),
                               ),
                             ],
                           ),
@@ -79,18 +87,18 @@ class _LeaderboardPageState extends State<LeaderboardPage>{
                                   const SizedBox(width: 10),
                                   Text('# ${index + 1}'),
                                   const SizedBox(width: 10),
-                                  const CircleAvatar(
-                                    radius: 21,
-                                    backgroundColor: Colors.blue,
-                                    child: Icon(
-                                      //todo: change to user profile picture
-                                      Icons.person,
-                                      color: Colors.white,
-                                    ),
-                                  ),
+                                  CircleAvatar(
+                                  backgroundColor: Colors.blue,
+                                  backgroundImage: profilePicture != null
+                                      ? NetworkImage(profilePicture)
+                                      : null, // Display the profile picture if available
+                                  child: profilePicture == null
+                                      ? const Icon(Icons.person, color: Colors.white)
+                                      : null, // Show an icon if no profile picture is available
+                                ),
                                   const SizedBox(width: 10),
                                   Text(
-                                  ds['username'],
+                                  username!,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -102,7 +110,7 @@ class _LeaderboardPageState extends State<LeaderboardPage>{
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Text(
-                                    ds['score'].toString(),
+                                    score.toString(),
                                     style: const TextStyle(
                                       fontSize: 16,
                                       color: Colors.black,

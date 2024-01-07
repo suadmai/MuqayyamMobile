@@ -196,8 +196,9 @@ Future<void> _loadUserData() async {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF82618B),
-        title: const Text('Akaun Saya'),
+        title: const Text('Akaun Saya', style: TextStyle(color: Colors.white)),
       ),
       body: ListView(
         children: <Widget>[
