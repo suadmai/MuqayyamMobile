@@ -31,7 +31,10 @@ class _RewardsPageState extends State<RewardsPage> {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       final DocumentSnapshot<Map<String, dynamic>> userDoc =
-          await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
       final int? userScore = userDoc.get('score') as int?;
       if (userScore != null) {
         setState(() {
@@ -172,19 +175,18 @@ class RewardItem extends StatelessWidget {
         .get();
 
     if (existingUniqueCode.docs.isEmpty) {
-    QuerySnapshot existingCodes = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('redemptions')
-        .get();
+      QuerySnapshot existingCodes = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('redemptions')
+          .get();
 
-    do {
-      code = Random().nextInt(999999).toString().padLeft(6, '0');
-    } while (existingCodes.docs.any((doc) => doc['code'] == code));
+      do {
+        code = Random().nextInt(999999).toString().padLeft(6, '0');
+      } while (existingCodes.docs.any((doc) => doc['code'] == code));
 
-    return code;
-    }
-    else{
+      return code;
+    } else {
       //if there is another code with the same rewardId, return the code
       return existingUniqueCode.docs.first.get('code');
     }
@@ -200,18 +202,21 @@ class RewardItem extends StatelessWidget {
         .get();
 
     if (existingRedemptions.docs.isEmpty) {
-    //create a firebase document inside user document
-    DocumentReference userReference = FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid);
-    CollectionReference redemptionsCollectionRef = userReference.collection('redemptions');
-    DocumentReference redemptionDocumentRef = redemptionsCollectionRef.doc(uniqueCode);
+      //create a firebase document inside user document
+      DocumentReference userReference = FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid);
+      CollectionReference redemptionsCollectionRef =
+          userReference.collection('redemptions');
+      DocumentReference redemptionDocumentRef =
+          redemptionsCollectionRef.doc(uniqueCode);
 
-    await redemptionDocumentRef.set({
-    'code': uniqueCode,
-    'userId': FirebaseAuth.instance.currentUser!.uid,
-    'rewardId': rewardId,
-    });
-    }
-    else{
+      await redemptionDocumentRef.set({
+        'code': uniqueCode,
+        'userId': FirebaseAuth.instance.currentUser!.uid,
+        'rewardId': rewardId,
+      });
+    } else {
       print('reward already redeemed');
     }
   }
@@ -271,6 +276,8 @@ class RewardItem extends StatelessWidget {
                   String uniqueCode = await createUniqueCode(rewardId);
                   createRedemption(uniqueCode, rewardId);
                   print('sending $uniqueCode');
+
+                  if (userPoints >= pointsRequired) {
                     // ignore: use_build_context_synchronously
                     Navigator.push(
                       context,
@@ -278,14 +285,35 @@ class RewardItem extends StatelessWidget {
                         builder: (context) => ClaimPage(uniqueCode: uniqueCode),
                       ),
                     );
-                  //}
+                  }
+                  // show not enough points
+                  else {
+                    // ignore: use_build_context_synchronously
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Mata tidak mencukupi'),
+                        content: const Text(
+                            'Anda tidak mempunyai cukup mata untuk menebus ganjaran ini.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: userPoints >= pointsRequired
                       ? const Color(0xFF82618B)
                       : Colors.grey,
                 ),
-                child: const Text('Tebus', style: TextStyle(color: Colors.white)),
+                child:
+                    const Text('Tebus', style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
