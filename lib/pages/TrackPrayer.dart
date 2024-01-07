@@ -436,7 +436,7 @@ Color getPrayerIconColor(Prayer prayer) {
   String remainingSecondsStr = remainingSecondsDisplay.toString().padLeft(2, '0');
 
   return '$remainingMinutesStr:$remainingSecondsStr';
-}
+  }
   double calculateProgress() {
     return 1 - (_animation.value / animationDuration.inSeconds.toDouble());
   }

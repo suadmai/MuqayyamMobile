@@ -26,8 +26,11 @@ class _PatientListState extends State<PatientList>{
     return Scaffold(
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Pantau pesakit"),
+        title: const Text("Pantau pesakit", style: TextStyle(color: Colors.white),),
       ),
       
       body:Center(

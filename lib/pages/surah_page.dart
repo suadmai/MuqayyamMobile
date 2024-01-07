@@ -11,7 +11,8 @@ class SurahPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(surahName),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(surahName, style: const TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF82618B),
       ),
       body: Padding(

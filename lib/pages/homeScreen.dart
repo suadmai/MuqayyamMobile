@@ -13,12 +13,9 @@ import 'package:wildlifego/pages/new_quran_page.dart';
 import 'package:wildlifego/pages/profile_page.dart';
 import 'package:wildlifego/pages/new_rewards_page.dart';
 import 'package:wildlifego/pages/ramadan_page.dart';
-import 'package:wildlifego/pages/siri.dart';
 import 'package:wildlifego/pages/tasbih.dart';
 import '../components/menu_buttons.dart';
 import '../services/auth_service.dart';
-import 'doctor/Admin_HomeScreen.dart';
-import 'package:shimmer/shimmer.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -172,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Nusantara"),
+        title: const Text("Nusantara", style: TextStyle(color: Colors.white),),
         actions : <Widget>[
 
           IconButton(

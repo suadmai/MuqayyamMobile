@@ -111,8 +111,11 @@ class _TasbihPageState extends State<TasbihPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         backgroundColor: const Color(0xFF82618B),
-        title: const Text('Tasbih'),
+        title: const Text('Tasbih', style: TextStyle(color: Colors.white)),
       ),
       body: Center(
         child: Column(
@@ -140,7 +143,7 @@ class _TasbihPageState extends State<TasbihPage> {
               ),
               ),
             ),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -151,9 +154,12 @@ class _TasbihPageState extends State<TasbihPage> {
                   width: MediaQuery.of(context).size.width/3,
                   child: ElevatedButton(
                     //remove style
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
+                    style: ButtonStyle(
+                      overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                      shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                      surfaceTintColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
                     ),
                     onPressed: (){
                       //check if the user taps too fast
@@ -183,10 +189,13 @@ class _TasbihPageState extends State<TasbihPage> {
                     alignment: Alignment.centerLeft,
                     child: ElevatedButton(
                       //remove style
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                      ),
+                      style: ButtonStyle(
+                      overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                      shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                      surfaceTintColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
+                    ),
                       onPressed: (){
                         _resetCount();
                       },

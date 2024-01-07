@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:wildlifego/components/layout.dart';
 import 'package:wildlifego/pages/surah_page.dart';
 
-import '../components/bottom_app_bar.dart';
-
 class QuranPage extends StatefulWidget {
-  const QuranPage({Key? key});
+   const QuranPage({Key? key});
 
   @override
   State<QuranPage> createState() => _QuranPageState();
@@ -28,6 +25,9 @@ class _QuranPageState extends State<QuranPage> {
     return Scaffold(
       
       appBar: AppBar(
+      iconTheme: const IconThemeData(
+        color: Colors.white,
+      ),
       backgroundColor: const Color(0xFF82618B),
       title: StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance
@@ -38,17 +38,13 @@ class _QuranPageState extends State<QuranPage> {
       if (snapshot.hasData) {
         final userDoc = snapshot.data!;
         final userScore = userDoc['score'] ?? 0; // Replace 'score' with the actual field name in Firestore
-        return Text('Baca al-Quran');
+        return Text('Baca al-Quran', style: TextStyle(color: Colors.white));
       } else {
         return const Text('User Score: Loading...'); // Display loading while fetching data
       }
     },
   ),
 ),
-
-// bottomNavigationBar: MyBottomAppBar(
-       
-//       ),
 
       body: Center(
         child: Padding(
