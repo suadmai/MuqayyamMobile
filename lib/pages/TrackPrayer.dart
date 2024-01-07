@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:wildlifego/components/prayerTime.dart';
 
 extension StringExtensions on String {
   String capitalizeFirst() {
@@ -483,8 +484,9 @@ Color getPrayerIconColor(Prayer prayer) {
     return Scaffold(
       backgroundColor: Color(0xFFEBEBEB),
       appBar: AppBar(
+        iconTheme: IconThemeData(),
         backgroundColor: const Color(0xFF82618B),
-        title: const Text("Jejak solat"),
+        title: const Text("Jejak solat", style: TextStyle(color: Colors.white),),
       ),
 
       body: Stack(
@@ -582,87 +584,31 @@ Color getPrayerIconColor(Prayer prayer) {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(
-                            getPrayerIcon(subuh),
-                            color: getPrayerIconColor(subuh),
-                            size: 32,
-                          ),
-                          //SizedBox(height: 3,),
-                          Text("Subuh", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
-                          //display prayer time in 24 hour format
-                          Text(
-                          DateFormat('HH:mm').format(subuh.prayerTime),
-                          style: TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(
-                          getPrayerIcon(zohor),
-                          size: 32, 
-                          color : getPrayerIconColor(zohor),
-                          ),
-                          //SizedBox(height: 3,),
-                          Text("Zohor", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
-                          Text(
-                          DateFormat('HH:mm').format(zohor.prayerTime),
-                          style: TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(
-                          getPrayerIcon(asar),
-                          size: 32, 
-                          color : getPrayerIconColor(asar),
-                          ),
-                          //SizedBox(height: 3,),
-                          Text("Asar", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
-                          Text(
-                          DateFormat('HH:mm').format(asar.prayerTime),
-                          style: TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(
-                          getPrayerIcon(maghrib), 
-                          size: 32, 
-                          color : getPrayerIconColor(maghrib),
-                          ),
-                          //SizedBox(height: 3,),
-                          Text("Maghrib", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
-                          Text(
-                          DateFormat('HH:mm').format(maghrib.prayerTime),
-                          style: TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(
-                          getPrayerIcon(isyak),
-                          size: 32, 
-                          color : getPrayerIconColor(isyak),
-                          ),
-                          //SizedBox(height: 3,),
-                          Text("Isyak", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
-                          Text(
-                          DateFormat('HH:mm').format(isyak.prayerTime),
-                          style: TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
+                      PrayerTimeWidget(
+                        prayerName: 'Subuh', 
+                        iconColour: getPrayerIconColor(subuh), 
+                        prayerIcon: getPrayerIcon(subuh), 
+                        prayerTime: DateFormat('HH:mm').format(subuh.prayerTime)),
+                      PrayerTimeWidget(
+                        prayerName: 'Zuhur', 
+                        iconColour: getPrayerIconColor(zohor), 
+                        prayerIcon: getPrayerIcon(zohor), 
+                        prayerTime: DateFormat('HH:mm').format(zohor.prayerTime)),
+                      PrayerTimeWidget(
+                        prayerName: 'Asar', 
+                        iconColour: getPrayerIconColor(asar), 
+                        prayerIcon: getPrayerIcon(asar), 
+                        prayerTime: DateFormat('HH:mm').format(asar.prayerTime)),
+                      PrayerTimeWidget(
+                        prayerName: 'Maghrib', 
+                        iconColour: getPrayerIconColor(maghrib), 
+                        prayerIcon: getPrayerIcon(maghrib), 
+                        prayerTime: DateFormat('HH:mm').format(maghrib.prayerTime)),
+                      PrayerTimeWidget(
+                        prayerName: 'Isyak', 
+                        iconColour: getPrayerIconColor(isyak), 
+                        prayerIcon: getPrayerIcon(isyak), 
+                        prayerTime: DateFormat('HH:mm').format(isyak.prayerTime)),
                     ],
                   ),
                 ),
