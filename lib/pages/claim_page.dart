@@ -83,7 +83,10 @@ class _ClaimPageState extends State<ClaimPage> {
   Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
-      title: const Text('Tebus ganjaran'),
+      iconTheme: const IconThemeData(
+        color: Colors.white,
+      ),
+      title: const Text('Tebus ganjaran', style: TextStyle(color: Colors.white)),
       backgroundColor: const Color(0xFF82618B),
     ),
     body: Padding(
