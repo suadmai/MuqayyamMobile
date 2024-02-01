@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -49,21 +46,29 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBNnAeJrldicqIKybgcfU-SmDy56KfLGp8',
+    appId: '1:198449566099:web:4c49568e77efa0ce5c1866',
+    messagingSenderId: '198449566099',
+    projectId: 'my-nusantara-project',
+    authDomain: 'my-nusantara-project.firebaseapp.com',
+    storageBucket: 'my-nusantara-project.appspot.com',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDBSD-eK84r7CIAHyAA5PgufZ188k6cDKs',
-    appId: '1:440669090614:android:df067caadc0955a86a7997',
-    messagingSenderId: '440669090614',
-    projectId: 'muqayyam-a6239',
-    storageBucket: 'muqayyam-a6239.appspot.com',
+    apiKey: 'AIzaSyCg-PycLwzZ95QiB-pl9-oCuz0B_YuApiY',
+    appId: '1:198449566099:android:f70c829a71a5a3d35c1866',
+    messagingSenderId: '198449566099',
+    projectId: 'my-nusantara-project',
+    storageBucket: 'my-nusantara-project.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDgLd_fE4hg9bAfbvv7vm9qYA4fQMgyVV4',
-    appId: '1:440669090614:ios:c403b06f0fe52eee6a7997',
-    messagingSenderId: '440669090614',
-    projectId: 'muqayyam-a6239',
-    storageBucket: 'muqayyam-a6239.appspot.com',
-    iosClientId: '440669090614-kaihbma3f5g84vjp32dn5jru31mf2t9r.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDqnjVt8WS5bzz79xx3q11kkGJoDDpKEm0',
+    appId: '1:198449566099:ios:1f2b477499e1db005c1866',
+    messagingSenderId: '198449566099',
+    projectId: 'my-nusantara-project',
+    storageBucket: 'my-nusantara-project.appspot.com',
     iosBundleId: 'com.example.wildlifego',
   );
 }

@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "440669090614",
-    "project_id": "muqayyam-a6239",
-    "storage_bucket": "muqayyam-a6239.appspot.com"
+    "project_number": "198449566099",
+    "project_id": "my-nusantara-project",
+    "storage_bucket": "my-nusantara-project.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:440669090614:android:df067caadc0955a86a7997",
+        "mobilesdk_app_id": "1:198449566099:android:f70c829a71a5a3d35c1866",
         "android_client_info": {
           "package_name": "com.example.wildlifego"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "440669090614-2pg37ea24psgh7j91vqc309dfarcis3f.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDBSD-eK84r7CIAHyAA5PgufZ188k6cDKs"
+          "current_key": "AIzaSyCg-PycLwzZ95QiB-pl9-oCuz0B_YuApiY"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "440669090614-2pg37ea24psgh7j91vqc309dfarcis3f.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

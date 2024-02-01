@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wildlifego/firebase/firebase_config.dart';
-
 import 'prayerWidgetPlus.dart';
 
 
