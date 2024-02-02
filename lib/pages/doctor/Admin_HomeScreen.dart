@@ -1,14 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-//other pages
-
-//Report:
-// The development of the app started on August 2023 using Flutter framework and Dart programming language.
-// The developers utilised GitHub as the version control system to manage the source code of the app and to keep track of the changes made to the codes
-/*
-The app is mainly developed using the Flutter framework and Dart programming language. The developers utilised the Github version control system to manage the source code of the app and to keep track of the changes made to the codes. The developers have divided themselves into equally distributed tasks to speed up development. This is made possible with Github branching and merging feature which allows multiple versions of the app to be developed and tested at the same time. 
-Additionally, since the app includes an interactive graphical user interface, the 
-*/
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,11 +13,10 @@ import 'package:wildlifego/components/videoPlayer.dart';
 import 'package:wildlifego/pages/doctor/monitorPatient.dart';
 import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
-import 'package:wildlifego/pages/new_quran_page.dart';
+import 'package:file_picker/file_picker.dart';
 
 //services
 import 'dart:io';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:video_player/video_player.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../components/menu_buttons.dart';
@@ -503,33 +493,34 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       }
 
       Future<void> _pickMedia() async {
-        final pickedMedia = await ImagePicker().pickMedia(imageQuality: 80);
+      final pickedMedia = await FilePicker.platform.pickFiles(
+        type: FileType.media,
+        allowMultiple: false,
+      );
 
-        if (pickedMedia != null) {
+      if (pickedMedia != null && pickedMedia.files.isNotEmpty) {
+        final platformFile = pickedMedia.files.first;
 
-          if (pickedMedia.path.endsWith('.jpg') || pickedMedia.path.endsWith('.png')) {
-            
-            File imageFile = File(pickedMedia.path);
+        if (platformFile.extension == 'jpg' || platformFile.extension == 'jpeg' || platformFile.extension == 'png') {
+          // Handle image file
+          File imageFile = File(platformFile.path!);
+          setState(() {
+            selectedImage = imageFile;
+            _videoPlayerController = null;
+          });
+        } else if (platformFile.extension == 'mp4' || platformFile.extension == 'mov') {
+          // Handle video file
+          File videoFile = File(platformFile.path!);
+          VideoPlayerController videoPlayerController = VideoPlayerController.file(videoFile);
+          await videoPlayerController.initialize();
 
-            setState(() {
-              selectedImage = imageFile;
-              _videoPlayerController = null; // Reset video player controller if a video was previously selected
-            });
-          } 
-          else if (pickedMedia.path.endsWith('.mp4') || pickedMedia.path.endsWith('.mov')) {
-
-            File videoFile = File(pickedMedia.path);
-            
-            VideoPlayerController videoPlayerController = VideoPlayerController.file(videoFile);
-            await videoPlayerController.initialize();
-
-            setState(() {
-              selectedImage = videoFile;
-              _videoPlayerController = videoPlayerController;
-            });
-          }
+          setState(() {
+            selectedImage = videoFile;
+            _videoPlayerController = videoPlayerController;
+          });
         }
       }
+    }
 
        Future<String> postType() async {
         if (selectedImage != null) {
