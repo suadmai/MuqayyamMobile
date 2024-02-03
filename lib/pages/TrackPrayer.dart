@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:wildlifego/components/prayerTime.dart';
+import 'package:cool_alert/cool_alert.dart';
 
 extension StringExtensions on String {
   String capitalizeFirst() {
@@ -51,7 +52,7 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   late Animation<double> _animation;
   bool isTimerRunning = false;
   int _timerSeconds = 0;
-  final Duration animationDuration = Duration(minutes: 5);
+  final Duration animationDuration = Duration(seconds: 15);
   late Timer _nextPrayerTimer;
   bool prayersReset = false;
   bool prayerTimesUpdated = false;
@@ -373,8 +374,17 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
     currentPrayer.prayed = true;
     FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).update({'score': FieldValue.increment(currentPrayer.prayerScore)});
     storePrayerData();
-    //print("${currentPrayer.prayerName} prayed}");
-    //checkForMissedPrayers();
+    CoolAlert.show(
+      context: context,
+      type: CoolAlertType.success,
+      title: 'Solat ${currentPrayer.prayerName.capitalizeFirst()} ditunaikan!',
+      text: 'Anda mendapat ${currentPrayer.prayerScore} mata!',
+      confirmBtnText: 'OK',
+      confirmBtnColor: Color(0xFF82618B),
+      onConfirmBtnTap: () {
+        Navigator.pop(context);
+      },
+    );
     });
   }
 

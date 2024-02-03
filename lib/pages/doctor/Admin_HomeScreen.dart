@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -466,6 +467,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
     class _NewPostTextFieldState extends State<NewPostTextField> {
       File? selectedImage;
+      Uint8List? webImage = Uint8List(8);
       VideoPlayerController? _videoPlayerController;
       final TextEditingController _titleEditingController = TextEditingController();
       final TextEditingController _textEditingController = TextEditingController();
@@ -492,35 +494,51 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         super.dispose();
       }
 
-      Future<void> _pickMedia() async {
-      final pickedMedia = await FilePicker.platform.pickFiles(
-        type: FileType.media,
-        allowMultiple: false,
-      );
+    //   Future<void> _pickMedia() async {
+    //   final pickedMedia = await FilePicker.platform.pickFiles(
+    //     type: FileType.media,
+    //     allowMultiple: false,
+    //   );
 
-      if (pickedMedia != null && pickedMedia.files.isNotEmpty) {
-        final platformFile = pickedMedia.files.first;
+    //   if (pickedMedia != null && pickedMedia.files.isNotEmpty) {
+    //     final platformFile = pickedMedia.files.first;
 
-        if (platformFile.extension == 'jpg' || platformFile.extension == 'jpeg' || platformFile.extension == 'png') {
-          // Handle image file
-          File imageFile = File(platformFile.path!);
+    //     if (platformFile.extension == 'jpg' || platformFile.extension == 'jpeg' || platformFile.extension == 'png') {
+    //       // Handle image file
+    //       File imageFile = File(platformFile.path!);
+    //       setState(() {
+    //         selectedImage = imageFile;
+    //         _videoPlayerController = null;
+    //       });
+    //     } else if (platformFile.extension == 'mp4' || platformFile.extension == 'mov') {
+    //       // Handle video file
+    //       File videoFile = File(platformFile.path!);
+    //       VideoPlayerController videoPlayerController = VideoPlayerController.file(videoFile);
+    //       await videoPlayerController.initialize();
+
+    //       setState(() {
+    //         selectedImage = videoFile;
+    //         _videoPlayerController = videoPlayerController;
+    //       });
+    //     }
+    //   }
+    // }
+
+      Future <void> _pickMedia() async{
+        // final ImagePicker _picker = ImagePicker();
+        // XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+        FilePickerResult? image = await FilePicker.platform.pickFiles(type: FileType.image);
+
+        if(image != null){
+          var f = await image.files.first.bytes;
           setState(() {
-            selectedImage = imageFile;
-            _videoPlayerController = null;
-          });
-        } else if (platformFile.extension == 'mp4' || platformFile.extension == 'mov') {
-          // Handle video file
-          File videoFile = File(platformFile.path!);
-          VideoPlayerController videoPlayerController = VideoPlayerController.file(videoFile);
-          await videoPlayerController.initialize();
-
-          setState(() {
-            selectedImage = videoFile;
-            _videoPlayerController = videoPlayerController;
+            webImage = f as Uint8List;
           });
         }
+        else{
+          print('No image selected');
+        }
       }
-    }
 
        Future<String> postType() async {
         if (selectedImage != null) {
@@ -677,7 +695,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             ),
             Column(
               children: [
-                if (selectedImage != null && _videoPlayerController == null)
+                if (webImage != null && _videoPlayerController == null)
                   Stack(
                     alignment: Alignment.topRight,
                     children: [
@@ -686,12 +704,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height * 0.5,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: FileImage(selectedImage!),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                          child: 
+                          Image.memory(webImage!, fit: BoxFit.cover),
                         ),
                       ),
                       IconButton(
