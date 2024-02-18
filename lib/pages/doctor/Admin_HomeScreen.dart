@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:video_compress/video_compress.dart';
 import 'package:wildlifego/components/videoPlayer.dart';
 import 'package:wildlifego/pages/doctor/monitorPatient.dart';
+import 'package:wildlifego/pages/doctor/uploadWeb.dart';
 import 'package:wildlifego/pages/leaderboards.dart';
 import 'package:wildlifego/pages/contactExpert.dart';
 import 'package:file_picker/file_picker.dart';
@@ -200,6 +201,17 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                   //make it scrollable
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
+                                    MenuButton(
+                                      buttonText: 'Test Upload', 
+                                      onPressed: (){
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => UploadWeb(),
+                                          ),
+                                        );
+                                      }, 
+                                      imagePath: monitorIcon),
                                     MenuButton(
                                       buttonText: 'Pantau Peserta',
                                       onPressed: () {
