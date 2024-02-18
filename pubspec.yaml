@@ -60,6 +60,7 @@ dependencies:
   vibration: ^1.8.4
   flutter_svg: ^2.0.9
   shimmer: ^3.0.0
+  chewie: ^1.7.5
 
 flutter_icons:
   android: true

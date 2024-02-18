@@ -1,10 +1,13 @@
 import 'dart:html';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
 
 class UploadWeb extends StatefulWidget {
   @override
@@ -13,23 +16,38 @@ class UploadWeb extends StatefulWidget {
 
 class _UploadWebState extends State<UploadWeb> {
 
+  XFile? image ;
   Uint8List? webImage;
+  String? extension;
+  late VideoPlayerController _videoPlayerController;
   
   void pickImage() async {
-    //FilePickerResult? image = await FilePicker.platform.pickFiles();
-    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+     image = await ImagePicker().pickMedia(imageQuality: 75);
     if (image != null) {
-      var f = await image.readAsBytes();
+      setExtension(image);
+      var f = await image?.readAsBytes();
           setState(() {
             webImage = f;
           });
     }
   }
 
+  void setExtension(var image){
+    if (image != null) {
+      final fileName = image.name;
+      final fileExtension = fileName.split('.').last;
+      setState(() {
+        extension = fileExtension;
+      });
+      print('File extension: $extension');
+    }
+  }
+
   void uploadImage() async {
-    const folderPath = 'testImages/';
+    final folderPath = 'testImages/';
+
     final ID = FirebaseFirestore.instance.collection('testPosts').doc().id;
-    final storageRef = FirebaseStorage.instance.ref().child('$folderPath/post_$ID.jpg');
+    final storageRef = FirebaseStorage.instance.ref().child('$folderPath/post_$ID.$extension');
     await storageRef.putData(webImage!);
     print('Image uploaded');
 
@@ -46,7 +64,58 @@ class _UploadWebState extends State<UploadWeb> {
         .collection('testPosts')
         .doc(ID).set({
         'imageURL': imageURL,
+        'type': extension,
     });
+  }
+
+  Container displayMedia(){
+    if (webImage != null) {
+      if(extension == 'jpg' || extension == 'jpeg' || extension == 'png'){
+        return Container(
+          width: 200,
+          height: 200,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Image.memory(
+            webImage!,
+            width: 200,
+            height: 200,
+            fit: BoxFit.cover,
+          ),
+        );
+      } else if(extension == 'mp4' || extension == 'mov'){
+        return Container(
+          width: 200,
+          height: 200,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(10),
+        ),
+          child: Center(
+            child: Chewie(
+              controller: ChewieController(
+                videoPlayerController: VideoPlayerController.asset(image!.path),
+                autoPlay: true,
+                autoInitialize: true,
+              ),
+            )
+          ),
+        );
+      }
+    }
+    return Container(
+      width: 200,
+      height: 200,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: const Center(
+        child: Icon(Icons.image, size: 50, color: Colors.grey),
+      ),
+    );
   }
 
   @override
@@ -60,33 +129,34 @@ class _UploadWebState extends State<UploadWeb> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             //display selected image
-            webImage != null
-            //boxfit: BoxFit.cover to display image in full container
-            //put it
-                ? SizedBox(
-                    width: 200,
-                    height: 200,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.memory(
-                        webImage!,
-                        width: 200,
-                        height: 200,
-                        fit: BoxFit.cover,
-                      ),
-                  ),
-                )
-                : Container(
-                    width: 200,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.image, size: 50, color: Colors.grey),
-                    ),
-                ),
+            // webImage != null
+            // //boxfit: BoxFit.cover to display image in full container
+            // //put it
+            //     ? SizedBox(
+            //         width: 200,
+            //         height: 200,
+            //       child: ClipRRect(
+            //         borderRadius: BorderRadius.circular(10),
+            //         child: Image.memory(
+            //             webImage!,
+            //             width: 200,
+            //             height: 200,
+            //             fit: BoxFit.cover,
+            //           ),
+            //       ),
+            //     )
+            //     : Container(
+            //         width: 200,
+            //         height: 200,
+            //         decoration: BoxDecoration(
+            //           border: Border.all(color: Colors.black),
+            //           borderRadius: BorderRadius.circular(10),
+            //         ),
+            //         child: const Center(
+            //           child: Icon(Icons.image, size: 50, color: Colors.grey),
+            //         ),
+            //     ),
+            displayMedia(),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -113,7 +183,7 @@ class _UploadWebState extends State<UploadWeb> {
               stream: FirebaseFirestore.instance.collection('testPosts').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 } else if (snapshot.hasError) {
@@ -121,7 +191,7 @@ class _UploadWebState extends State<UploadWeb> {
                     child: Text('Error: ${snapshot.error}'),
                   );
                 } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(
+                  return const Center(
                     child: Text('No data available'),
                   );
                 } else {
