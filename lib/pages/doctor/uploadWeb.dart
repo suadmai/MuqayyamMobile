@@ -45,32 +45,32 @@ class _UploadWebState extends State<UploadWeb> {
 
   void uploadImage() async {
     final folderPath = 'testImages/';
-
     final ID = FirebaseFirestore.instance.collection('testPosts').doc().id;
     final storageRef = FirebaseStorage.instance.ref().child('$folderPath/post_$ID.$extension');
     await storageRef.putData(webImage!);
+    //display upload percentage
+    
     print('Image uploaded');
 
     //get image url
     final imageURL = await FirebaseStorage.instance
                         .ref()
-                        .child('$folderPath/post_$ID.jpg')
+                        .child('$folderPath/post_$ID.$extension')
                         .getDownloadURL();
-        
     print(imageURL);
 
-    //save image url to firestore
     await FirebaseFirestore.instance
         .collection('testPosts')
         .doc(ID).set({
         'imageURL': imageURL,
         'type': extension,
     });
+    print('Image added to Firestore');
   }
 
   Container displayMedia(){
     if (webImage != null) {
-      if(extension == 'jpg' || extension == 'jpeg' || extension == 'png'){
+      if(extension == 'jpg' || extension == 'jpeg' || extension == 'png' || extension == 'heif'){
         return Container(
           width: 200,
           height: 200,
@@ -85,7 +85,7 @@ class _UploadWebState extends State<UploadWeb> {
             fit: BoxFit.cover,
           ),
         );
-      } else if(extension == 'mp4' || extension == 'mov'){
+      } else if(extension == 'mp4' || extension == 'mov' || extension == 'hevc'){
         return Container(
           width: 200,
           height: 200,
@@ -118,6 +118,46 @@ class _UploadWebState extends State<UploadWeb> {
     );
   }
 
+  Container displayPost(String type, String imageURL){
+    if(extension == 'jpg' || extension == 'jpeg' || extension == 'png' || extension == 'heif'){
+        return Container(
+          width: 200,
+          height: 200,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: 
+            Image.network(
+              imageURL,
+              width: 200,
+              height: 200,
+              fit: BoxFit.cover,
+        ));
+      } else if(extension == 'mp4' || extension == 'mov' || extension == 'hevc'){
+        return Container(
+          width: 200,
+          height: 200,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(10),
+        ),
+          child: Center(
+            child: Chewie(
+              controller: ChewieController(
+                videoPlayerController: VideoPlayerController.networkUrl(imageURL as Uri),
+                autoPlay: true,
+                autoInitialize: true,
+              ),
+            )
+          ),
+        );
+      }
+    return Container(
+      
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,6 +168,7 @@ class _UploadWebState extends State<UploadWeb> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Text('v1.0.0'),
             //display selected image
             // webImage != null
             // //boxfit: BoxFit.cover to display image in full container
@@ -200,17 +241,9 @@ class _UploadWebState extends State<UploadWeb> {
                     itemBuilder: (context, index) {
                       try {
                         final imageURL = snapshot.data!.docs[index]['imageURL'];
-                        //store the image as Uint8List
-                        
-                        return Container(
-                          margin: const EdgeInsets.all(10),
-                          child: Image.network(
-                            imageURL,
-                            width: 200,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          ),
-                        );
+                        final type = snapshot.data!.docs[index]['type'];
+
+                        return displayPost(type, imageURL);
                       } catch (e) {
                         print('Error loading image at index $index: $e');
                         return Container(); // Placeholder or alternative content
