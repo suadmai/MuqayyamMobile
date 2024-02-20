@@ -59,18 +59,29 @@ class _UploadWebState extends State<UploadWeb> {
                         .getDownloadURL();
     print(imageURL);
 
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Image url is $imageURL and type is $extension'),
+      ),
+    );
+
     await FirebaseFirestore.instance
         .collection('testPosts')
         .doc(ID).set({
         'imageURL': imageURL,
         'type': extension,
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Image added to Firestore'),
+      ),
+    );
     print('Image added to Firestore');
   }
 
   Container displayMedia(){
     if (webImage != null) {
-      if(extension == 'jpg' || extension == 'jpeg' || extension == 'png' || extension == 'heif'){
+      if(extension == 'jpg' || extension == 'jpeg' || extension == 'png' || extension == 'heic'){
         return Container(
           width: 200,
           height: 200,
@@ -118,8 +129,8 @@ class _UploadWebState extends State<UploadWeb> {
     );
   }
 
-  Container displayPost(String type, String imageURL){
-    if(extension == 'jpg' || extension == 'jpeg' || extension == 'png' || extension == 'heif'){
+  Container displayPost(String type, String postImage){
+    if(type == 'jpg' || type == 'jpeg' || type == 'png' || type == 'heic'){
         return Container(
           width: 200,
           height: 200,
@@ -129,12 +140,12 @@ class _UploadWebState extends State<UploadWeb> {
           ),
           child: 
             Image.network(
-              imageURL,
+              postImage,
               width: 200,
               height: 200,
               fit: BoxFit.cover,
         ));
-      } else if(extension == 'mp4' || extension == 'mov' || extension == 'hevc'){
+      } else if(type == 'mp4' || type == 'mov' || type == 'hevc'){
         return Container(
           width: 200,
           height: 200,
@@ -143,18 +154,17 @@ class _UploadWebState extends State<UploadWeb> {
             borderRadius: BorderRadius.circular(10),
         ),
           child: Center(
-            child: Chewie(
-              controller: ChewieController(
-                videoPlayerController: VideoPlayerController.networkUrl(imageURL as Uri),
-                autoPlay: true,
-                autoInitialize: true,
-              ),
-            )
+            // child: Chewie(
+            //   controller: ChewieController(
+            //     videoPlayerController: VideoPlayerController.contentUri(imageURL as Uri),
+            //     autoPlay: true,
+            //     autoInitialize: true,
+            //   ),
+            // )
           ),
         );
       }
     return Container(
-      
     );
   }
 
@@ -168,7 +178,7 @@ class _UploadWebState extends State<UploadWeb> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('v1.0.0'),
+            const Text('v1.0.2'),
             //display selected image
             // webImage != null
             // //boxfit: BoxFit.cover to display image in full container
