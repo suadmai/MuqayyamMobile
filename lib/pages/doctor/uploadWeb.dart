@@ -1,4 +1,4 @@
-import 'dart:html';
+//import 'dart:html';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -105,13 +105,21 @@ class _UploadWebState extends State<UploadWeb> {
             borderRadius: BorderRadius.circular(10),
         ),
           child: Center(
-            child: Chewie(
+            child: 
+            Chewie(
               controller: ChewieController(
                 videoPlayerController: VideoPlayerController.asset(image!.path),
                 autoPlay: true,
                 autoInitialize: true,
               ),
             )
+            // Chewie(
+            //   controller: ChewieController(
+            //     videoPlayerController: VideoPlayerController.asset(image!.path),
+            //     autoPlay: true,
+            //     autoInitialize: true,
+            //   ),
+            // )
           ),
         );
       }
@@ -153,14 +161,18 @@ class _UploadWebState extends State<UploadWeb> {
             border: Border.all(color: Colors.black),
             borderRadius: BorderRadius.circular(10),
         ),
-          child: Center(
-            // child: Chewie(
-            //   controller: ChewieController(
-            //     videoPlayerController: VideoPlayerController.contentUri(imageURL as Uri),
-            //     autoPlay: true,
-            //     autoInitialize: true,
-            //   ),
-            // )
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Center(
+              child: Chewie(
+                controller: ChewieController(
+                  allowPlaybackSpeedChanging: false,
+                  videoPlayerController: VideoPlayerController.network(postImage),
+                  autoPlay: false,
+                  autoInitialize: true,
+                ),
+              )
+            ),
           ),
         );
       }
@@ -178,7 +190,7 @@ class _UploadWebState extends State<UploadWeb> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('v1.0.2'),
+            const Text('v1.1.1'),
             //display selected image
             // webImage != null
             // //boxfit: BoxFit.cover to display image in full container
