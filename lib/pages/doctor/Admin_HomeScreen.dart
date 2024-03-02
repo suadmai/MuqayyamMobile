@@ -162,23 +162,29 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         padding: const EdgeInsets.all(8.0),
         child: FloatingActionButton(
           onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent, // Set the background color to transparent
-              barrierColor: Colors.transparent,
-              builder: (BuildContext context) {
-                return SingleChildScrollView(
-                  child: Container(
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
-                    ),
-                    child: NewPostTextField(
-                    ), // Create a separate widget for the text field
-                  ),
-                );
-              },
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UploadWeb(),
+              ),
             );
+            // showModalBottomSheet(
+            //   context: context,
+            //   isScrollControlled: true,
+            //   backgroundColor: Colors.transparent, // Set the background color to transparent
+            //   barrierColor: Colors.transparent,
+            //   builder: (BuildContext context) {
+            //     return SingleChildScrollView(
+            //       child: Container(
+            //         padding: EdgeInsets.only(
+            //           bottom: MediaQuery.of(context).viewInsets.bottom,
+            //         ),
+            //         child: NewPostTextField(
+            //         ), // Create a separate widget for the text field
+            //       ),
+            //     );
+            //   },
+            // );
           },
           backgroundColor: Color(0xFF82618B),
           child: const Icon(Icons.add, color: Colors.white),
