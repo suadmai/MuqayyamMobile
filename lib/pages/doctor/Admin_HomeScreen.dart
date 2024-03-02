@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -44,6 +45,49 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     super.initState();
     _user = FirebaseAuth.instance.currentUser!;
     _loadUserData();
+  }
+
+  Container displayPost(String type, String postImage){
+    if(type == 'jpg' || type == 'jpeg' || type == 'png' || type == 'heic'){
+        return Container(
+          width: 200,
+          height: 200,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: 
+            Image.network(
+              postImage,
+              width: 200,
+              height: 200,
+              fit: BoxFit.cover,
+        ));
+      } else if(type == 'mp4' || type == 'mov' || type == 'hevc'){
+        return Container(
+          width: 200,
+          height: 200,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(10),
+        ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Center(
+              child: Chewie(
+                controller: ChewieController(
+                  allowPlaybackSpeedChanging: false,
+                  videoPlayerController: VideoPlayerController.network(postImage),
+                  autoPlay: false,
+                  autoInitialize: true,
+                ),
+              )
+            ),
+          ),
+        );
+      }
+    return Container(
+    );
   }
 
   Future<void> _loadUserData() async {
@@ -280,7 +324,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 Expanded(
                   child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                     stream: FirebaseFirestore.instance
-                        .collection('AllPosts')
+                        .collection('testPosts')
                         .orderBy('date', descending: true)
                         .snapshots(),
                         builder: (context, snapshot) {
@@ -299,7 +343,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                 as String?;
                             final date = post["date"] as String?;
                             final imageURL = post['imageURL'] as String?;
-                            final postType = post['postType'] as String?;
+                            final type = post['type'] as String?;
                             
                             return GestureDetector(
 
@@ -324,7 +368,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                           onPressed: () {
                                             if(post['userID'] == FirebaseAuth.instance.currentUser!.uid){
                                               FirebaseFirestore.instance
-                                                .collection('AllPosts')
+                                                .collection('testPosts')
                                                 .doc(post['postID'])
                                                 .delete();
                                               Navigator.of(context).pop(true);
@@ -341,6 +385,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                 );
                                 }
                               },
+                              //child: displayPost(type!, imageURL!),
                               child: Card(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -428,20 +473,21 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                           maxLines: 10,
                                         ),
                                         SizedBox(height: 8),
-                                        if (postType == 'image' && imageURL != null)
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                            child:
-                                          Image.network(
-                                            imageURL,
-                                            width: double.infinity, // Make the image expand to the full width
-                                            height: 400, // Set the height as needed
-                                            fit: BoxFit.cover,
-                                          ),
-                                          ),
-                                        if (postType == 'video' && imageURL != null)
-                                          VideoPlayerWidget(videoUrl: imageURL),
+                                        displayPost(type!, imageURL!)
+                                        // if (type == 'image' && imageURL != null)
+                                        //   ClipRRect(
+                                        //     borderRadius:
+                                        //         BorderRadius.circular(16),
+                                        //     child:
+                                        //   Image.network(
+                                        //     imageURL,
+                                        //     width: double.infinity, // Make the image expand to the full width
+                                        //     height: 400, // Set the height as needed
+                                        //     fit: BoxFit.cover,
+                                        //   ),
+                                        // ),
+                                        // if (type == 'video' && imageURL != null)
+                                          //VideoPlayerWidget(videoUrl: imageURL),
                                           // ClipRRect(
                                           //   borderRadius:
                                           //     BorderRadius.circular(16),
@@ -542,6 +588,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     //   }
     // }
 
+    
+
       Future <void> _pickMedia() async{
         // final ImagePicker _picker = ImagePicker();
         // XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -583,14 +631,14 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       }
 
       Future<void> postToFirebase() async {
-        const folderPath = 'AllPosts/';
+        const folderPath = 'testPosts/';
 
         final userID = FirebaseAuth.instance.currentUser!.uid;
         final pfpURL = await FirebaseFirestore.instance.collection('users').doc(userID).get().then((value) => value.data()!['profilePicture'].toString());
         final usernameDocument = await FirebaseFirestore.instance.collection('users').doc(userID).get();
         final username = usernameDocument.data()!['username'].toString();
         final date = (DateTime.now()).toString();
-        final postID = FirebaseFirestore.instance.collection('AllPosts').doc().id;
+        final postID = FirebaseFirestore.instance.collection('testPosts').doc().id;
         final title = _titleEditingController.text;
         final description = _textEditingController.text;
         final type = await postType();
@@ -611,7 +659,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             : null;
         
         await FirebaseFirestore.instance
-          .collection('AllPosts')
+          .collection('testPosts')
           .doc(postID)
           .set({
           'postID': postID,
