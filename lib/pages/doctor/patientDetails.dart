@@ -160,7 +160,7 @@ class _PatientDetailsState extends State<PatientDetails>{
                                       text: 'Nombor Telefon: ',
                                       style: const TextStyle(fontSize: 14, color: Colors.black),
                                       children: <TextSpan>[
-                                        TextSpan(text: patientPhone ?? '', style: const TextStyle(fontWeight: FontWeight.bold)),
+                                        TextSpan(text: patientAddress ?? '', style: const TextStyle(fontWeight: FontWeight.bold)),
                                       ],
                                     )),
                                 Visibility(
@@ -175,7 +175,7 @@ class _PatientDetailsState extends State<PatientDetails>{
                                         text: 'Alamat: ',
                                         style: const TextStyle(fontSize: 14, color: Colors.black),
                                         children: <TextSpan>[
-                                          TextSpan(text: patientAddress ?? '', style: const TextStyle(fontWeight: FontWeight.bold)),
+                                          TextSpan(text: patientPhone ?? '', style: const TextStyle(fontWeight: FontWeight.bold)),
                                         ],
                                       )),
                                   const SizedBox(height: 12),

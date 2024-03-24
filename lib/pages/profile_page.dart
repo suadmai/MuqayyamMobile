@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,6 +19,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late bool _isLoading = false;
+  XFile? image ;
+  Uint8List? webImage;
   late User _user;
   late String _name = "";
   late String _role = "";
@@ -154,17 +157,22 @@ Future<void> _loadUserData() async {
 
   Future<void> uploadProfilePicture() async {
   final picker = ImagePicker();
-  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  image = await picker.pickImage(source: ImageSource.gallery);
 
-  if (pickedFile != null) {
-    File imageFile = File(pickedFile.path);
+  if (image != null) {
+    //File image = File(image.path);
     String userId = _user.uid;
+
+    var f = await image?.readAsBytes();
+          setState(() {
+            webImage = f;
+          });
 
     try {
       // Upload the file to Firebase Storage
       TaskSnapshot snapshot = await FirebaseStorage.instance
           .ref('profile_pictures/$userId')
-          .putFile(imageFile);
+          .putData(webImage!);
 
       // When complete, fetch the download URL
       String downloadUrl = await snapshot.ref.getDownloadURL();
@@ -328,6 +336,7 @@ Future<void> _loadUserData() async {
                   onTap: _signOut,
                 ),
                 const Divider(),
+                const Text('v 3.0.0'),
               ],
             ),
           ),

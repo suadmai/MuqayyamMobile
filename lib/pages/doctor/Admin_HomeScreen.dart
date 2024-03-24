@@ -50,38 +50,39 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   Container displayPost(String type, String postImage){
     if(type == 'jpg' || type == 'jpeg' || type == 'png' || type == 'heic'){
         return Container(
-          width: 200,
-          height: 200,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(10),
-          ),
           child: 
-            Image.network(
-              postImage,
-              width: 200,
-              height: 200,
-              fit: BoxFit.cover,
-        ));
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
+                  child: Image.network(
+                    postImage,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ));
       } else if(type == 'mp4' || type == 'mov' || type == 'hevc'){
         return Container(
-          width: 200,
-          height: 200,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(10),
-        ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Center(
-              child: Chewie(
-                controller: ChewieController(
-                  allowPlaybackSpeedChanging: false,
-                  videoPlayerController: VideoPlayerController.network(postImage),
-                  autoPlay: false,
-                  autoInitialize: true,
+          child: AspectRatio(
+            aspectRatio: 16/9,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                color: Colors.black,
+                child: Center(
+                  child: Chewie(
+                    controller: ChewieController(
+                      allowPlaybackSpeedChanging: false,
+                      videoPlayerController: VideoPlayerController.network(postImage),
+                      autoPlay: false,
+                      autoInitialize: true,
+                    ),
+                  )
                 ),
-              )
+              ),
             ),
           ),
         );
@@ -252,17 +253,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     MenuButton(
-                                      buttonText: 'Test Upload', 
-                                      onPressed: (){
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => UploadWeb(),
-                                          ),
-                                        );
-                                      }, 
-                                      imagePath: monitorIcon),
-                                    MenuButton(
                                       buttonText: 'Pantau Peserta',
                                       onPressed: () {
                                         Navigator.push(
@@ -325,7 +315,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                   child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                     stream: FirebaseFirestore.instance
                         .collection('testPosts')
-                        .orderBy('date', descending: true)
+                        .orderBy('timestamp', descending: true)
                         .snapshots(),
                         builder: (context, snapshot) {
                         if (snapshot.hasData) {
@@ -349,7 +339,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
                               onLongPress: () {
                                 // show vertical menu 
-                                if(post['userID'] == FirebaseAuth.instance.currentUser!.uid){
+                                if(post['userid'] == FirebaseAuth.instance.currentUser!.uid){
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
@@ -474,32 +464,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                         ),
                                         SizedBox(height: 8),
                                         displayPost(type!, imageURL!)
-                                        // if (type == 'image' && imageURL != null)
-                                        //   ClipRRect(
-                                        //     borderRadius:
-                                        //         BorderRadius.circular(16),
-                                        //     child:
-                                        //   Image.network(
-                                        //     imageURL,
-                                        //     width: double.infinity, // Make the image expand to the full width
-                                        //     height: 400, // Set the height as needed
-                                        //     fit: BoxFit.cover,
-                                        //   ),
-                                        // ),
-                                        // if (type == 'video' && imageURL != null)
-                                          //VideoPlayerWidget(videoUrl: imageURL),
-                                          // ClipRRect(
-                                          //   borderRadius:
-                                          //     BorderRadius.circular(16),
-                                          //     child: AspectRatio(
-                                          //     aspectRatio: 16 / 9,
-                                          //     child: VideoPlayer(
-                                          //       VideoPlayerController.networkUrl(
-                                          //         Uri.parse(imageURL),
-                                          //       ),
-                                          //     ),
-                                          //   ),
-                                          // ),
+                                        
                                       ]),
                                 ),
                               ),
@@ -510,7 +475,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                       } else if (snapshot.hasError) {
                         return ErrorWidget(snapshot.error!);
                       } else {
-                        return const CircularProgressIndicator();
+                        return const Text("Tunggu sebentar");
                       }
                     },
                   ),
@@ -522,323 +487,3 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     );
   }
 }
-
-  @override
-  class NewPostTextField extends StatefulWidget {
-      @override
-      _NewPostTextFieldState createState() => _NewPostTextFieldState();
-    }
-
-    class _NewPostTextFieldState extends State<NewPostTextField> {
-      File? selectedImage;
-      Uint8List? webImage = Uint8List(8);
-      VideoPlayerController? _videoPlayerController;
-      final TextEditingController _titleEditingController = TextEditingController();
-      final TextEditingController _textEditingController = TextEditingController();
-
-      @override
-      void initState() {
-        super.initState();
-        _titleEditingController.addListener(_updateButtonState);
-        _textEditingController.addListener(_updateButtonState);
-      }
-
-      void _updateButtonState() {
-        setState(() {});
-      }
-
-      @override
-      void dispose() {
-        // Remove the listeners to avoid memory leaks
-        _titleEditingController.removeListener(_updateButtonState);
-        _textEditingController.removeListener(_updateButtonState);
-        _videoPlayerController?.dispose();
-        _titleEditingController.dispose();
-        _textEditingController.dispose();
-        super.dispose();
-      }
-
-    //   Future<void> _pickMedia() async {
-    //   final pickedMedia = await FilePicker.platform.pickFiles(
-    //     type: FileType.media,
-    //     allowMultiple: false,
-    //   );
-
-    //   if (pickedMedia != null && pickedMedia.files.isNotEmpty) {
-    //     final platformFile = pickedMedia.files.first;
-
-    //     if (platformFile.extension == 'jpg' || platformFile.extension == 'jpeg' || platformFile.extension == 'png') {
-    //       // Handle image file
-    //       File imageFile = File(platformFile.path!);
-    //       setState(() {
-    //         selectedImage = imageFile;
-    //         _videoPlayerController = null;
-    //       });
-    //     } else if (platformFile.extension == 'mp4' || platformFile.extension == 'mov') {
-    //       // Handle video file
-    //       File videoFile = File(platformFile.path!);
-    //       VideoPlayerController videoPlayerController = VideoPlayerController.file(videoFile);
-    //       await videoPlayerController.initialize();
-
-    //       setState(() {
-    //         selectedImage = videoFile;
-    //         _videoPlayerController = videoPlayerController;
-    //       });
-    //     }
-    //   }
-    // }
-
-    
-
-      Future <void> _pickMedia() async{
-        // final ImagePicker _picker = ImagePicker();
-        // XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-        FilePickerResult? image = await FilePicker.platform.pickFiles(type: FileType.image);
-
-        if(image != null){
-          var f = await image.files.first.bytes;
-          setState(() {
-            webImage = f as Uint8List;
-          });
-        }
-        else{
-          print('No image selected');
-        }
-      }
-
-       Future<String> postType() async {
-        if (selectedImage != null) {
-          if (selectedImage!.path.endsWith('.jpg') || selectedImage!.path.endsWith('.png')) {
-            return 'image';
-          } else if (selectedImage!.path.endsWith('.mp4') || selectedImage!.path.endsWith('.mov')) {
-            return 'video';
-          }
-        }
-        // Default to 'text' if selectedImage is null or not recognized
-        return 'text';
-      }
-
-      Future compressVideo(File selectedImage) async {
-
-        if(selectedImage.path.endsWith('.mp4') || selectedImage.path.endsWith('.mov')){
-          final compressedVideoFile = await VideoCompress.compressVideo(
-            selectedImage.path,
-            quality: VideoQuality.LowQuality,
-          );  
-          return compressedVideoFile!.file;
-        }
-        return selectedImage;
-      }
-
-      Future<void> postToFirebase() async {
-        const folderPath = 'testPosts/';
-
-        final userID = FirebaseAuth.instance.currentUser!.uid;
-        final pfpURL = await FirebaseFirestore.instance.collection('users').doc(userID).get().then((value) => value.data()!['profilePicture'].toString());
-        final usernameDocument = await FirebaseFirestore.instance.collection('users').doc(userID).get();
-        final username = usernameDocument.data()!['username'].toString();
-        final date = (DateTime.now()).toString();
-        final postID = FirebaseFirestore.instance.collection('testPosts').doc().id;
-        final title = _titleEditingController.text;
-        final description = _textEditingController.text;
-        final type = await postType();
-
-        //first upload the image to Firebase Storage
-        if (selectedImage != null) {
-        selectedImage = await compressVideo(selectedImage!);
-        // Create a storage reference with the specified folder path
-        final storageRef = FirebaseStorage.instance.ref().child('$folderPath/post_$postID.jpg');
-
-        // Upload the selected image to the specified folder
-        await storageRef.putFile(selectedImage!);
-      }
-        //get the image URL from Firebase Storage
-        print('Getting download URL...');
-        final imageURL = selectedImage != null
-            ? await FirebaseStorage.instance.ref().child('$folderPath/post_$postID.jpg').getDownloadURL()
-            : null;
-        
-        await FirebaseFirestore.instance
-          .collection('testPosts')
-          .doc(postID)
-          .set({
-          'postID': postID,
-          'pfpURL': pfpURL,
-          'userID': userID,
-          'username': username,
-          'title': title,
-          'description': description,
-          'date': date,
-          'imageURL': imageURL ?? '',
-          'postType': type,
-        });
-      }
-
-      @override
-      Widget build(BuildContext context) {
-      return Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-          ),
-          boxShadow: List.generate(
-            10,
-            (index) => BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              blurRadius: 10,
-            ),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                //a handle to drag the bottom sheet up
-                height: 5,
-                width: 50,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: TextField(
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    controller: _titleEditingController, // Use a separate controller for the title
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Tajuk hantaran', // Hint for the title field
-                    ),
-                  ),
-                ), // Add some spacing between the title field and the button
-                ElevatedButton(
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      _titleEditingController.text.isNotEmpty &&
-                              _textEditingController.text.isNotEmpty
-                          ? Color(0xFF82618B)
-                          : Colors.grey,
-                    ),
-                  ),
-                  onPressed: () {
-                    // Post to Firebase with title and content
-                    if(_titleEditingController.text.isNotEmpty && _textEditingController.text.isNotEmpty){
-                      postToFirebase();
-                    }
-                    
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Hantar', style: TextStyle(color: Colors.white)),
-                ),
-              ],
-            ),
-            TextField(
-              controller: _textEditingController,
-              minLines: 1,
-              maxLines: 10, // Adjust this to your preference
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Kongsi sesuatu...',
-              ),
-            ),
-            Column(
-              children: [
-                if (webImage != null && _videoPlayerController == null)
-                  Stack(
-                    alignment: Alignment.topRight,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          child: 
-                          Image.memory(webImage!, fit: BoxFit.cover),
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.close,
-                        color: Colors.white,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            selectedImage = null; // Remove the selected image when cancel button is pressed
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                if (selectedImage != null && _videoPlayerController != null && _videoPlayerController!.value.isInitialized)
-                  //give it a fixed height so it doesn't take up too much space when minimized
-                  //give it a rounded border
-                Stack(
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.5,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16), // Adjust the radius as needed
-                        child: AspectRatio(
-                          aspectRatio: _videoPlayerController!.value.aspectRatio,
-                          child: VideoPlayer(_videoPlayerController!),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 1,
-                      right: 1,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          ),
-                        onPressed: () {
-                          setState(() {
-                            selectedImage = null;
-                            _videoPlayerController!.pause();
-                            _videoPlayerController!.seekTo(Duration.zero);
-                            _videoPlayerController = null;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            if(selectedImage == null && _videoPlayerController == null)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                onPressed: _pickMedia,
-                icon: Icon(
-                  Icons.add_photo_alternate,
-                  color: Colors.grey,
-                  size: 28,),
-              ),
-            ),
-            // Display the selected image if available
-          ],
-        ),
-        ),
-      );
-    }
-}
-

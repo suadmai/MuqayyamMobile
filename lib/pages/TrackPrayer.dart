@@ -52,12 +52,13 @@ class _TrackPrayerState extends State<TrackPrayer> with TickerProviderStateMixin
   late Animation<double> _animation;
   bool isTimerRunning = false;
   int _timerSeconds = 0;
-  final Duration animationDuration = Duration(seconds: 15);
+  final Duration animationDuration = Duration(minutes: 5);
   late Timer _nextPrayerTimer;
   bool prayersReset = false;
   bool prayerTimesUpdated = false;
   DateTime lastResetDate = DateTime.now().subtract(Duration(days: 1));
   Prayer currentPrayer = Prayer();
+  String location = 'Gombak';
 
   Prayer subuh = Prayer()
                 ..prayerName = "subuh"

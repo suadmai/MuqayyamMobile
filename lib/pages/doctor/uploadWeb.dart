@@ -22,7 +22,6 @@ class _UploadWebState extends State<UploadWeb> {
   XFile? image ;
   Uint8List? webImage;
   String? extension;
-  late VideoPlayerController _videoPlayerController;
   final _title = TextEditingController();
   final _description = TextEditingController();
   final userid = FirebaseAuth.instance.currentUser!.uid;
@@ -45,50 +44,69 @@ class _UploadWebState extends State<UploadWeb> {
       setState(() {
         extension = fileExtension;
       });
-      print('File extension: $extension');
     }
   }
 
-  Future<void> uploadImage() async {
-    final folderPath = 'testImages/';
-    final ID = FirebaseFirestore.instance.collection('testPosts').doc().id;
-    final storageRef = FirebaseStorage.instance.ref().child('$folderPath/post_$ID.$extension');
+  Future<String> uploadImage(String id) async {
+    const folderPath = 'testImages/';
+    final storageRef = FirebaseStorage.instance.ref().child('$folderPath/post_$id.$extension');
     await storageRef.putData(webImage!);
-    final userID = FirebaseAuth.instance.currentUser!.uid;
-    final username = await FirebaseFirestore.instance.collection('users').doc(userID).get();
-    //display upload percentage
-    
-    print('Image uploaded');
-
+    //final ID = FirebaseFirestore.instance.collection('testPosts').doc().id;
+    // final userID = FirebaseAuth.instance.currentUser!.uid;
+    // final usernameDocument = await FirebaseFirestore.instance.collection('users').doc(userID).get();
+    // final username = usernameDocument.data()!['username'].toString();
+    // final pfpURL = await FirebaseFirestore.instance.collection('users').doc(userID).get().then((value) => value.data()!['profilePicture'].toString());
     //get image url
     final imageURL = await FirebaseStorage.instance
                         .ref()
-                        .child('$folderPath/post_$ID.$extension')
+                        .child('$folderPath/post_$id.$extension')
                         .getDownloadURL();
-    print(imageURL);
+    return imageURL;
+    // await FirebaseFirestore.instance
+    //     .collection('testPosts')
+    //     .doc(ID).set({
+    //     'date' : DateFormat('yyyy-MM-dd').format(DateTime.now()),
+    //     'title': _title.text,
+    //     'description': _description.text,
+    //     'imageURL': imageURL,
+    //     'type': extension,
+    //     'userid' : userID,
+    //     'username' : username,
+    //     'pfpURL' : pfpURL,
+    //});
+  }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Image url is $imageURL and type is $extension'),
-      ),
-    );
+  Future <void> createPost() async{
+    final userID = FirebaseAuth.instance.currentUser!.uid;
+    final usernameDocument = await FirebaseFirestore.instance.collection('users').doc(userID).get();
+    final username = usernameDocument.data()!['username'].toString();
+    final pfpURL = await FirebaseFirestore.instance.collection('users').doc(userID).get().then((value) => value.data()!['profilePicture'].toString());
+    final id = FirebaseFirestore.instance.collection('testPosts').doc().id;
+    final imageURL;
 
-    await FirebaseFirestore.instance
-        .collection('testPosts')
-        .doc(ID).set({
-        'date' : DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        'title': _title.text,
-        'description': _description.text,
-        'imageURL': imageURL,
-        'type': extension,
-        'userid' : userID,
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Image added to Firestore'),
-      ),
-    );
-    print('Image added to Firestore');
+    if(webImage!=null){
+      imageURL = await uploadImage(id);
+    }
+    else{
+      imageURL = "";
+    }
+
+    if(_title.text != "" && _description.text != ""){
+      await FirebaseFirestore.instance
+          .collection('testPosts')
+          .doc(id).set({
+          'date' : DateFormat('yyyy-MM-dd').format(DateTime.now()),
+          'timestamp' : DateTime.now(),
+          'title': _title.text,
+          'description': _description.text,
+          'imageURL': imageURL,
+          'type': extension??"",
+          'userid' : userID,
+          'username' : username,
+          'pfpURL' : pfpURL,
+      });
+      Navigator.pop(context);
+    }
   }
 
   Container displayMedia(){
@@ -125,13 +143,6 @@ class _UploadWebState extends State<UploadWeb> {
                 autoInitialize: true,
               ),
             )
-            // Chewie(
-            //   controller: ChewieController(
-            //     videoPlayerController: VideoPlayerController.asset(image!.path),
-            //     autoPlay: true,
-            //     autoInitialize: true,
-            //   ),
-            // )
           ),
         );
       }
@@ -140,55 +151,12 @@ class _UploadWebState extends State<UploadWeb> {
       width: 200,
       height: 200,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
+        border: Border.all(color: Colors.black,),
         borderRadius: BorderRadius.circular(10),
       ),
       child: const Center(
-        child: Icon(Icons.image, size: 50, color: Colors.grey),
+        child: Icon(Icons.add_a_photo, size: 50, color: Colors.grey),
       ),
-    );
-  }
-
-  Container displayPost(String type, String postImage){
-    if(type == 'jpg' || type == 'jpeg' || type == 'png' || type == 'heic'){
-        return Container(
-          width: 200,
-          height: 200,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: 
-            Image.network(
-              postImage,
-              width: 200,
-              height: 200,
-              fit: BoxFit.cover,
-        ));
-      } else if(type == 'mp4' || type == 'mov' || type == 'hevc'){
-        return Container(
-          width: 200,
-          height: 200,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(10),
-        ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Center(
-              child: Chewie(
-                controller: ChewieController(
-                  allowPlaybackSpeedChanging: false,
-                  videoPlayerController: VideoPlayerController.network(postImage),
-                  autoPlay: false,
-                  autoInitialize: true,
-                ),
-              )
-            ),
-          ),
-        );
-      }
-    return Container(
     );
   }
 
@@ -196,115 +164,45 @@ class _UploadWebState extends State<UploadWeb> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Upload Image from Web'),
+        backgroundColor: const Color(0xFF82618B),
+        title: const Text('Buat Hantaran Baharu', style: TextStyle(color: Colors.white),),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Form(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('v1.1.5'),
-              //display selected image
-              // webImage != null
-              // //boxfit: BoxFit.cover to display image in full container
-              // //put it
-              //     ? SizedBox(
-              //         width: 200,
-              //         height: 200,
-              //       child: ClipRRect(
-              //         borderRadius: BorderRadius.circular(10),
-              //         child: Image.memory(
-              //             webImage!,
-              //             width: 200,
-              //             height: 200,
-              //             fit: BoxFit.cover,
-              //           ),
-              //       ),
-              //     )
-              //     : Container(
-              //         width: 200,
-              //         height: 200,
-              //         decoration: BoxDecoration(
-              //           border: Border.all(color: Colors.black),
-              //           borderRadius: BorderRadius.circular(10),
-              //         ),
-              //         child: const Center(
-              //           child: Icon(Icons.image, size: 50, color: Colors.grey),
-              //         ),
-              //     ),
-              displayMedia(),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _title,
-                decoration: const InputDecoration(
-                  labelText: 'Title',
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  child: displayMedia(),
+                  onTap: pickImage,
                 ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _description,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
+                const SizedBox(height: 20),
+                TextField(
+                  controller: _title,
+                  decoration: const InputDecoration(
+                    labelText: 'Tajuk Hantaran',
+                  ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      pickImage();
-                    },
-                    child: const Text('Pick Image'),
+                const SizedBox(height: 20),
+                TextField(
+                  minLines: 1,
+                  maxLines: 5,
+                  controller: _description,
+                  decoration: const InputDecoration(
+                    labelText: 'Tulis Sesuatu',
                   ),
-                  const SizedBox(width: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      uploadImage();
-                    },
-                    child: const Text('Upload Image'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              //display the images from firestore
-              Expanded(
-                child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection('testPosts').snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Center(
-                      child: Text('No data available'),
-                    );
-                  } else {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        try {
-                          final imageURL = snapshot.data!.docs[index]['imageURL'];
-                          final type = snapshot.data!.docs[index]['type'];
-          
-                          return displayPost(type, imageURL);
-                        } catch (e) {
-                          print('Error loading image at index $index: $e');
-                          return Container(); // Placeholder or alternative content
-                        }
+                ),
+                const SizedBox(height: 16,),
+                ElevatedButton(
+                      onPressed: () {
+                        createPost();
                       },
-                    );
-                  }
-                },
-              ),              
-              ),
-            ],
+                      child: const Text('Hantar'),
+                    ),
+              ],
+            ),
           ),
-        ),
       ),
     );
   }

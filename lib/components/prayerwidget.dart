@@ -54,18 +54,19 @@ class _PrayerWidgetState extends State<PrayerWidget> {
   Widget build(BuildContext context) {
     return Expanded(
           child: GestureDetector(
-            onTap: () {
-              showDialog(
-                context: context, 
-                builder: ((context) {
-                  return AlertDialog(
-                    backgroundColor: Colors.transparent,
-                    surfaceTintColor: Colors.transparent,
-                    content: PrayerWidgetPlus(patientId: widget.patientId),
-                  );
-                })
-                );
-            },
+            //to be updated
+            // onTap: () {
+            //   showDialog(
+            //     context: context, 
+            //     builder: ((context) {
+            //       return AlertDialog(
+            //         backgroundColor: Colors.transparent,
+            //         surfaceTintColor: Colors.transparent,
+            //         content: PrayerWidgetPlus(patientId: widget.patientId),
+            //       );
+            //     })
+            //     );
+            // },
             child: Card(
                 elevation: 3,
                 shape: RoundedRectangleBorder(

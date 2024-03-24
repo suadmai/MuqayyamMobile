@@ -1,11 +1,14 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:typed_data';
+import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:video_player/video_player.dart';
 import 'package:wildlifego/components/videoPlayer.dart';
 import 'package:wildlifego/pages/TrackPrayer.dart';
 import 'package:wildlifego/pages/leaderboards.dart';
@@ -132,6 +135,50 @@ class _HomeScreenState extends State<HomeScreen> {
     return newTextString;
   }
 
+  Container displayPost(String type, String postImage){
+    if(type == 'jpg' || type == 'jpeg' || type == 'png' || type == 'heic'){
+        return Container(
+          child: 
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
+                  child: Image.network(
+                    postImage,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ));
+      } else if(type == 'mp4' || type == 'mov' || type == 'hevc'){
+        return Container(
+          child: AspectRatio(
+            aspectRatio: 16/9,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                color: Colors.black,
+                child: Center(
+                  child: Chewie(
+                    controller: ChewieController(
+                      allowPlaybackSpeedChanging: false,
+                      videoPlayerController: VideoPlayerController.network(postImage),
+                      autoPlay: false,
+                      autoInitialize: true,
+                    ),
+                  )
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+    return Container(
+    );
+  }
+
   void signOut() async {
     bool confirm = await showDialog(
       context: context,
@@ -198,9 +245,6 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-
-
-
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -365,51 +409,96 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 10),
               Expanded(
-                child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                  stream: FirebaseFirestore.instance
-                      .collection('AllPosts')
-                      .orderBy('date', descending: true)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final posts = snapshot.data!.docs;
-                      return ListView.builder(
-                        itemCount: posts.length,
-                        itemBuilder: (context, index) {
-                          final post = posts[index].data();
-                          final pfpURL = post['pfpURL'] as String?;
-                          final username = post['username'] as String?;
-                          final title = post['title'] as String?;
-                          final description = post['description'] as String?;
-                          final date = post["date"] as String?;
-                          final imageURL = post['imageURL'] as String?;
-                          final postType = post['postType'] as String?;
+                  child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                    stream: FirebaseFirestore.instance
+                        .collection('testPosts')
+                        .orderBy('timestamp', descending: true)
+                        .snapshots(),
+                        builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                        final posts = snapshot.data!.docs;
+                        return ListView.builder(
+                          itemCount: posts.length,
+                          itemBuilder: (context, index) {
+                            final post = posts[index].data();
+                            final pfpURL = post['pfpURL'] as String?;
+                            final username =
+                                post['username'] as String?;
+                            final title =
+                                post['title'] as String?;
+                            final description = post['description']
+                                as String?;
+                            final date = post["date"] as String?;
+                            final imageURL = post['imageURL'] as String?;
+                            final type = post['type'] as String?;
+                            
+                            return GestureDetector(
 
-                          return Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            color: Colors.white,
-                            elevation: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
+                              onLongPress: () {
+                                // show vertical menu 
+                                if(post['userid'] == FirebaseAuth.instance.currentUser!.uid){
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Padam Hantaran'),
+                                      content: Text('Adakah anda ingin memadam hantaran ini?'),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                          child: Text('Batal'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop(false);
+                                          },
+                                        ),
+                                        ElevatedButton(
+                                          child: Text('Padam'),
+                                          onPressed: () {
+                                            if(post['userID'] == FirebaseAuth.instance.currentUser!.uid){
+                                              FirebaseFirestore.instance
+                                                .collection('testPosts')
+                                                .doc(post['postID'])
+                                                .delete();
+                                              Navigator.of(context).pop(true);
+                                              //also delete the image from Firebase Storage
+                                              if (imageURL != null) {
+                                                FirebaseStorage.instance.refFromURL(imageURL).delete();
+                                              }
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                }
+                              },
+                              //child: displayPost(type!, imageURL!),
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                color: Colors.white,
+                                elevation: 3,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Container(
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
                                           child: pfpURL != null
                                           ? CircleAvatar(
-                                              radius: 16,
+                                              radius: 12,
                                               backgroundImage:
                                                   NetworkImage(pfpURL),
                                             )
                                           :
                                           CircleAvatar(
-                                            radius: 16,
+                                            radius: 12,
                                             backgroundColor: Colors
                                                 .blue, // Set the profile image's background color
                                             child: Icon(
@@ -419,99 +508,74 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(
-                                            width:
-                                                8), // Add some space between the profile image and the name
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Column(
+                                            SizedBox(
+                                                width:
+                                                    8), // Add some space between the profile image and the name
+                                            Expanded(
+                                              child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  Text(
-                                                    '$username', // Replace with the user's name
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        '$username', // Replace with the user's name
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      //SizedBox(height: 8),
+                                                      Text(
+                                                        // date format dd/mm/yyyy
+                                                        DateFormat("dd/MM/yyyy").format(DateTime.parse(date!)), 
+                                                        style: TextStyle(
+                                                            fontSize: 12),
+                                                      ),
+                                                      SizedBox(height: 12),
+                                                    ],
                                                   ),
-                                                  //SizedBox(height: 8),
-                                                  Text(
-                                                    // date format dd/mm/yyyy
-                                                    DateFormat("dd/MM/yyyy")
-                                                        .format(DateTime.parse(
-                                                            date!)),
-                                                    style:
-                                                        TextStyle(fontSize: 12),
-                                                  ),
-                                                  SizedBox(height: 12),
                                                 ],
                                               ),
-                                            ],
+                                            ),
+                                          ],
+                                        ),
+                                        Text(
+                                          '$title',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                    Text(
-                                      '$title',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                        height:
-                                            4), // Add some space between the title and the description
-                                    Text(
-                                      formatText(description!),
-                                      style: TextStyle(fontSize: 14),
-                                      //maxLines: 10,
-                                    ),
-                                    SizedBox(height: 8),
-                                    if (postType == 'image' && imageURL != null)
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(16),
-                                        child: Image.network(
-                                          imageURL,
-                                          width: double
-                                              .infinity, // Make the image expand to the full width
-                                          height:
-                                              400, // Set the height as needed
-                                          fit: BoxFit.cover,
+                                        SizedBox(
+                                            height:
+                                                4), // Add some space between the title and the description
+                                        Text(
+                                          formatText(description!),
+                                          style: TextStyle(fontSize: 14),
+                                          maxLines: 10,
                                         ),
-                                      ),
-                                    if (postType == 'video' && imageURL != null)
-                                      VideoPlayerWidget(videoUrl: imageURL),
-                                    // ClipRRect(
-                                    //   borderRadius:
-                                    //     BorderRadius.circular(16),
-                                    //     child: AspectRatio(
-                                    //     aspectRatio: 16 / 9,
-                                    //     child: VideoPlayer(
-                                    //       VideoPlayerController.networkUrl(
-                                    //         Uri.parse(imageURL),
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                  ]),
-                            ),
-                          );
-                        },
-                      );
-                    } else if (snapshot.hasError) {
-                      return ErrorWidget(snapshot.error!);
-                    } else {
-                      return Center(
-                        child: Text('Loading...'),
-                      );
-                    }
-                  },
+                                        SizedBox(height: 8),
+                                        displayPost(type!, imageURL!)
+                                      ]),
+                                ),
+                              ),
+                            );
+                            //);
+                          },
+                        );
+                      } else if (snapshot.hasError) {
+                        return ErrorWidget(snapshot.error!);
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    },
+                  ),
                 ),
-              ),
             ],
           ),
         ),
